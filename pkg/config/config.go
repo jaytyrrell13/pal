@@ -39,7 +39,8 @@ func WriteConfigFile(b []byte) {
 	cobra.CheckErr(writeFileErr)
 }
 
-func (c Config) FromJson(j []byte) Config {
+func FromJson(j []byte) Config {
+	var c Config
 	unmarshalErr := json.Unmarshal(j, &c)
 	cobra.CheckErr(unmarshalErr)
 

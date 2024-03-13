@@ -30,8 +30,7 @@ var installCmd = &cobra.Command{
 		configFile, openErr := os.ReadFile(config.ConfigFilePath())
 		cobra.CheckErr(openErr)
 
-		var c config.Config
-		c = c.FromJson(configFile)
+		c := config.FromJson(configFile)
 
 		if c.Path != path {
 			c.Path = path
