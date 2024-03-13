@@ -8,7 +8,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var InstallCmd = &cobra.Command{
+var installCmd = &cobra.Command{
 	Use:   "install",
 	Short: "Create the configuration file used by pal",
 	Run: func(cmd *cobra.Command, args []string) {
@@ -16,7 +16,7 @@ var InstallCmd = &cobra.Command{
 
 		editorCmd := prompts.StringPrompt("What is the editor command?")
 
-		if config.ConfigFileExists() {
+		if config.ConfigFileMissing() {
 			c := config.Config{
 				Path:      path,
 				EditorCmd: editorCmd,
@@ -43,4 +43,8 @@ var InstallCmd = &cobra.Command{
 
 		c.Save()
 	},
+}
+
+func init() {
+	rootCmd.AddCommand(installCmd)
 }

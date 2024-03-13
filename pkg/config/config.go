@@ -29,9 +29,9 @@ func MakeConfigDir() {
 	cobra.CheckErr(pathErr)
 }
 
-func ConfigFileExists() bool {
+func ConfigFileMissing() bool {
 	_, e := os.Stat(ConfigFilePath())
-	return !errors.Is(e, os.ErrNotExist)
+	return errors.Is(e, os.ErrNotExist)
 }
 
 func WriteConfigFile(b []byte) {
