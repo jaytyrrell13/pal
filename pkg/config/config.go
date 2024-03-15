@@ -47,6 +47,13 @@ func FromJson(j []byte) Config {
 	return c
 }
 
+func FromConfigFile() Config {
+	configFile, openErr := os.ReadFile(ConfigFilePath())
+	cobra.CheckErr(openErr)
+
+	return FromJson(configFile)
+}
+
 func (c Config) Save() {
 	writeFileErr := os.WriteFile(ConfigFilePath(), c.AsJson(), 0o644)
 	cobra.CheckErr(writeFileErr)
