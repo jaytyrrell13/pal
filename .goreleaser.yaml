@@ -44,3 +44,14 @@ changelog:
     exclude:
       - "^docs:"
       - "^test:"
+
+brews:
+  -
+    name: pal
+    homepage: "https://github.com/jaytyrrell13/pal"
+    tap:
+      owner: jaytyrrell13
+      name: homebrew-tap
+    commit_author:
+      name: jaytyrrell13
+      email: tyrrell.jay@gmail.com
