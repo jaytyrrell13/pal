@@ -49,7 +49,7 @@ brews:
   -
     name: pal
     homepage: "https://github.com/jaytyrrell13/pal"
-    tap:
+    repository:
       owner: jaytyrrell13
       name: homebrew-tap
     commit_author:
