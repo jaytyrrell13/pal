@@ -16,6 +16,10 @@ var installCmd = &cobra.Command{
 
 		editorCmd := prompts.StringPrompt("What is the editor command?")
 
+		if config.ConfigDirMissing() {
+			config.MakeConfigDir()
+		}
+
 		if config.ConfigFileMissing() {
 			c := config.Config{
 				Path:      path,
