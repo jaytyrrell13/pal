@@ -29,6 +29,11 @@ func MakeConfigDir() {
 	cobra.CheckErr(pathErr)
 }
 
+func ConfigDirMissing() bool {
+	_, e := os.Stat(ConfigDirPath())
+	return errors.Is(e, os.ErrNotExist)
+}
+
 func ConfigFileMissing() bool {
 	_, e := os.Stat(ConfigFilePath())
 	return errors.Is(e, os.ErrNotExist)
