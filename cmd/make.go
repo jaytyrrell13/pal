@@ -59,6 +59,8 @@ var makeCmd = &cobra.Command{
 
 		writeFileErr := os.WriteFile(homedir+"/.pal", []byte(output), 0o755)
 		cobra.CheckErr(writeFileErr)
+
+		fmt.Println("\nDon't forget to source ~/.pal file in your shell!")
 	},
 }
 
