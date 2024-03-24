@@ -11,6 +11,7 @@ import (
 type Config struct {
 	Path      string
 	EditorCmd string
+	Extras    []string
 }
 
 func ConfigDirPath() string {
@@ -39,6 +40,13 @@ func ConfigFileMissing() bool {
 	return errors.Is(e, os.ErrNotExist)
 }
 
+func ReadConfigFile() Config {
+	configFile, openErr := os.ReadFile(ConfigFilePath())
+	cobra.CheckErr(openErr)
+
+	return FromJson(configFile)
+}
+
 func WriteConfigFile(b []byte) {
 	writeFileErr := os.WriteFile(ConfigFilePath(), b, 0o644)
 	cobra.CheckErr(writeFileErr)
@@ -52,11 +60,14 @@ func FromJson(j []byte) Config {
 	return c
 }
 
-func FromConfigFile() Config {
+func SaveExtraDir(path string) {
 	configFile, openErr := os.ReadFile(ConfigFilePath())
 	cobra.CheckErr(openErr)
 
-	return FromJson(configFile)
+	c := FromJson(configFile)
+
+	c.Extras = append(c.Extras, path)
+	c.Save()
 }
 
 func (c Config) Save() {

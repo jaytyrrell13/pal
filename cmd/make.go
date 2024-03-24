@@ -20,6 +20,8 @@ func getProjectPaths(config config.Config) []string {
 		}
 	}
 
+	projectPaths = append(projectPaths, config.Extras...)
+
 	return projectPaths
 }
 
@@ -27,7 +29,7 @@ var makeCmd = &cobra.Command{
 	Use:   "make",
 	Short: "Create the aliases file",
 	Run: func(cmd *cobra.Command, args []string) {
-		c := config.FromConfigFile()
+		c := config.ReadConfigFile()
 
 		if config.ConfigFileMissing() {
 			fmt.Println("Config file does not exist. Please run install command first.")
