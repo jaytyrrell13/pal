@@ -8,13 +8,25 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var (
+	pathFlag      string
+	editorCmdFlag string
+)
+
 var installCmd = &cobra.Command{
 	Use:   "install",
 	Short: "Create the configuration file used by pal",
 	Run: func(cmd *cobra.Command, args []string) {
-		path := prompts.StringPrompt("What is the path to your projects?")
+		path := pathFlag
+		editorCmd := editorCmdFlag
 
-		editorCmd := prompts.StringPrompt("What is the editor command?")
+		if path == "" {
+			path = prompts.StringPrompt("What is the path to your projects?")
+		}
+
+		if editorCmd == "" {
+			editorCmd = prompts.StringPrompt("What is the editor command?")
+		}
 
 		if config.ConfigDirMissing() {
 			config.MakeConfigDir()
@@ -50,4 +62,7 @@ var installCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(installCmd)
+
+	installCmd.Flags().StringVarP(&pathFlag, "path", "p", "", "Path to to your projects")
+	installCmd.Flags().StringVarP(&editorCmdFlag, "editorCmd", "e", "", "Editor command e.g. (nvim, subl, code)")
 }
