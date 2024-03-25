@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/jaytyrrell13/pal/pkg/aliases"
 	"github.com/jaytyrrell13/pal/pkg/config"
 	"github.com/jaytyrrell13/pal/pkg/prompts"
 	"github.com/spf13/cobra"
@@ -45,21 +46,14 @@ var makeCmd = &cobra.Command{
 				continue
 			}
 
-			output += fmt.Sprintf("alias %s=\"cd %s\"\n", alias, path)
-
-			if c.EditorCmd != "" {
-				output += fmt.Sprintf("alias %s=\"cd %s && %s\"\n", "e"+alias, path, c.EditorCmd)
-			}
+			output += aliases.MakeAliasCommands(alias, path, c)
 		}
 
 		if output == "" {
 			return
 		}
 
-		homedir, err := os.UserHomeDir()
-		cobra.CheckErr(err)
-
-		writeFileErr := os.WriteFile(homedir+"/.pal", []byte(output), 0o755)
+		writeFileErr := os.WriteFile(aliases.AliasFilePath(), []byte(output), 0o755)
 		cobra.CheckErr(writeFileErr)
 
 		fmt.Println("\nDon't forget to source ~/.pal file in your shell!")

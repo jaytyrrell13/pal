@@ -1,10 +1,9 @@
 package cmd
 
 import (
-	"errors"
-	"fmt"
 	"os"
 
+	"github.com/jaytyrrell13/pal/pkg/aliases"
 	"github.com/jaytyrrell13/pal/pkg/config"
 	"github.com/jaytyrrell13/pal/pkg/prompts"
 	"github.com/spf13/cobra"
@@ -20,30 +19,23 @@ var addCmd = &cobra.Command{
 
 		config.SaveExtraDir(path)
 
-		homedir, homedirErr := os.UserHomeDir()
-		cobra.CheckErr(homedirErr)
-
-		_, aliasFileError := os.Stat(homedir + "/.pal")
-		if errors.Is(aliasFileError, os.ErrNotExist) {
+		if aliases.AliasFileMissing() {
 			return
 		}
 
-		c := config.ReadConfigFile()
-
-		aliasesFile, openAliasesFileErr := os.OpenFile(homedir+"/.pal", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0o755)
+		aliasesFile, openAliasesFileErr := os.OpenFile(aliases.AliasFilePath(), os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0o755)
 		cobra.CheckErr(openAliasesFileErr)
 
-		var output string
-		output += fmt.Sprintf("alias %s=\"cd %s\"\n", name, path)
+		c := config.ReadConfigFile()
 
-		if c.EditorCmd != "" {
-			output += fmt.Sprintf("alias %s=\"cd %s && %s\"\n", "e"+name, path, c.EditorCmd)
-		}
+		var output string
+		output += aliases.MakeAliasCommands(name, path, c)
 
 		if _, err := aliasesFile.Write([]byte(output)); err != nil {
 			aliasesFile.Close()
 			cobra.CheckErr(err)
 		}
+
 		if err := aliasesFile.Close(); err != nil {
 			cobra.CheckErr(err)
 		}
