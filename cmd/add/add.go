@@ -1,4 +1,4 @@
-package cmd
+package add
 
 import (
 	"os"
@@ -9,13 +9,25 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var addCmd = &cobra.Command{
+var (
+	nameFlag string
+	pathFlag string
+)
+
+var AddCmd = &cobra.Command{
 	Use:   "add",
 	Short: "Create an alias for an additional directory",
 	Run: func(cmd *cobra.Command, args []string) {
-		name := prompts.StringPrompt("What is the name of the alias?")
+		name := nameFlag
+		path := pathFlag
 
-		path := prompts.StringPrompt("What is the path for the alias?")
+		if name == "" {
+			name = prompts.StringPrompt("What is the name of the alias?")
+		}
+
+		if path == "" {
+			path = prompts.StringPrompt("What is the path for the alias?")
+		}
 
 		config.SaveExtraDir(path)
 
@@ -43,5 +55,6 @@ var addCmd = &cobra.Command{
 }
 
 func init() {
-	rootCmd.AddCommand(addCmd)
+	AddCmd.Flags().StringVarP(&nameFlag, "name", "n", "", "Name of the additional alias")
+	AddCmd.Flags().StringVarP(&pathFlag, "path", "p", "", "Path to your additional directory")
 }

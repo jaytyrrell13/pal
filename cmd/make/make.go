@@ -1,4 +1,4 @@
-package cmd
+package make
 
 import (
 	"fmt"
@@ -26,7 +26,7 @@ func getProjectPaths(config config.Config) []string {
 	return projectPaths
 }
 
-var makeCmd = &cobra.Command{
+var MakeCmd = &cobra.Command{
 	Use:   "make",
 	Short: "Create the aliases file",
 	Run: func(cmd *cobra.Command, args []string) {
@@ -58,8 +58,4 @@ var makeCmd = &cobra.Command{
 
 		fmt.Println("\nDon't forget to source ~/.pal file in your shell!")
 	},
-}
-
-func init() {
-	rootCmd.AddCommand(makeCmd)
 }

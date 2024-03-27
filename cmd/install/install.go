@@ -1,4 +1,4 @@
-package cmd
+package install
 
 import (
 	"os"
@@ -13,7 +13,7 @@ var (
 	editorCmdFlag string
 )
 
-var installCmd = &cobra.Command{
+var InstallCmd = &cobra.Command{
 	Use:   "install",
 	Short: "Create the configuration file used by pal",
 	Run: func(cmd *cobra.Command, args []string) {
@@ -61,8 +61,6 @@ var installCmd = &cobra.Command{
 }
 
 func init() {
-	rootCmd.AddCommand(installCmd)
-
-	installCmd.Flags().StringVarP(&pathFlag, "path", "p", "", "Path to to your projects")
-	installCmd.Flags().StringVarP(&editorCmdFlag, "editorCmd", "e", "", "Editor command e.g. (nvim, subl, code)")
+	InstallCmd.Flags().StringVarP(&pathFlag, "path", "p", "", "Path to to your projects")
+	InstallCmd.Flags().StringVarP(&editorCmdFlag, "editorCmd", "e", "", "Editor command e.g. (nvim, subl, code)")
 }
