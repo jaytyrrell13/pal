@@ -1,11 +1,10 @@
-package aliases
+package pkg
 
 import (
 	"errors"
 	"fmt"
 	"os"
 
-	"github.com/jaytyrrell13/pal/pkg/config"
 	"github.com/spf13/cobra"
 )
 
@@ -21,7 +20,7 @@ func AliasFileMissing() bool {
 	return errors.Is(e, os.ErrNotExist)
 }
 
-func MakeAliasCommands(name string, path string, config config.Config) string {
+func MakeAliasCommands(name string, path string, config Config) string {
 	var output string
 	output += fmt.Sprintf("alias %s=\"cd %s\"\n", name, path)
 

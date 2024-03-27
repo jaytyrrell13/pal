@@ -4,13 +4,12 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/jaytyrrell13/pal/pkg/aliases"
-	"github.com/jaytyrrell13/pal/pkg/config"
+	"github.com/jaytyrrell13/pal/pkg"
 	"github.com/jaytyrrell13/pal/pkg/prompts"
 	"github.com/spf13/cobra"
 )
 
-func getProjectPaths(config config.Config) []string {
+func getProjectPaths(config pkg.Config) []string {
 	files, err := os.ReadDir(config.Path)
 	cobra.CheckErr(err)
 
@@ -30,9 +29,9 @@ var MakeCmd = &cobra.Command{
 	Use:   "make",
 	Short: "Create the aliases file",
 	Run: func(cmd *cobra.Command, args []string) {
-		c := config.ReadConfigFile()
+		c := pkg.ReadConfigFile()
 
-		if config.ConfigFileMissing() {
+		if pkg.ConfigFileMissing() {
 			fmt.Println("Config file does not exist. Please run install command first.")
 			os.Exit(1)
 		}
@@ -46,14 +45,14 @@ var MakeCmd = &cobra.Command{
 				continue
 			}
 
-			output += aliases.MakeAliasCommands(alias, path, c)
+			output += pkg.MakeAliasCommands(alias, path, c)
 		}
 
 		if output == "" {
 			return
 		}
 
-		writeFileErr := os.WriteFile(aliases.AliasFilePath(), []byte(output), 0o755)
+		writeFileErr := os.WriteFile(pkg.AliasFilePath(), []byte(output), 0o755)
 		cobra.CheckErr(writeFileErr)
 
 		fmt.Println("\nDon't forget to source ~/.pal file in your shell!")

@@ -3,8 +3,7 @@ package add
 import (
 	"os"
 
-	"github.com/jaytyrrell13/pal/pkg/aliases"
-	"github.com/jaytyrrell13/pal/pkg/config"
+	"github.com/jaytyrrell13/pal/pkg"
 	"github.com/jaytyrrell13/pal/pkg/prompts"
 	"github.com/spf13/cobra"
 )
@@ -29,19 +28,19 @@ var AddCmd = &cobra.Command{
 			path = prompts.StringPrompt("What is the path for the alias?")
 		}
 
-		config.SaveExtraDir(path)
+		pkg.SaveExtraDir(path)
 
-		if aliases.AliasFileMissing() {
+		if pkg.AliasFileMissing() {
 			return
 		}
 
-		aliasesFile, openAliasesFileErr := os.OpenFile(aliases.AliasFilePath(), os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0o755)
+		aliasesFile, openAliasesFileErr := os.OpenFile(pkg.AliasFilePath(), os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0o755)
 		cobra.CheckErr(openAliasesFileErr)
 
-		c := config.ReadConfigFile()
+		c := pkg.ReadConfigFile()
 
 		var output string
-		output += aliases.MakeAliasCommands(name, path, c)
+		output += pkg.MakeAliasCommands(name, path, c)
 
 		if _, err := aliasesFile.Write([]byte(output)); err != nil {
 			aliasesFile.Close()

@@ -3,7 +3,7 @@ package install
 import (
 	"os"
 
-	"github.com/jaytyrrell13/pal/pkg/config"
+	"github.com/jaytyrrell13/pal/pkg"
 	"github.com/jaytyrrell13/pal/pkg/prompts"
 	"github.com/spf13/cobra"
 )
@@ -28,12 +28,12 @@ var InstallCmd = &cobra.Command{
 			editorCmd = prompts.StringPrompt("What is the editor command?")
 		}
 
-		if config.ConfigDirMissing() {
-			config.MakeConfigDir()
+		if pkg.ConfigDirMissing() {
+			pkg.MakeConfigDir()
 		}
 
-		if config.ConfigFileMissing() {
-			c := config.Config{
+		if pkg.ConfigFileMissing() {
+			c := pkg.Config{
 				Path:      path,
 				EditorCmd: editorCmd,
 			}
@@ -43,10 +43,10 @@ var InstallCmd = &cobra.Command{
 			return
 		}
 
-		configFile, openErr := os.ReadFile(config.ConfigFilePath())
+		configFile, openErr := os.ReadFile(pkg.ConfigFilePath())
 		cobra.CheckErr(openErr)
 
-		c := config.FromJson(configFile)
+		c := pkg.FromJson(configFile)
 
 		if c.Path != path {
 			c.Path = path
