@@ -4,8 +4,8 @@ import (
 	"os"
 
 	"github.com/jaytyrrell13/pal/cmd/add"
-	"github.com/jaytyrrell13/pal/cmd/aliases"
 	"github.com/jaytyrrell13/pal/cmd/install"
+	"github.com/jaytyrrell13/pal/cmd/list"
 	"github.com/jaytyrrell13/pal/cmd/make"
 	"github.com/spf13/cobra"
 )
@@ -17,7 +17,7 @@ var rootCmd = &cobra.Command{
 
 func Execute() {
 	rootCmd.AddCommand(add.AddCmd)
-	rootCmd.AddCommand(aliases.AliasesCmd)
+	rootCmd.AddCommand(list.ListCmd)
 	rootCmd.AddCommand(install.InstallCmd)
 	rootCmd.AddCommand(make.MakeCmd)
 
