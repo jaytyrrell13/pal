@@ -10,15 +10,13 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var version = "0.3.0"
-
 var rootCmd = &cobra.Command{
-	Version: version,
-	Use:     "pal",
-	Short:   "Helps manage the aliases for your projects",
+	Use:   "pal",
+	Short: "Helps manage the aliases for your projects",
 }
 
-func Execute() {
+func Execute(version string) {
+	rootCmd.Version = version
 	rootCmd.AddCommand(add.AddCmd)
 	rootCmd.AddCommand(list.ListCmd)
 	rootCmd.AddCommand(install.InstallCmd)
