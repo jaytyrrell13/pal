@@ -10,8 +10,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var version = "0.3.0"
+
 var rootCmd = &cobra.Command{
-	Version: "0.3.0",
+	Version: version,
 	Use:     "pal",
 	Short:   "Helps manage the aliases for your projects",
 }
