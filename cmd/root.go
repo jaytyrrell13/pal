@@ -11,8 +11,9 @@ import (
 )
 
 var rootCmd = &cobra.Command{
-	Use:   "pal",
-	Short: "Helps manage the aliases for your projects",
+	Version: "0.3.0",
+	Use:     "pal",
+	Short:   "Helps manage the aliases for your projects",
 }
 
 func Execute() {
