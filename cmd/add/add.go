@@ -17,6 +17,10 @@ var AddCmd = &cobra.Command{
 	Use:   "add",
 	Short: "Create an alias for an additional directory",
 	Run: func(cmd *cobra.Command, args []string) {
+		if pkg.AliasFileMissing() {
+			cobra.CheckErr("~/.pal file is missing, please run make command first")
+		}
+
 		name := nameFlag
 		path := pathFlag
 
@@ -29,10 +33,6 @@ var AddCmd = &cobra.Command{
 		}
 
 		pkg.SaveExtraDir(path)
-
-		if pkg.AliasFileMissing() {
-			return
-		}
 
 		aliasesFile, openAliasesFileErr := os.OpenFile(pkg.AliasFilePath(), os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0o755)
 		cobra.CheckErr(openAliasesFileErr)

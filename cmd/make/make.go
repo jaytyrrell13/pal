@@ -29,12 +29,11 @@ var MakeCmd = &cobra.Command{
 	Use:   "make",
 	Short: "Create the aliases file",
 	Run: func(cmd *cobra.Command, args []string) {
-		c := pkg.ReadConfigFile()
-
 		if pkg.ConfigFileMissing() {
-			fmt.Println("Config file does not exist. Please run install command first.")
-			os.Exit(1)
+			cobra.CheckErr("Config file does not exist. Please run install command first.")
 		}
+
+		c := pkg.ReadConfigFile()
 
 		paths := getProjectPaths(c)
 		var output string
