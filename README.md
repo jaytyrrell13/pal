@@ -42,8 +42,6 @@ The `list` command will print out all of the aliases currently in `~/.pal`.
 pal list
 ```
 
-## Contributing
+## Support
 
-## License
-
-[MIT](https://choosealicense.com/licenses/mit/)
+If you'd like to support the development of `pal`, you can [buy me a coffee](https://www.buymeacoffee.com/jaytyrrell).
