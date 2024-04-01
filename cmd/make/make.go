@@ -3,6 +3,8 @@ package make
 import (
 	"fmt"
 	"os"
+	"path/filepath"
+	"strings"
 
 	"github.com/jaytyrrell13/pal/pkg"
 	"github.com/jaytyrrell13/pal/pkg/prompts"
@@ -10,7 +12,14 @@ import (
 )
 
 func getProjectPaths(config pkg.Config) []string {
-	files, err := os.ReadDir(config.Path)
+	path := config.Path
+
+	if strings.HasPrefix(path, "~/") {
+		home, _ := os.UserHomeDir()
+		path = filepath.Join(home, path[2:])
+	}
+
+	files, err := os.ReadDir(path)
 	cobra.CheckErr(err)
 
 	var projectPaths []string
