@@ -39,8 +39,7 @@ var AddCmd = &cobra.Command{
 
 		c := pkg.ReadConfigFile()
 
-		var output string
-		output += pkg.MakeAliasCommands(name, path, c)
+		output := pkg.MakeAliasCommands(name, path, c)
 
 		if _, err := aliasesFile.Write([]byte(output)); err != nil {
 			aliasesFile.Close()
