@@ -1,7 +1,6 @@
 package pkg
 
 import (
-	"errors"
 	"fmt"
 	"os"
 
@@ -13,18 +12,6 @@ func AliasFilePath() string {
 	cobra.CheckErr(err)
 
 	return homeDir + "/.pal"
-}
-
-func ReadAliasFile() []byte {
-	aliasFile, openErr := os.ReadFile(AliasFilePath())
-	cobra.CheckErr(openErr)
-
-	return aliasFile
-}
-
-func AliasFileMissing() bool {
-	_, e := os.Stat(AliasFilePath())
-	return errors.Is(e, os.ErrNotExist)
 }
 
 func MakeAliasCommands(name string, path string, config Config) string {

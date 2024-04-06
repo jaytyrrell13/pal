@@ -12,6 +12,6 @@ var ListCmd = &cobra.Command{
 	Short:   "Display aliases in `.pal`",
 	Aliases: []string{"ls"},
 	Run: func(cmd *cobra.Command, args []string) {
-		os.Stdout.Write(pkg.ReadAliasFile())
+		os.Stdout.Write(pkg.ReadFile(pkg.AliasFilePath()))
 	},
 }
