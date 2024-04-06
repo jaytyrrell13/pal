@@ -8,8 +8,9 @@ import (
 )
 
 var ListCmd = &cobra.Command{
-	Use:   "list",
-	Short: "Display aliases in `.pal`",
+	Use:     "list",
+	Short:   "Display aliases in `.pal`",
+	Aliases: []string{"ls"},
 	Run: func(cmd *cobra.Command, args []string) {
 		os.Stdout.Write(pkg.ReadAliasFile())
 	},
