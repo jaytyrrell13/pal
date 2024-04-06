@@ -47,11 +47,6 @@ func ReadConfigFile() Config {
 	return FromJson(configFile)
 }
 
-func WriteConfigFile(b []byte) {
-	writeFileErr := os.WriteFile(ConfigFilePath(), b, 0o644)
-	cobra.CheckErr(writeFileErr)
-}
-
 func FromJson(j []byte) Config {
 	var c Config
 	unmarshalErr := json.Unmarshal(j, &c)
