@@ -12,6 +12,6 @@ func TestReadFile(t *testing.T) {
 	got := ReadFile(tempDir + "/foo")
 
 	if got == nil || err != nil {
-		t.Fatalf("TestReadAliasFile: %q", got)
+		t.Errorf("Expected 'nil', but got '%q'", got)
 	}
 }

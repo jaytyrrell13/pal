@@ -1,6 +1,7 @@
 package pkg
 
 import (
+	"fmt"
 	"os"
 	"testing"
 )
@@ -12,26 +13,28 @@ func TestAliasFilePath(t *testing.T) {
 	expected := homeDir + "/.pal"
 
 	if got != expected || err != nil {
-		t.Fatalf("TestAliasFilePath: %q", got)
+		t.Errorf("Expected '%q', but got '%q'", expected, got)
 	}
 }
 
-func TestMakeAliasCommandsWithoutEditorCmd(t *testing.T) {
-	output := MakeAliasCommands("foo", "/foo/bar", Config{})
-
-	if output != "alias foo=\"cd /foo/bar\"\n" {
-		t.Fatalf("TestMakeAliasCommands: %q", output)
-	}
+type testCase struct {
+	config   Config
+	expected string
 }
 
-func TestMakeAliasCommandsWithEditorCmd(t *testing.T) {
-	config := Config{
-		EditorCmd: "nvim",
+func TestMakeAliasCommands(t *testing.T) {
+	cases := []testCase{
+		{Config{}, "alias foo=\"cd /foo/bar\"\n"},
+		{Config{EditorCmd: "nvim"}, "alias foo=\"cd /foo/bar\"\nalias efoo=\"cd /foo/bar && nvim\"\n"},
 	}
-	output := MakeAliasCommands("foo", "/foo/bar", config)
 
-	expected := "alias foo=\"cd /foo/bar\"\nalias efoo=\"cd /foo/bar && nvim\"\n"
-	if output != expected {
-		t.Fatalf("TestMakeAliasCommands: %q Expected: %q", output, expected)
+	for _, tc := range cases {
+		t.Run(fmt.Sprintf("EditorCmd: %q", tc.config.EditorCmd), func(t *testing.T) {
+			got := MakeAliasCommands("foo", "/foo/bar", tc.config)
+
+			if got != tc.expected {
+				t.Errorf("Expected '%q', but got '%q'", tc.expected, got)
+			}
+		})
 	}
 }

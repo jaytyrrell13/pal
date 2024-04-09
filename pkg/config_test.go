@@ -12,7 +12,7 @@ func TestConfigDirPath(t *testing.T) {
 	expected := homeDir + "/.config/pal"
 
 	if got != expected || err != nil {
-		t.Fatalf("ConfigDirPath: %q", got)
+		t.Errorf("Expected '%q', but got '%q'", expected, got)
 	}
 }
 
@@ -23,6 +23,6 @@ func TestConfigFilePath(t *testing.T) {
 	expected := homeDir + "/.config/pal/config.json"
 
 	if got != expected || err != nil {
-		t.Fatalf("ConfigFilePath: %q", got)
+		t.Errorf("Expected '%q', but got '%q'", expected, got)
 	}
 }
