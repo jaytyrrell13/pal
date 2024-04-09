@@ -32,7 +32,7 @@ var InstallCmd = &cobra.Command{
 			pkg.MakeConfigDir()
 		}
 
-		if pkg.ConfigFileMissing() {
+		if pkg.FileMissing(pkg.ConfigFilePath()) {
 			c := pkg.Config{
 				Path:      path,
 				EditorCmd: editorCmd,

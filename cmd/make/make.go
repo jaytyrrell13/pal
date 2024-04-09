@@ -38,13 +38,14 @@ var MakeCmd = &cobra.Command{
 	Use:   "make",
 	Short: "Create the aliases file",
 	Run: func(cmd *cobra.Command, args []string) {
-		if pkg.ConfigFileMissing() {
+		if pkg.FileMissing(pkg.ConfigFilePath()) {
 			cobra.CheckErr("Config file does not exist. Please run install command first.")
 		}
 
-		c := pkg.ReadConfigFile()
+		c := pkg.ReadFile(pkg.ConfigFilePath())
+		jsonConfig := pkg.FromJson(c)
 
-		paths := getProjectPaths(c)
+		paths := getProjectPaths(jsonConfig)
 		var output string
 		for _, path := range paths {
 			alias := prompts.StringPrompt(fmt.Sprintf("Alias for (%s) Leave blank to skip.", path))
@@ -53,7 +54,7 @@ var MakeCmd = &cobra.Command{
 				continue
 			}
 
-			output += pkg.MakeAliasCommands(alias, path, c)
+			output += pkg.MakeAliasCommands(alias, path, jsonConfig)
 		}
 
 		if output == "" {

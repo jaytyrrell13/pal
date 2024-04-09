@@ -35,18 +35,6 @@ func ConfigDirMissing() bool {
 	return errors.Is(e, os.ErrNotExist)
 }
 
-func ConfigFileMissing() bool {
-	_, e := os.Stat(ConfigFilePath())
-	return errors.Is(e, os.ErrNotExist)
-}
-
-func ReadConfigFile() Config {
-	configFile, openErr := os.ReadFile(ConfigFilePath())
-	cobra.CheckErr(openErr)
-
-	return FromJson(configFile)
-}
-
 func FromJson(j []byte) Config {
 	var c Config
 	unmarshalErr := json.Unmarshal(j, &c)
