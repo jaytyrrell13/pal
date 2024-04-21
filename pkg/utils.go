@@ -4,6 +4,7 @@ import (
 	"errors"
 	"os"
 
+	"github.com/spf13/afero"
 	"github.com/spf13/cobra"
 )
 
@@ -14,7 +15,7 @@ func ReadFile(path string) []byte {
 	return file
 }
 
-func FileMissing(path string) bool {
-	_, e := os.Stat(path)
+func FileMissing(fs afero.Fs, path string) bool {
+	_, e := fs.Stat(path)
 	return errors.Is(e, os.ErrNotExist)
 }
