@@ -5,6 +5,7 @@ import (
 
 	"github.com/jaytyrrell13/pal/pkg"
 	"github.com/jaytyrrell13/pal/pkg/prompts"
+	"github.com/spf13/afero"
 	"github.com/spf13/cobra"
 )
 
@@ -17,7 +18,8 @@ var AddCmd = &cobra.Command{
 	Use:   "add",
 	Short: "Create an alias for an additional directory",
 	Run: func(cmd *cobra.Command, args []string) {
-		if pkg.FileMissing(pkg.AliasFilePath()) {
+		AppFs := afero.NewOsFs()
+		if pkg.FileMissing(AppFs, pkg.AliasFilePath()) {
 			cobra.CheckErr("~/.pal file is missing, please run make command first")
 		}
 

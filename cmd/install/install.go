@@ -5,6 +5,7 @@ import (
 
 	"github.com/jaytyrrell13/pal/pkg"
 	"github.com/jaytyrrell13/pal/pkg/prompts"
+	"github.com/spf13/afero"
 	"github.com/spf13/cobra"
 )
 
@@ -32,7 +33,8 @@ var InstallCmd = &cobra.Command{
 			pkg.MakeConfigDir()
 		}
 
-		if pkg.FileMissing(pkg.ConfigFilePath()) {
+		AppFs := afero.NewOsFs()
+		if pkg.FileMissing(AppFs, pkg.ConfigFilePath()) {
 			c := pkg.Config{
 				Path:      path,
 				EditorCmd: editorCmd,

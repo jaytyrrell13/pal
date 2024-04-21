@@ -8,6 +8,7 @@ import (
 
 	"github.com/jaytyrrell13/pal/pkg"
 	"github.com/jaytyrrell13/pal/pkg/prompts"
+	"github.com/spf13/afero"
 	"github.com/spf13/cobra"
 )
 
@@ -38,32 +39,37 @@ var MakeCmd = &cobra.Command{
 	Use:   "make",
 	Short: "Create the aliases file",
 	Run: func(cmd *cobra.Command, args []string) {
-		if pkg.FileMissing(pkg.ConfigFilePath()) {
-			cobra.CheckErr("Config file does not exist. Please run install command first.")
-		}
-
-		c := pkg.ReadFile(pkg.ConfigFilePath())
-		jsonConfig := pkg.FromJson(c)
-
-		paths := getProjectPaths(jsonConfig)
-		var output string
-		for _, path := range paths {
-			alias := prompts.StringPrompt(fmt.Sprintf("Alias for (%s) Leave blank to skip.", path))
-
-			if alias == "" {
-				continue
-			}
-
-			output += pkg.MakeAliasCommands(alias, path, jsonConfig)
-		}
-
-		if output == "" {
-			return
-		}
-
-		writeFileErr := os.WriteFile(pkg.AliasFilePath(), []byte(output), 0o755)
-		cobra.CheckErr(writeFileErr)
-
-		fmt.Println("\nDon't forget to source ~/.pal file in your shell!")
+		RunMakeCmd()
 	},
+}
+
+func RunMakeCmd() {
+	AppFs := afero.NewOsFs()
+	if pkg.FileMissing(AppFs, pkg.ConfigFilePath()) {
+		cobra.CheckErr("Config file does not exist. Please run install command first.")
+	}
+
+	c := pkg.ReadFile(pkg.ConfigFilePath())
+	jsonConfig := pkg.FromJson(c)
+
+	paths := getProjectPaths(jsonConfig)
+	var output string
+	for _, path := range paths {
+		alias := prompts.StringPrompt(fmt.Sprintf("Alias for (%s) Leave blank to skip.", path))
+
+		if alias == "" {
+			continue
+		}
+
+		output += pkg.MakeAliasCommands(alias, path, jsonConfig)
+	}
+
+	if output == "" {
+		return
+	}
+
+	writeFileErr := os.WriteFile(pkg.AliasFilePath(), []byte(output), 0o755)
+	cobra.CheckErr(writeFileErr)
+
+	fmt.Println("\nDon't forget to source ~/.pal file in your shell!")
 }
