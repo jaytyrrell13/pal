@@ -49,7 +49,7 @@ func RunMakeCmd() {
 		cobra.CheckErr("Config file does not exist. Please run install command first.")
 	}
 
-	c := pkg.ReadFile(pkg.ConfigFilePath())
+	c := pkg.ReadFile(AppFs, pkg.ConfigFilePath())
 	jsonConfig := pkg.FromJson(c)
 
 	paths := getProjectPaths(jsonConfig)

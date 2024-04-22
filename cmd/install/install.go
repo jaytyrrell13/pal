@@ -1,8 +1,6 @@
 package install
 
 import (
-	"os"
-
 	"github.com/jaytyrrell13/pal/pkg"
 	"github.com/jaytyrrell13/pal/pkg/prompts"
 	"github.com/spf13/afero"
@@ -45,8 +43,7 @@ var InstallCmd = &cobra.Command{
 			return
 		}
 
-		configFile, openErr := os.ReadFile(pkg.ConfigFilePath())
-		cobra.CheckErr(openErr)
+		configFile := pkg.ReadFile(AppFs, pkg.ConfigFilePath())
 
 		c := pkg.FromJson(configFile)
 

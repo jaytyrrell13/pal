@@ -5,6 +5,7 @@ import (
 	"errors"
 	"os"
 
+	"github.com/spf13/afero"
 	"github.com/spf13/cobra"
 )
 
@@ -44,8 +45,8 @@ func FromJson(j []byte) Config {
 }
 
 func SaveExtraDir(path string) {
-	configFile, openErr := os.ReadFile(ConfigFilePath())
-	cobra.CheckErr(openErr)
+	AppFs := afero.NewOsFs()
+	configFile := ReadFile(AppFs, ConfigFilePath())
 
 	c := FromJson(configFile)
 

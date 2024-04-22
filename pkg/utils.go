@@ -8,8 +8,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func ReadFile(path string) []byte {
-	file, openErr := os.ReadFile(path)
+func ReadFile(afs afero.Fs, path string) []byte {
+	file, openErr := afero.ReadFile(afs, path)
 	cobra.CheckErr(openErr)
 
 	return file
