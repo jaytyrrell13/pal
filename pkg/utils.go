@@ -2,17 +2,18 @@ package pkg
 
 import (
 	"errors"
+	"io/fs"
 	"os"
 
 	"github.com/spf13/afero"
-	"github.com/spf13/cobra"
 )
 
-func ReadFile(afs afero.Fs, path string) []byte {
-	file, openErr := afero.ReadFile(afs, path)
-	cobra.CheckErr(openErr)
+func ReadFile(afs afero.Fs, path string) ([]byte, error) {
+	return afero.ReadFile(afs, path)
+}
 
-	return file
+func WriteFile(afs afero.Fs, fileName string, data []byte, perm fs.FileMode) error {
+	return afero.WriteFile(afs, fileName, data, perm)
 }
 
 func FileMissing(fs afero.Fs, path string) bool {
