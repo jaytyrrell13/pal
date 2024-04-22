@@ -43,7 +43,8 @@ var InstallCmd = &cobra.Command{
 			return
 		}
 
-		configFile := pkg.ReadFile(AppFs, pkg.ConfigFilePath())
+		configFile, configFileErr := pkg.ReadFile(AppFs, pkg.ConfigFilePath())
+		cobra.CheckErr(configFileErr)
 
 		c := pkg.FromJson(configFile)
 

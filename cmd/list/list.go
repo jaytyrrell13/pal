@@ -14,6 +14,9 @@ var ListCmd = &cobra.Command{
 	Aliases: []string{"ls"},
 	Run: func(cmd *cobra.Command, args []string) {
 		AppFs := afero.NewOsFs()
-		os.Stdout.Write(pkg.ReadFile(AppFs, pkg.AliasFilePath()))
+		aliasFile, aliasFileErr := pkg.ReadFile(AppFs, pkg.AliasFilePath())
+		cobra.CheckErr(aliasFileErr)
+
+		os.Stdout.Write(aliasFile)
 	},
 }

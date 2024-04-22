@@ -46,7 +46,8 @@ func FromJson(j []byte) Config {
 
 func SaveExtraDir(path string) {
 	AppFs := afero.NewOsFs()
-	configFile := ReadFile(AppFs, ConfigFilePath())
+	configFile, configFileErr := ReadFile(AppFs, ConfigFilePath())
+	cobra.CheckErr(configFileErr)
 
 	c := FromJson(configFile)
 

@@ -39,7 +39,9 @@ var AddCmd = &cobra.Command{
 		aliasesFile, openAliasesFileErr := os.OpenFile(pkg.AliasFilePath(), os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0o755)
 		cobra.CheckErr(openAliasesFileErr)
 
-		c := pkg.ReadFile(AppFs, pkg.ConfigFilePath())
+		c, configErr := pkg.ReadFile(AppFs, pkg.ConfigFilePath())
+		cobra.CheckErr(configErr)
+
 		jsonConfig := pkg.FromJson(c)
 
 		output := pkg.MakeAliasCommands(name, path, jsonConfig)

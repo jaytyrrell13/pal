@@ -49,7 +49,9 @@ func RunMakeCmd() {
 		cobra.CheckErr("Config file does not exist. Please run install command first.")
 	}
 
-	c := pkg.ReadFile(AppFs, pkg.ConfigFilePath())
+	c, configErr := pkg.ReadFile(AppFs, pkg.ConfigFilePath())
+	cobra.CheckErr(configErr)
+
 	jsonConfig := pkg.FromJson(c)
 
 	paths := getProjectPaths(jsonConfig)
@@ -68,8 +70,8 @@ func RunMakeCmd() {
 		return
 	}
 
-	writeFileErr := os.WriteFile(pkg.AliasFilePath(), []byte(output), 0o755)
-	cobra.CheckErr(writeFileErr)
+	writeErr := pkg.WriteFile(AppFs, pkg.AliasFilePath(), []byte(output), 0o755)
+	cobra.CheckErr(writeErr)
 
 	fmt.Println("\nDon't forget to source ~/.pal file in your shell!")
 }
