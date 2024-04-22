@@ -27,26 +27,30 @@ var InstallCmd = &cobra.Command{
 			editorCmd = prompts.StringPrompt("What is the editor command?")
 		}
 
-		if pkg.ConfigDirMissing() {
-			pkg.MakeConfigDir()
+		AppFs := afero.NewOsFs()
+
+		if pkg.FileMissing(AppFs, pkg.ConfigDirPath()) {
+			configDirErr := pkg.MakeConfigDir(AppFs)
+			cobra.CheckErr(configDirErr)
 		}
 
-		AppFs := afero.NewOsFs()
 		if pkg.FileMissing(AppFs, pkg.ConfigFilePath()) {
 			c := pkg.Config{
 				Path:      path,
 				EditorCmd: editorCmd,
 			}
 
-			c.Save()
+			saveErr := c.Save()
+			cobra.CheckErr(saveErr)
 
 			return
 		}
 
-		configFile, configFileErr := pkg.ReadFile(AppFs, pkg.ConfigFilePath())
-		cobra.CheckErr(configFileErr)
+		configFile, readConfigFileErr := pkg.ReadFile(AppFs, pkg.ConfigFilePath())
+		cobra.CheckErr(readConfigFileErr)
 
-		c := pkg.FromJson(configFile)
+		c, configFileErr := pkg.FromJson(configFile)
+		cobra.CheckErr(configFileErr)
 
 		if c.Path != path {
 			c.Path = path
@@ -56,7 +60,8 @@ var InstallCmd = &cobra.Command{
 			c.EditorCmd = editorCmd
 		}
 
-		c.Save()
+		saveErr := c.Save()
+		cobra.CheckErr(saveErr)
 	},
 }
 

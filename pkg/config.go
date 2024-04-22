@@ -2,7 +2,6 @@ package pkg
 
 import (
 	"encoding/json"
-	"errors"
 	"os"
 
 	"github.com/spf13/afero"
@@ -26,43 +25,52 @@ func ConfigFilePath() string {
 	return ConfigDirPath() + "/config.json"
 }
 
-func MakeConfigDir() {
-	pathErr := os.MkdirAll(ConfigDirPath(), 0o750)
-	cobra.CheckErr(pathErr)
+func MakeConfigDir(fs afero.Fs) error {
+	return fs.MkdirAll(ConfigDirPath(), 0o750)
 }
 
-func ConfigDirMissing() bool {
-	_, e := os.Stat(ConfigDirPath())
-	return errors.Is(e, os.ErrNotExist)
-}
-
-func FromJson(j []byte) Config {
+func FromJson(j []byte) (Config, error) {
 	var c Config
 	unmarshalErr := json.Unmarshal(j, &c)
-	cobra.CheckErr(unmarshalErr)
 
-	return c
+	return c, unmarshalErr
 }
 
-func SaveExtraDir(path string) {
+func SaveExtraDir(path string) error {
 	AppFs := afero.NewOsFs()
-	configFile, configFileErr := ReadFile(AppFs, ConfigFilePath())
-	cobra.CheckErr(configFileErr)
+	configFile, readConfigFileErr := ReadFile(AppFs, ConfigFilePath())
+	if readConfigFileErr != nil {
+		return readConfigFileErr
+	}
 
-	c := FromJson(configFile)
+	c, configFileErr := FromJson(configFile)
+	if configFileErr != nil {
+		return configFileErr
+	}
 
 	c.Extras = append(c.Extras, path)
-	c.Save()
+	saveErr := c.Save()
+	if saveErr != nil {
+		return saveErr
+	}
+
+	return nil
 }
 
-func (c Config) Save() {
-	writeFileErr := os.WriteFile(ConfigFilePath(), c.AsJson(), 0o644)
-	cobra.CheckErr(writeFileErr)
+func (c Config) Save() error {
+	json, jsonErr := c.AsJson()
+	if jsonErr != nil {
+		return jsonErr
+	}
+
+	writeFileErr := os.WriteFile(ConfigFilePath(), json, 0o644)
+	if writeFileErr != nil {
+		return writeFileErr
+	}
+
+	return nil
 }
 
-func (c Config) AsJson() []byte {
-	b, marshalErr := json.Marshal(c)
-	cobra.CheckErr(marshalErr)
-
-	return b
+func (c Config) AsJson() ([]byte, error) {
+	return json.Marshal(c)
 }

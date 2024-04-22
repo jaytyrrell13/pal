@@ -20,8 +20,8 @@ func getProjectPaths(config pkg.Config) []string {
 		path = filepath.Join(home, path[2:])
 	}
 
-	files, err := os.ReadDir(path)
-	cobra.CheckErr(err)
+	files, readDirErr := os.ReadDir(path)
+	cobra.CheckErr(readDirErr)
 
 	var projectPaths []string
 	for _, file := range files {
@@ -49,10 +49,11 @@ func RunMakeCmd() {
 		cobra.CheckErr("Config file does not exist. Please run install command first.")
 	}
 
-	c, configErr := pkg.ReadFile(AppFs, pkg.ConfigFilePath())
-	cobra.CheckErr(configErr)
+	c, readConfigFileErr := pkg.ReadFile(AppFs, pkg.ConfigFilePath())
+	cobra.CheckErr(readConfigFileErr)
 
-	jsonConfig := pkg.FromJson(c)
+	jsonConfig, fromJsonErr := pkg.FromJson(c)
+	cobra.CheckErr(fromJsonErr)
 
 	paths := getProjectPaths(jsonConfig)
 	var output string

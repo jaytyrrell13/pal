@@ -34,15 +34,17 @@ var AddCmd = &cobra.Command{
 			path = prompts.StringPrompt("What is the path for the alias?")
 		}
 
-		pkg.SaveExtraDir(path)
+		saveExtraDirErr := pkg.SaveExtraDir(path)
+		cobra.CheckErr(saveExtraDirErr)
 
 		aliasesFile, openAliasesFileErr := os.OpenFile(pkg.AliasFilePath(), os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0o755)
 		cobra.CheckErr(openAliasesFileErr)
 
-		c, configErr := pkg.ReadFile(AppFs, pkg.ConfigFilePath())
-		cobra.CheckErr(configErr)
+		c, readConfigFileErr := pkg.ReadFile(AppFs, pkg.ConfigFilePath())
+		cobra.CheckErr(readConfigFileErr)
 
-		jsonConfig := pkg.FromJson(c)
+		jsonConfig, fromJsonErr := pkg.FromJson(c)
+		cobra.CheckErr(fromJsonErr)
 
 		output := pkg.MakeAliasCommands(name, path, jsonConfig)
 
