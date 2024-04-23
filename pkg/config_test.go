@@ -39,6 +39,22 @@ func TestMakeConfigDir(t *testing.T) {
 	}
 }
 
+func TestSaveExtraDir(t *testing.T) {
+	appFs := afero.NewMemMapFs()
+	writeFileErr := afero.WriteFile(appFs, ConfigFilePath(), []byte("{\"Path\": \"/foo\", \"EditorCmd\": \"bar\"}"), 0o755)
+	if writeFileErr != nil {
+		t.Fatalf("WriteFile Error: '%q'", writeFileErr)
+	}
+
+	got := SaveExtraDir(appFs, "/bar/baz")
+
+	if got != nil {
+		t.Errorf("Expected 'nil', but got '%q'", got)
+	}
+}
+
+// func TestSave(t *testing.T) {}
+
 func TestFromJson(t *testing.T) {
 	json := "{\"Path\": \"/foo/bar\", \"EditorCmd\": \"foo\", \"Extras\":null}"
 	got, err := FromJson([]byte(json))

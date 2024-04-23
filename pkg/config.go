@@ -36,9 +36,8 @@ func FromJson(j []byte) (Config, error) {
 	return c, unmarshalErr
 }
 
-func SaveExtraDir(path string) error {
-	AppFs := afero.NewOsFs()
-	configFile, readConfigFileErr := ReadFile(AppFs, ConfigFilePath())
+func SaveExtraDir(fs afero.Fs, path string) error {
+	configFile, readConfigFileErr := ReadFile(fs, ConfigFilePath())
 	if readConfigFileErr != nil {
 		return readConfigFileErr
 	}

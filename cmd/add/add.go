@@ -34,7 +34,7 @@ var AddCmd = &cobra.Command{
 			path = prompts.StringPrompt("What is the path for the alias?")
 		}
 
-		saveExtraDirErr := pkg.SaveExtraDir(path)
+		saveExtraDirErr := pkg.SaveExtraDir(AppFs, path)
 		cobra.CheckErr(saveExtraDirErr)
 
 		aliasesFile, openAliasesFileErr := os.OpenFile(pkg.AliasFilePath(), os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0o755)
