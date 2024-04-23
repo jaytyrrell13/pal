@@ -38,3 +38,30 @@ func TestMakeConfigDir(t *testing.T) {
 		t.Errorf("Expected 'nil', but got '%q'", got)
 	}
 }
+
+func TestFromJson(t *testing.T) {
+	json := "{\"Path\": \"/foo/bar\", \"EditorCmd\": \"foo\", \"Extras\":null}"
+	got, err := FromJson([]byte(json))
+
+	expected := Config{
+		Path:      "/foo/bar",
+		EditorCmd: "foo",
+	}
+
+	if got.Path != expected.Path || got.EditorCmd != expected.EditorCmd || err != nil {
+		t.Errorf("Expected Path '%q' EditorCmd '%q', but got Path '%q' EditorCmd '%q'", expected.EditorCmd, expected.Path, got.Path, got.EditorCmd)
+	}
+}
+
+func TestAsJson(t *testing.T) {
+	config := Config{
+		Path:      "/foo/bar",
+		EditorCmd: "foo",
+	}
+
+	got, err := config.AsJson()
+
+	if got == nil || err != nil {
+		t.Errorf("Got '%q' Err '%q'", got, err)
+	}
+}
