@@ -40,8 +40,11 @@ var InstallCmd = &cobra.Command{
 				EditorCmd: editorCmd,
 			}
 
-			saveErr := c.Save()
-			cobra.CheckErr(saveErr)
+			json, jsonErr := c.AsJson()
+			cobra.CheckErr(jsonErr)
+
+			writeFileErr := pkg.WriteFile(AppFs, pkg.ConfigFilePath(), json, 0o644)
+			cobra.CheckErr(writeFileErr)
 
 			return
 		}
@@ -60,8 +63,11 @@ var InstallCmd = &cobra.Command{
 			c.EditorCmd = editorCmd
 		}
 
-		saveErr := c.Save()
-		cobra.CheckErr(saveErr)
+		json, jsonErr := c.AsJson()
+		cobra.CheckErr(jsonErr)
+
+		writeFileErr := pkg.WriteFile(AppFs, pkg.ConfigFilePath(), json, 0o644)
+		cobra.CheckErr(writeFileErr)
 	},
 }
 

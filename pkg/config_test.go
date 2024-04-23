@@ -53,8 +53,6 @@ func TestSaveExtraDir(t *testing.T) {
 	}
 }
 
-// func TestSave(t *testing.T) {}
-
 func TestFromJson(t *testing.T) {
 	json := "{\"Path\": \"/foo/bar\", \"EditorCmd\": \"foo\", \"Extras\":null}"
 	got, err := FromJson([]byte(json))

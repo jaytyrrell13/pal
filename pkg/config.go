@@ -48,21 +48,13 @@ func SaveExtraDir(fs afero.Fs, path string) error {
 	}
 
 	c.Extras = append(c.Extras, path)
-	saveErr := c.Save()
-	if saveErr != nil {
-		return saveErr
-	}
 
-	return nil
-}
-
-func (c Config) Save() error {
 	json, jsonErr := c.AsJson()
 	if jsonErr != nil {
 		return jsonErr
 	}
 
-	writeFileErr := os.WriteFile(ConfigFilePath(), json, 0o644)
+	writeFileErr := WriteFile(fs, ConfigFilePath(), json, 0o644)
 	if writeFileErr != nil {
 		return writeFileErr
 	}
