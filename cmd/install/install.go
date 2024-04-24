@@ -29,12 +29,18 @@ var InstallCmd = &cobra.Command{
 
 		AppFs := afero.NewOsFs()
 
-		if pkg.FileMissing(AppFs, pkg.ConfigDirPath()) {
+		configDirPath, configDirPathErr := pkg.ConfigDirPath()
+		cobra.CheckErr(configDirPathErr)
+
+		if pkg.FileMissing(AppFs, configDirPath) {
 			configDirErr := pkg.MakeConfigDir(AppFs)
 			cobra.CheckErr(configDirErr)
 		}
 
-		if pkg.FileMissing(AppFs, pkg.ConfigFilePath()) {
+		configFilePath, configFilePathErr := pkg.ConfigFilePath()
+		cobra.CheckErr(configFilePathErr)
+
+		if pkg.FileMissing(AppFs, configFilePath) {
 			c := pkg.Config{
 				Path:      path,
 				EditorCmd: editorCmd,
@@ -43,13 +49,13 @@ var InstallCmd = &cobra.Command{
 			json, jsonErr := c.AsJson()
 			cobra.CheckErr(jsonErr)
 
-			writeFileErr := pkg.WriteFile(AppFs, pkg.ConfigFilePath(), json, 0o644)
+			writeFileErr := pkg.WriteFile(AppFs, configFilePath, json, 0o644)
 			cobra.CheckErr(writeFileErr)
 
 			return
 		}
 
-		configFile, readConfigFileErr := pkg.ReadFile(AppFs, pkg.ConfigFilePath())
+		configFile, readConfigFileErr := pkg.ReadFile(AppFs, configFilePath)
 		cobra.CheckErr(readConfigFileErr)
 
 		c, configFileErr := pkg.FromJson(configFile)
@@ -66,7 +72,7 @@ var InstallCmd = &cobra.Command{
 		json, jsonErr := c.AsJson()
 		cobra.CheckErr(jsonErr)
 
-		writeFileErr := pkg.WriteFile(AppFs, pkg.ConfigFilePath(), json, 0o644)
+		writeFileErr := pkg.WriteFile(AppFs, configFilePath, json, 0o644)
 		cobra.CheckErr(writeFileErr)
 	},
 }

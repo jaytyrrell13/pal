@@ -8,9 +8,12 @@ import (
 )
 
 func TestConfigDirPath(t *testing.T) {
-	homeDir, err := os.UserHomeDir()
+	homeDir, homeDirErr := os.UserHomeDir()
+	if homeDirErr != nil {
+		t.Error(homeDirErr)
+	}
 
-	got := ConfigDirPath()
+	got, err := ConfigDirPath()
 	expected := homeDir + "/.config/pal"
 
 	if got != expected || err != nil {
@@ -19,9 +22,12 @@ func TestConfigDirPath(t *testing.T) {
 }
 
 func TestConfigFilePath(t *testing.T) {
-	homeDir, err := os.UserHomeDir()
+	homeDir, homeDirErr := os.UserHomeDir()
+	if homeDirErr != nil {
+		t.Error(homeDirErr)
+	}
 
-	got := ConfigFilePath()
+	got, err := ConfigFilePath()
 	expected := homeDir + "/.config/pal/config.json"
 
 	if got != expected || err != nil {
@@ -41,7 +47,13 @@ func TestMakeConfigDir(t *testing.T) {
 
 func TestSaveExtraDir(t *testing.T) {
 	appFs := afero.NewMemMapFs()
-	writeFileErr := afero.WriteFile(appFs, ConfigFilePath(), []byte("{\"Path\": \"/foo\", \"EditorCmd\": \"bar\"}"), 0o755)
+
+	configFilePath, configFileErr := ConfigFilePath()
+	if configFileErr != nil {
+		t.Error(configFileErr)
+	}
+
+	writeFileErr := afero.WriteFile(appFs, configFilePath, []byte("{\"Path\": \"/foo\", \"EditorCmd\": \"bar\"}"), 0o755)
 	if writeFileErr != nil {
 		t.Fatalf("WriteFile Error: '%q'", writeFileErr)
 	}

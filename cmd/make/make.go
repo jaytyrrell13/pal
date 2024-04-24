@@ -45,11 +45,15 @@ var MakeCmd = &cobra.Command{
 
 func RunMakeCmd() {
 	AppFs := afero.NewOsFs()
-	if pkg.FileMissing(AppFs, pkg.ConfigFilePath()) {
+
+	configFilePath, configFilePathErr := pkg.ConfigFilePath()
+	cobra.CheckErr(configFilePathErr)
+
+	if pkg.FileMissing(AppFs, configFilePath) {
 		cobra.CheckErr("Config file does not exist. Please run install command first.")
 	}
 
-	c, readConfigFileErr := pkg.ReadFile(AppFs, pkg.ConfigFilePath())
+	c, readConfigFileErr := pkg.ReadFile(AppFs, configFilePath)
 	cobra.CheckErr(readConfigFileErr)
 
 	jsonConfig, fromJsonErr := pkg.FromJson(c)
@@ -71,7 +75,10 @@ func RunMakeCmd() {
 		return
 	}
 
-	writeErr := pkg.WriteFile(AppFs, pkg.AliasFilePath(), []byte(output), 0o755)
+	aliasFilePath, aliasFilePathErr := pkg.AliasFilePath()
+	cobra.CheckErr(aliasFilePathErr)
+
+	writeErr := pkg.WriteFile(AppFs, aliasFilePath, []byte(output), 0o755)
 	cobra.CheckErr(writeErr)
 
 	fmt.Println("\nDon't forget to source ~/.pal file in your shell!")

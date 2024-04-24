@@ -7,9 +7,12 @@ import (
 )
 
 func TestAliasFilePath(t *testing.T) {
-	homeDir, err := os.UserHomeDir()
+	homeDir, homeDirErr := os.UserHomeDir()
+	if homeDirErr != nil {
+		t.Error(homeDirErr)
+	}
 
-	got := AliasFilePath()
+	got, err := AliasFilePath()
 	expected := homeDir + "/.pal"
 
 	if got != expected || err != nil {

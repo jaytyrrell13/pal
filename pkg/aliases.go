@@ -3,15 +3,12 @@ package pkg
 import (
 	"fmt"
 	"os"
-
-	"github.com/spf13/cobra"
 )
 
-func AliasFilePath() string {
+func AliasFilePath() (string, error) {
 	homeDir, err := os.UserHomeDir()
-	cobra.CheckErr(err)
 
-	return homeDir + "/.pal"
+	return homeDir + "/.pal", err
 }
 
 func MakeAliasCommands(name string, path string, config Config) string {

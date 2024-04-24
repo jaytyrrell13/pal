@@ -19,7 +19,11 @@ var AddCmd = &cobra.Command{
 	Short: "Create an alias for an additional directory",
 	Run: func(cmd *cobra.Command, args []string) {
 		AppFs := afero.NewOsFs()
-		if pkg.FileMissing(AppFs, pkg.AliasFilePath()) {
+
+		aliasFilePath, aliasFilePathErr := pkg.AliasFilePath()
+		cobra.CheckErr(aliasFilePathErr)
+
+		if pkg.FileMissing(AppFs, aliasFilePath) {
 			cobra.CheckErr("~/.pal file is missing, please run make command first")
 		}
 
@@ -37,10 +41,13 @@ var AddCmd = &cobra.Command{
 		saveExtraDirErr := pkg.SaveExtraDir(AppFs, path)
 		cobra.CheckErr(saveExtraDirErr)
 
-		aliasesFile, openAliasesFileErr := os.OpenFile(pkg.AliasFilePath(), os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0o755)
+		aliasesFile, openAliasesFileErr := os.OpenFile(aliasFilePath, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0o755)
 		cobra.CheckErr(openAliasesFileErr)
 
-		c, readConfigFileErr := pkg.ReadFile(AppFs, pkg.ConfigFilePath())
+		configFilePath, configFilePathErr := pkg.ConfigFilePath()
+		cobra.CheckErr(configFilePathErr)
+
+		c, readConfigFileErr := pkg.ReadFile(AppFs, configFilePath)
 		cobra.CheckErr(readConfigFileErr)
 
 		jsonConfig, fromJsonErr := pkg.FromJson(c)
