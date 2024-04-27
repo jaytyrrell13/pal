@@ -52,7 +52,7 @@ var MakeCmd = &cobra.Command{
 
 		var output string
 		for _, path := range projectPaths {
-			alias := prompts.StringPrompt(fmt.Sprintf("Alias for (%s) Leave blank to skip.", path))
+			alias := prompts.StringPrompt(fmt.Sprintf("Alias for (%s) Leave blank to skip.", path), os.Stdin)
 
 			if alias == "" {
 				continue

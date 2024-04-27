@@ -1,6 +1,8 @@
 package install
 
 import (
+	"os"
+
 	"github.com/jaytyrrell13/pal/pkg"
 	"github.com/jaytyrrell13/pal/pkg/prompts"
 	"github.com/spf13/afero"
@@ -20,11 +22,11 @@ var InstallCmd = &cobra.Command{
 		editorCmd := editorCmdFlag
 
 		if path == "" {
-			path = prompts.StringPrompt("What is the path to your projects?")
+			path = prompts.StringPrompt("What is the path to your projects?", os.Stdin)
 		}
 
 		if editorCmd == "" {
-			editorCmd = prompts.StringPrompt("What is the editor command?")
+			editorCmd = prompts.StringPrompt("What is the editor command?", os.Stdin)
 		}
 
 		AppFs := afero.NewOsFs()

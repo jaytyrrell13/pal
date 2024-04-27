@@ -31,11 +31,11 @@ var AddCmd = &cobra.Command{
 		path := pathFlag
 
 		if name == "" {
-			name = prompts.StringPrompt("What is the name of the alias?")
+			name = prompts.StringPrompt("What is the name of the alias?", os.Stdin)
 		}
 
 		if path == "" {
-			path = prompts.StringPrompt("What is the path for the alias?")
+			path = prompts.StringPrompt("What is the path for the alias?", os.Stdin)
 		}
 
 		saveExtraDirErr := pkg.SaveExtraDir(AppFs, path)
