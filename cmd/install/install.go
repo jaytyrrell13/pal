@@ -15,8 +15,9 @@ var (
 )
 
 var InstallCmd = &cobra.Command{
-	Use:   "install",
-	Short: "Create the configuration file used by pal",
+	Use:     "install",
+	Short:   "Create the configuration file used by pal",
+	Aliases: []string{"i"},
 	Run: func(cmd *cobra.Command, args []string) {
 		path := pathFlag
 		editorCmd := editorCmdFlag
