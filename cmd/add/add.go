@@ -1,9 +1,10 @@
 package add
 
 import (
-	"errors"
+	"fmt"
 	"os"
 
+	"github.com/jaytyrrell13/pal/cmd/make"
 	"github.com/jaytyrrell13/pal/pkg"
 	"github.com/jaytyrrell13/pal/pkg/prompts"
 	"github.com/spf13/afero"
@@ -38,7 +39,12 @@ func RunAddCmd() error {
 	}
 
 	if pkg.FileMissing(AppFs, aliasFilePath) {
-		return errors.New("~/.pal file is missing, please run make command first")
+		fmt.Println("~/.pal file is missing. Running make command now.")
+
+		makeCmdErr := make.RunMakeCmd()
+		if makeCmdErr != nil {
+			return makeCmdErr
+		}
 	}
 
 	name := nameFlag
