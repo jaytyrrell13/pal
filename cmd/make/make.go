@@ -1,12 +1,12 @@
 package make
 
 import (
-	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
 
+	"github.com/jaytyrrell13/pal/cmd/install"
 	"github.com/jaytyrrell13/pal/pkg"
 	"github.com/jaytyrrell13/pal/pkg/prompts"
 	"github.com/spf13/afero"
@@ -31,7 +31,12 @@ func RunMakeCmd() error {
 	}
 
 	if pkg.FileMissing(AppFs, configFilePath) {
-		return errors.New("Config file does not exist. Please run install command first.")
+		fmt.Println("Config file does not exist. Running install command now.")
+
+		installCmdErr := install.RunInstallCmd()
+		if installCmdErr != nil {
+			return installCmdErr
+		}
 	}
 
 	c, readConfigFileErr := pkg.ReadFile(AppFs, configFilePath)
