@@ -1,8 +1,6 @@
 package install
 
 import (
-	"os"
-
 	"github.com/jaytyrrell13/pal/pkg"
 	"github.com/jaytyrrell13/pal/pkg/prompts"
 	"github.com/spf13/afero"
@@ -34,11 +32,23 @@ func RunInstallCmd() error {
 	editorCmd := editorCmdFlag
 
 	if path == "" {
-		path = prompts.StringPrompt("What is the path to your projects?", os.Stdin)
+		pathString, pathErr := prompts.Input("What is the path to your projects?", "/Users/john/Code")
+
+		if pathErr != nil {
+			return pathErr
+		}
+
+		path = pathString
 	}
 
 	if editorCmd == "" {
-		editorCmd = prompts.StringPrompt("What is the editor command?", os.Stdin)
+		editorCmdString, editorCmdErr := prompts.Input("What is the editor command?", "nvim, subl, code")
+
+		if editorCmdErr != nil {
+			return editorCmdErr
+		}
+
+		editorCmd = editorCmdString
 	}
 
 	AppFs := afero.NewOsFs()
