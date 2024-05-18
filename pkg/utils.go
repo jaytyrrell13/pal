@@ -16,6 +16,10 @@ func WriteFile(afs afero.Fs, fileName string, data []byte, perm fs.FileMode) err
 	return afero.WriteFile(afs, fileName, data, perm)
 }
 
+func RemoveFile(afs afero.Fs, path string) error {
+	return afs.Remove(path)
+}
+
 func FileMissing(fs afero.Fs, path string) bool {
 	_, e := fs.Stat(path)
 	return errors.Is(e, os.ErrNotExist)

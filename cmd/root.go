@@ -4,6 +4,7 @@ import (
 	"os"
 
 	"github.com/jaytyrrell13/pal/cmd/add"
+	"github.com/jaytyrrell13/pal/cmd/clean"
 	"github.com/jaytyrrell13/pal/cmd/install"
 	"github.com/jaytyrrell13/pal/cmd/list"
 	"github.com/jaytyrrell13/pal/cmd/make"
@@ -21,6 +22,7 @@ func Execute(version string) {
 	rootCmd.AddCommand(list.ListCmd)
 	rootCmd.AddCommand(install.InstallCmd)
 	rootCmd.AddCommand(make.MakeCmd)
+	rootCmd.AddCommand(clean.CleanCmd)
 
 	err := rootCmd.Execute()
 	if err != nil {

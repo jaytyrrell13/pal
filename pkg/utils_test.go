@@ -27,6 +27,26 @@ func TestReadFile(t *testing.T) {
 	}
 }
 
+func TestRemoveFile(t *testing.T) {
+	appFs := afero.NewMemMapFs()
+
+	mkdirErr := appFs.Mkdir("temp", 0o755)
+	if mkdirErr != nil {
+		t.Errorf("Mkdir Error: %q", mkdirErr)
+	}
+
+	writeFileErr := afero.WriteFile(appFs, "tmp/foo.txt", []byte("foo file"), 0o644)
+	if writeFileErr != nil {
+		t.Errorf("WriteFile Error: %q", writeFileErr)
+	}
+
+	got := RemoveFile(appFs, "tmp/foo.txt")
+
+	if got != nil {
+		t.Errorf("Expected 'nil', but got '%v'", got)
+	}
+}
+
 type fileMissingTestCase struct {
 	path     string
 	expected bool
