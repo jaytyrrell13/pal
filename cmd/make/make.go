@@ -72,7 +72,11 @@ func RunMakeCmd() error {
 
 	var output string
 	for _, path := range projectPaths {
-		alias := prompts.StringPrompt(fmt.Sprintf("Alias for (%s) Leave blank to skip.", path), os.Stdin)
+		alias, aliasErr := prompts.Input(fmt.Sprintf("Alias for (%s) Leave blank to skip.", path), "foo")
+
+		if aliasErr != nil {
+			return aliasErr
+		}
 
 		if alias == "" {
 			continue
@@ -95,7 +99,7 @@ func RunMakeCmd() error {
 		return writeErr
 	}
 
-	fmt.Println("\nDon't forget to source ~/.pal file in your shell!")
+	fmt.Println("Don't forget to source ~/.pal file in your shell!")
 
 	return nil
 }
