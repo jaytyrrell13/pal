@@ -51,11 +51,23 @@ func RunAddCmd() error {
 	path := pathFlag
 
 	if name == "" {
-		name = prompts.StringPrompt("What is the name of the alias?", os.Stdin)
+		nameString, nameErr := prompts.Input("What is the name of the alias?", "foo")
+
+		if nameErr != nil {
+			return nameErr
+		}
+
+		name = nameString
 	}
 
 	if path == "" {
-		path = prompts.StringPrompt("What is the path for the alias?", os.Stdin)
+		pathString, pathErr := prompts.Input("What is the path for the alias?", "/Users/john/Documents")
+
+		if pathErr != nil {
+			return pathErr
+		}
+
+		path = pathString
 	}
 
 	saveExtraDirErr := pkg.SaveExtraDir(AppFs, path)
