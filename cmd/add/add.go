@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/charmbracelet/huh"
 	"github.com/jaytyrrell13/pal/cmd/make"
 	"github.com/jaytyrrell13/pal/pkg"
 	"github.com/jaytyrrell13/pal/pkg/prompts"
@@ -39,11 +40,28 @@ func RunAddCmd() error {
 	}
 
 	if pkg.FileMissing(AppFs, aliasFilePath) {
-		fmt.Println("~/.pal file is missing. Running make command now.")
+		var runMake bool
+		confirmErr := huh.NewConfirm().
+			Title("Alias file is missing. Would you like to run make command now?").
+			Value(&runMake).
+			Affirmative("Yes").
+			Negative("No").
+			Run()
 
-		makeCmdErr := make.RunMakeCmd()
-		if makeCmdErr != nil {
-			return makeCmdErr
+		if confirmErr != nil {
+			return confirmErr
+		}
+
+		if runMake {
+			fmt.Println("Running make command.")
+
+			makeCmdErr := make.RunMakeCmd()
+			if makeCmdErr != nil {
+				return makeCmdErr
+			}
+		} else {
+			fmt.Println("Please run `pal make` command manually.")
+			return nil
 		}
 	}
 
