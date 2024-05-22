@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/charmbracelet/huh"
 	"github.com/jaytyrrell13/pal/cmd/make"
 	"github.com/jaytyrrell13/pal/pkg"
 	"github.com/jaytyrrell13/pal/pkg/prompts"
@@ -40,13 +39,7 @@ func RunAddCmd() error {
 	}
 
 	if pkg.FileMissing(AppFs, aliasFilePath) {
-		var runMake bool
-		confirmErr := huh.NewConfirm().
-			Title("Alias file is missing. Would you like to run make command now?").
-			Value(&runMake).
-			Affirmative("Yes").
-			Negative("No").
-			Run()
+		runMake, confirmErr := prompts.Confirm("Alias file is missing. Would you like to run make command now?")
 
 		if confirmErr != nil {
 			return confirmErr

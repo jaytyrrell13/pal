@@ -6,7 +6,6 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/charmbracelet/huh"
 	"github.com/jaytyrrell13/pal/cmd/install"
 	"github.com/jaytyrrell13/pal/pkg"
 	"github.com/jaytyrrell13/pal/pkg/prompts"
@@ -32,13 +31,7 @@ func RunMakeCmd() error {
 	}
 
 	if pkg.FileMissing(AppFs, configFilePath) {
-		var runInstall bool
-		confirmErr := huh.NewConfirm().
-			Title("Config file does not exist. Would you like to run install command now?").
-			Value(&runInstall).
-			Affirmative("Yes").
-			Negative("No").
-			Run()
+		runInstall, confirmErr := prompts.Confirm("Config file does not exist. Would you like to run install command now?")
 
 		if confirmErr != nil {
 			return confirmErr
