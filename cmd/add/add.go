@@ -45,16 +45,16 @@ func RunAddCmd() error {
 			return confirmErr
 		}
 
-		if runMake {
-			fmt.Println("Running make command.")
-
-			makeCmdErr := make.RunMakeCmd()
-			if makeCmdErr != nil {
-				return makeCmdErr
-			}
-		} else {
+		if !runMake {
 			fmt.Println("Please run `pal make` command manually.")
 			return nil
+		}
+
+		fmt.Println("Running make command.")
+
+		makeCmdErr := make.RunMakeCmd()
+		if makeCmdErr != nil {
+			return makeCmdErr
 		}
 	}
 
