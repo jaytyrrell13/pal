@@ -10,7 +10,7 @@ import (
 
 var ListCmd = &cobra.Command{
 	Use:     "list",
-	Short:   "Display aliases in `.pal`",
+	Short:   "Display aliases in `~/pal`",
 	Aliases: []string{"ls"},
 	Run: func(cmd *cobra.Command, args []string) {
 		err := RunListCmd()

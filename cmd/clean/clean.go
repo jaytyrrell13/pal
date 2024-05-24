@@ -10,7 +10,7 @@ import (
 
 var CleanCmd = &cobra.Command{
 	Use:   "clean",
-	Short: "Delete '.pal' file in your home directory",
+	Short: "Delete `/.pal` file in your home directory",
 	Run: func(cmd *cobra.Command, args []string) {
 		err := RunCleanCmd()
 		cobra.CheckErr(err)
