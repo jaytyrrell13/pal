@@ -19,10 +19,8 @@ Download the latest release archive from the [releases](https://github.com/jayty
 To get started, you may execute Pal's `install` command. This will ask for the path to your projects and your editor's cli tool e.g. nvim, code, subl. These settings will be saved in `~/.config/pal/config.json`.
 
 ```bash
-pal install
+pal install [--path | -p] [--editorCmd | -e]
 ```
-
-### Generate Aliases
 
 The `make` command will go through each directory of your projects and ask for the alias you want to use. This will generate a `~/.pal` file that will need to be sourced from your `.zshrc` or `.bashrc` file.
 
@@ -33,13 +31,25 @@ pal make
 The `add` command can be used if you want an alias for a directory outside of your projects. For example, a directory of notes.
 
 ```bash
-pal add
+pal add [--path | -p] [--name | -n]
 ```
 
 The `list` command will print out all of the aliases currently in `~/.pal`.
 
 ```bash
 pal list
+```
+
+The `clean` command will delete your `~/.pal` file in your home directory.
+
+```bash
+pal clean
+```
+
+The `refresh` command will delete your `~/.pal` file and then run the `make` command.
+
+```bash
+pal refresh
 ```
 
 ## Support
