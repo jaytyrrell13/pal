@@ -8,6 +8,7 @@ import (
 	"github.com/jaytyrrell13/pal/cmd/install"
 	"github.com/jaytyrrell13/pal/cmd/list"
 	"github.com/jaytyrrell13/pal/cmd/make"
+	"github.com/jaytyrrell13/pal/cmd/refresh"
 	"github.com/spf13/cobra"
 )
 
@@ -23,6 +24,7 @@ func Execute(version string) {
 	rootCmd.AddCommand(install.InstallCmd)
 	rootCmd.AddCommand(make.MakeCmd)
 	rootCmd.AddCommand(clean.CleanCmd)
+	rootCmd.AddCommand(refresh.RefreshCmd)
 
 	err := rootCmd.Execute()
 	if err != nil {
