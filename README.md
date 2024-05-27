@@ -1,6 +1,6 @@
 # Pal
 
-Pal is a command line tool to generate an alias to `cd` into each of your projects. An alias can also be generated to open the directory with your editor's cli command, e.g. nvim, code, subl.
+Pal is a command line tool to generate an alias to `cd` into each of your projects. An alias can also be generated to open the directory with your editor's CLI command, e.g. nvim, code, subl.
 
 ## Installation
 
@@ -16,7 +16,7 @@ Download the latest release archive from the [releases](https://github.com/jayty
 
 ## Usage
 
-To get started, you may execute Pal's `install` command. This will ask for the path to your projects and your editor's cli tool e.g. nvim, code, subl. These settings will be saved in `~/.config/pal/config.json`.
+To get started, you may execute Pal's `install` command. This will ask for the path to your projects and your editor's CLI tool e.g. nvim, code, subl. These settings will be saved in `~/.config/pal/config.json`.
 
 ```bash
 pal install [--path | -p] [--editorCmd | -e]
@@ -28,13 +28,13 @@ The `make` command will go through each directory of your projects and ask for t
 pal make
 ```
 
-The `add` command can be used if you want an alias for a directory outside of your projects. For example, a directory of notes.
+The `add` command can be used if you want an alias for a directory outside your projects. For example, a directory of notes.
 
 ```bash
 pal add [--path | -p] [--name | -n]
 ```
 
-The `list` command will print out all of the aliases currently in `~/.config/pal/aliases`.
+The `list` command will print out all the aliases currently in `~/.config/pal/aliases`.
 
 ```bash
 pal list
