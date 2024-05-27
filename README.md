@@ -6,7 +6,7 @@ Pal is a command line tool to generate an alias to `cd` into each of your projec
 
 ### Homebrew
 
-```bash
+```shell
 brew install jaytyrrell13/tap/pal
 ```
 
@@ -18,37 +18,37 @@ Download the latest release archive from the [releases](https://github.com/jayty
 
 To get started, you may execute Pal's `install` command. This will ask for the path to your projects and your editor's CLI tool e.g. nvim, code, subl. These settings will be saved in `~/.config/pal/config.json`.
 
-```bash
+```shell
 pal install [--path | -p] [--editorCmd | -e]
 ```
 
 The `make` command will go through each directory of your projects and ask for the alias you want to use. This will generate a `~/.config/pal/aliases` file that will need to be sourced from your `.zshrc` or `.bashrc` file.
 
-```bash
+```shell
 pal make
 ```
 
 The `add` command can be used if you want an alias for a directory outside your projects. For example, a directory of notes.
 
-```bash
+```shell
 pal add [--path | -p] [--name | -n]
 ```
 
 The `list` command will print out all the aliases currently in `~/.config/pal/aliases`.
 
-```bash
+```shell
 pal list
 ```
 
 The `clean` command will delete your `~/.config/pal/aliases` file in your home directory.
 
-```bash
+```shell
 pal clean
 ```
 
 The `refresh` command will delete your `~/.config/pal/aliases` file and then run the `make` command.
 
-```bash
+```shell
 pal refresh
 ```
 
