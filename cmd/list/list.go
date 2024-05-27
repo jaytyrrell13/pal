@@ -12,9 +12,8 @@ var ListCmd = &cobra.Command{
 	Use:     "list",
 	Short:   "Display aliases in `~/pal`",
 	Aliases: []string{"ls"},
-	Run: func(cmd *cobra.Command, args []string) {
-		err := RunListCmd()
-		cobra.CheckErr(err)
+	RunE: func(_ *cobra.Command, _ []string) error {
+		return RunListCmd()
 	},
 }
 

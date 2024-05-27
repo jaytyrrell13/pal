@@ -12,9 +12,8 @@ import (
 var RefreshCmd = &cobra.Command{
 	Use:   "refresh",
 	Short: "Delete pal aliases file and run `make` command",
-	Run: func(cmd *cobra.Command, args []string) {
-		err := RunRefreshCmd()
-		cobra.CheckErr(err)
+	RunE: func(_ *cobra.Command, _ []string) error {
+		return RunRefreshCmd()
 	},
 }
 

@@ -11,9 +11,8 @@ import (
 var CleanCmd = &cobra.Command{
 	Use:   "clean",
 	Short: "Delete the pal aliases file",
-	Run: func(cmd *cobra.Command, args []string) {
-		err := RunCleanCmd()
-		cobra.CheckErr(err)
+	RunE: func(_ *cobra.Command, _ []string) error {
+		return RunCleanCmd()
 	},
 }
 
