@@ -2,18 +2,17 @@ package pkg
 
 import (
 	"fmt"
-	"os"
 	"testing"
 )
 
 func TestAliasFilePath(t *testing.T) {
-	homeDir, homeDirErr := os.UserHomeDir()
-	if homeDirErr != nil {
-		t.Error(homeDirErr)
+	configDir, configDirErr := ConfigDirPath()
+	if configDirErr != nil {
+		t.Error(configDirErr)
 	}
 
 	got, err := AliasFilePath()
-	expected := homeDir + "/.pal"
+	expected := configDir + "/aliases"
 
 	if got != expected || err != nil {
 		t.Errorf("Expected '%q', but got '%q'", expected, got)

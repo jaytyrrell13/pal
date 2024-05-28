@@ -110,7 +110,7 @@ func RunMakeCmd() error {
 		return writeErr
 	}
 
-	fmt.Println("Don't forget to source ~/.pal file in your shell!")
+	fmt.Println("Don't forget to source ~/.config/pal/aliases file in your shell!")
 
 	return nil
 }

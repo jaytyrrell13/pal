@@ -11,7 +11,7 @@ import (
 
 var RefreshCmd = &cobra.Command{
 	Use:   "refresh",
-	Short: "Delete `~/.pal` file and run `make` command",
+	Short: "Delete pal aliases file and run `make` command",
 	Run: func(cmd *cobra.Command, args []string) {
 		err := RunRefreshCmd()
 		cobra.CheckErr(err)
@@ -27,11 +27,11 @@ func RunRefreshCmd() error {
 	}
 
 	if pkg.FileMissing(AppFs, aliasFilePath) {
-		fmt.Println("~/.pal file is missing")
+		fmt.Println("Aliases file is missing")
 		return nil
 	}
 
-	fmt.Println("Removing ~/.pal file")
+	fmt.Println("Removing pal aliases file")
 	removeFileErr := pkg.RemoveFile(AppFs, aliasFilePath)
 	if removeFileErr != nil {
 		return removeFileErr

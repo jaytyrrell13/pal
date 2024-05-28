@@ -2,13 +2,15 @@ package pkg
 
 import (
 	"fmt"
-	"os"
 )
 
 func AliasFilePath() (string, error) {
-	homeDir, err := os.UserHomeDir()
+	path, err := ConfigDirPath()
+	if err != nil {
+		return "", err
+	}
 
-	return homeDir + "/.pal", err
+	return path + "/aliases", err
 }
 
 func MakeAliasCommands(name string, path string, config Config) string {

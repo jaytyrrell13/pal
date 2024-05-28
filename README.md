@@ -22,7 +22,7 @@ To get started, you may execute Pal's `install` command. This will ask for the p
 pal install [--path | -p] [--editorCmd | -e]
 ```
 
-The `make` command will go through each directory of your projects and ask for the alias you want to use. This will generate a `~/.pal` file that will need to be sourced from your `.zshrc` or `.bashrc` file.
+The `make` command will go through each directory of your projects and ask for the alias you want to use. This will generate a `~/.config/pal/aliases` file that will need to be sourced from your `.zshrc` or `.bashrc` file.
 
 ```bash
 pal make
@@ -34,19 +34,19 @@ The `add` command can be used if you want an alias for a directory outside of yo
 pal add [--path | -p] [--name | -n]
 ```
 
-The `list` command will print out all of the aliases currently in `~/.pal`.
+The `list` command will print out all of the aliases currently in `~/.config/pal/aliases`.
 
 ```bash
 pal list
 ```
 
-The `clean` command will delete your `~/.pal` file in your home directory.
+The `clean` command will delete your `~/.config/pal/aliases` file in your home directory.
 
 ```bash
 pal clean
 ```
 
-The `refresh` command will delete your `~/.pal` file and then run the `make` command.
+The `refresh` command will delete your `~/.config/pal/aliases` file and then run the `make` command.
 
 ```bash
 pal refresh

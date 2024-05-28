@@ -10,7 +10,7 @@ import (
 
 var CleanCmd = &cobra.Command{
 	Use:   "clean",
-	Short: "Delete `/.pal` file in your home directory",
+	Short: "Delete the pal aliases file",
 	Run: func(cmd *cobra.Command, args []string) {
 		err := RunCleanCmd()
 		cobra.CheckErr(err)
@@ -26,7 +26,7 @@ func RunCleanCmd() error {
 	}
 
 	if pkg.FileMissing(AppFs, aliasFilePath) {
-		fmt.Println("~/.pal file is missing.")
+		fmt.Println("Aliases file is missing.")
 		return nil
 	}
 
@@ -35,7 +35,7 @@ func RunCleanCmd() error {
 		return removeFileErr
 	}
 
-	fmt.Println("~/.pal file has been deleted.")
+	fmt.Println("Aliases file has been deleted.")
 
 	return nil
 }
