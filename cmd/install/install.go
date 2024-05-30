@@ -16,9 +16,8 @@ var InstallCmd = &cobra.Command{
 	Use:     "install",
 	Short:   "Create the configuration file used by pal",
 	Aliases: []string{"i"},
-	Run: func(cmd *cobra.Command, args []string) {
-		err := RunInstallCmd()
-		cobra.CheckErr(err)
+	RunE: func(_ *cobra.Command, _ []string) error {
+		return RunInstallCmd()
 	},
 }
 

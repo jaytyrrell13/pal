@@ -19,9 +19,8 @@ var (
 var AddCmd = &cobra.Command{
 	Use:   "add",
 	Short: "Create an alias for an additional directory",
-	Run: func(cmd *cobra.Command, args []string) {
-		err := RunAddCmd()
-		cobra.CheckErr(err)
+	RunE: func(_ *cobra.Command, _ []string) error {
+		return RunAddCmd()
 	},
 }
 

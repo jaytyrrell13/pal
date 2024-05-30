@@ -16,9 +16,8 @@ import (
 var MakeCmd = &cobra.Command{
 	Use:   "make",
 	Short: "Create the aliases file",
-	Run: func(cmd *cobra.Command, args []string) {
-		err := RunMakeCmd()
-		cobra.CheckErr(err)
+	RunE: func(_ *cobra.Command, _ []string) error {
+		return RunMakeCmd()
 	},
 }
 

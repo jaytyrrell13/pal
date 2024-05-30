@@ -1,8 +1,6 @@
 package cmd
 
 import (
-	"os"
-
 	"github.com/jaytyrrell13/pal/cmd/add"
 	"github.com/jaytyrrell13/pal/cmd/clean"
 	"github.com/jaytyrrell13/pal/cmd/install"
@@ -17,7 +15,7 @@ var rootCmd = &cobra.Command{
 	Short: "Helps manage the aliases for your projects",
 }
 
-func Execute(version string) {
+func Execute(version string) error {
 	rootCmd.Version = version
 	rootCmd.AddCommand(add.AddCmd)
 	rootCmd.AddCommand(list.ListCmd)
@@ -26,8 +24,5 @@ func Execute(version string) {
 	rootCmd.AddCommand(clean.CleanCmd)
 	rootCmd.AddCommand(refresh.RefreshCmd)
 
-	err := rootCmd.Execute()
-	if err != nil {
-		os.Exit(1)
-	}
+	return rootCmd.Execute()
 }
