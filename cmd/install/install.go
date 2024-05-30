@@ -22,7 +22,7 @@ var InstallCmd = &cobra.Command{
 }
 
 func init() {
-	InstallCmd.Flags().StringVarP(&pathFlag, "path", "p", "", "Path to to your projects")
+	InstallCmd.Flags().StringVarP(&pathFlag, "path", "p", "", "Path to your projects")
 	InstallCmd.Flags().StringVarP(&editorCmdFlag, "editorCmd", "e", "", "Editor command e.g. (nvim, subl, code)")
 }
 
