@@ -10,6 +10,7 @@ import (
 type Config struct {
 	Path      string
 	EditorCmd string
+	Shell     string
 	Extras    []string
 }
 
