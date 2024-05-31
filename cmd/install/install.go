@@ -10,6 +10,7 @@ import (
 var (
 	pathFlag      string
 	editorCmdFlag string
+	shell         string
 )
 
 var InstallCmd = &cobra.Command{
@@ -24,6 +25,7 @@ var InstallCmd = &cobra.Command{
 func init() {
 	InstallCmd.Flags().StringVarP(&pathFlag, "path", "p", "", "Path to your projects")
 	InstallCmd.Flags().StringVarP(&editorCmdFlag, "editorCmd", "e", "", "Editor command e.g. (nvim, subl, code)")
+	InstallCmd.Flags().StringVarP(&shell, "shell", "s", "", "Your interactive shell e.g. (bash/zsh, fish)")
 }
 
 func RunInstallCmd() error {
@@ -50,6 +52,16 @@ func RunInstallCmd() error {
 		editorCmd = editorCmdString
 	}
 
+	if shell == "" {
+		shellString, shellErr := prompts.Select("What shell do you use?")
+
+		if shellErr != nil {
+			return shellErr
+		}
+
+		shell = shellString
+	}
+
 	AppFs := afero.NewOsFs()
 
 	configDirPath, configDirPathErr := pkg.ConfigDirPath()
@@ -73,6 +85,7 @@ func RunInstallCmd() error {
 		c := pkg.Config{
 			Path:      path,
 			EditorCmd: editorCmd,
+			Shell:     shell,
 		}
 
 		json, jsonErr := c.AsJson()
@@ -104,6 +117,10 @@ func RunInstallCmd() error {
 
 	if c.EditorCmd != editorCmd {
 		c.EditorCmd = editorCmd
+	}
+
+	if c.Shell != shell {
+		c.Shell = shell
 	}
 
 	json, jsonErr := c.AsJson()
