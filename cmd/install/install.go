@@ -1,6 +1,7 @@
 package install
 
 import (
+	"github.com/charmbracelet/huh"
 	"github.com/jaytyrrell13/pal/pkg"
 	"github.com/jaytyrrell13/pal/pkg/prompts"
 	"github.com/spf13/afero"
@@ -53,7 +54,7 @@ func RunInstallCmd() error {
 	}
 
 	if shell == "" {
-		shellString, shellErr := prompts.Select("What shell do you use?")
+		shellString, shellErr := prompts.Select("What shell do you use?", huh.NewOptions("Bash", "ZSH", "Fish"))
 
 		if shellErr != nil {
 			return shellErr
