@@ -16,19 +16,23 @@ Download the latest release archive from the [releases](https://github.com/jayty
 
 ## Usage
 
-To get started, you may execute Pal's `install` command. This will ask for the path to your projects and your editor's CLI tool e.g. nvim, code, subl. These settings will be saved in `~/.config/pal/config.json`.
+To get started, you may execute Pal's `install` command. This will ask for the path to your projects, your editor's CLI tool e.g. nvim, code, subl, and your shell e.g. bash, zsh, fish. These settings will be saved in `~/.config/pal/config.json`.
 
 ```shell
 pal install [--path | -p] [--editorCmd | -e]
 ```
 
-The `make` command will go through each directory of your projects and ask for the alias you want to use. This will generate a `~/.config/pal/aliases` file that will need to be sourced from your `.zshrc` or `.bashrc` file.
+The `make` command will go through each directory of your projects and ask for the alias you want to use. This will generate a `~/.config/pal/aliases` file and update your shell to automatically source the aliases file if it exists. If you use bash or zsh, it will append `[ -f "$HOME/.config/pal/aliases" ] && source "$HOME/.config/pal/aliases"` to your `~/.bashrc` or `~/.zshrc`. If you use fish, it will create `~/.config/fish/conf.d/pal.fish` to test if the aliases file exists and if so then source it.
+
+**Note:** the `make` command will prompt you to run the `install` command first if the config does not exist yet.
 
 ```shell
 pal make
 ```
 
 The `add` command can be used if you want an alias for a directory outside your projects. For example, a directory of notes.
+
+**Note:** the `add` command will prompt you to run the `make` command if the aliases file does not exist yet.
 
 ```shell
 pal add [--path | -p] [--name | -n]
