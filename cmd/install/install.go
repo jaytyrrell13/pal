@@ -11,7 +11,7 @@ import (
 var (
 	pathFlag      string
 	editorCmdFlag string
-	shell         string
+	shellFlag     string
 )
 
 var InstallCmd = &cobra.Command{
@@ -26,12 +26,13 @@ var InstallCmd = &cobra.Command{
 func init() {
 	InstallCmd.Flags().StringVarP(&pathFlag, "path", "p", "", "Path to your projects")
 	InstallCmd.Flags().StringVarP(&editorCmdFlag, "editorCmd", "e", "", "Editor command e.g. (nvim, subl, code)")
-	InstallCmd.Flags().StringVarP(&shell, "shell", "s", "", "Your interactive shell e.g. (bash/zsh, fish)")
+	InstallCmd.Flags().StringVarP(&shellFlag, "shell", "s", "", "Your interactive shell e.g. (bash/zsh, fish)")
 }
 
 func RunInstallCmd() error {
 	path := pathFlag
 	editorCmd := editorCmdFlag
+	shell := shellFlag
 
 	if path == "" {
 		pathString, pathErr := prompts.Input("What is the path to your projects?", "/Users/john/Code")
@@ -54,7 +55,12 @@ func RunInstallCmd() error {
 	}
 
 	if shell == "" {
-		shellString, shellErr := prompts.Select("What shell do you use?", huh.NewOptions("Bash", "ZSH", "Fish"))
+		options := []huh.Option[string]{
+			huh.NewOption("Bash", pkg.Shell_Bash),
+			huh.NewOption("Zsh", pkg.Shell_Zsh),
+			huh.NewOption("Fish", pkg.Shell_Fish),
+		}
+		shellString, shellErr := prompts.Select("What shell do you use?", options)
 
 		if shellErr != nil {
 			return shellErr

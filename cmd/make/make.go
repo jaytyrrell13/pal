@@ -49,6 +49,11 @@ func RunMakeCmd() error {
 		}
 	}
 
+	home, homeErr := os.UserHomeDir()
+	if homeErr != nil {
+		return homeErr
+	}
+
 	c, readConfigFileErr := pkg.ReadFile(AppFs, configFilePath)
 	if readConfigFileErr != nil {
 		return readConfigFileErr
@@ -62,7 +67,6 @@ func RunMakeCmd() error {
 	path := jsonConfig.Path
 
 	if strings.HasPrefix(path, "~/") {
-		home, _ := os.UserHomeDir()
 		path = filepath.Join(home, path[2:])
 	}
 
@@ -109,7 +113,41 @@ func RunMakeCmd() error {
 		return writeErr
 	}
 
-	fmt.Println("Don't forget to source ~/.config/pal/aliases file in your shell!")
+	return sourceAliasFile(AppFs, jsonConfig)
+}
+
+func sourceAliasFile(appFs afero.Fs, config pkg.Config) error {
+	home, homeErr := os.UserHomeDir()
+	if homeErr != nil {
+		return homeErr
+	}
+
+	switch config.Shell {
+	case pkg.Shell_Bash:
+		return sourceBashFile(appFs, home)
+	case pkg.Shell_Zsh:
+		return sourceZshFile(appFs, home)
+	case pkg.Shell_Fish:
+		return sourceFishFile(appFs, home)
+	}
 
 	return nil
+}
+
+func sourceBashFile(appFs afero.Fs, home string) error {
+	data := []byte("\n[ -f \"$HOME/.config/pal/aliases\" ] && source \"$HOME/.config/pal/aliases\"")
+
+	return pkg.AppendToFile(appFs, home+"/.bashrc", data)
+}
+
+func sourceZshFile(appFs afero.Fs, home string) error {
+	data := []byte("\n[ -f \"$HOME/.config/pal/aliases\" ] && source \"$HOME/.config/pal/aliases\"")
+
+	return pkg.AppendToFile(appFs, home+"/.zshrc", data)
+}
+
+func sourceFishFile(appFs afero.Fs, home string) error {
+	data := []byte("if test -f " + home + "/.config/pal/aliases\n\tsource " + home + "/.config/pal/aliases\nend")
+
+	return pkg.WriteFile(appFs, home+"/.config/fish/conf.d/pal.fish", data, 0o644)
 }
