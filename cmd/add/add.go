@@ -2,7 +2,6 @@ package add
 
 import (
 	"fmt"
-	"os"
 
 	"github.com/jaytyrrell13/pal/cmd/make"
 	"github.com/jaytyrrell13/pal/pkg"
@@ -85,11 +84,6 @@ func RunAddCmd() error {
 		return saveExtraDirErr
 	}
 
-	aliasesFile, openAliasesFileErr := os.OpenFile(aliasFilePath, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0o755)
-	if openAliasesFileErr != nil {
-		return openAliasesFileErr
-	}
-
 	configFilePath, configFilePathErr := pkg.ConfigFilePath()
 	if configFilePathErr != nil {
 		return configFilePathErr
@@ -107,14 +101,5 @@ func RunAddCmd() error {
 
 	output := pkg.MakeAliasCommands(name, path, jsonConfig)
 
-	if _, err := aliasesFile.Write([]byte(output)); err != nil {
-		aliasesFile.Close()
-		return err
-	}
-
-	if err := aliasesFile.Close(); err != nil {
-		return err
-	}
-
-	return nil
+	return pkg.AppendToFile(AppFs, aliasFilePath, []byte(output))
 }
