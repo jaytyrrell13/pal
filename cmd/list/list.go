@@ -1,8 +1,11 @@
 package list
 
 import (
-	"os"
+	"fmt"
+	"strings"
 
+	"github.com/charmbracelet/lipgloss"
+	"github.com/charmbracelet/lipgloss/table"
 	"github.com/jaytyrrell13/pal/pkg"
 	"github.com/spf13/afero"
 	"github.com/spf13/cobra"
@@ -30,7 +33,34 @@ func RunListCmd() error {
 		return aliasFileErr
 	}
 
-	os.Stdout.Write(aliasFile)
+	t := table.New().
+		Border(lipgloss.NormalBorder()).
+		BorderStyle(lipgloss.NewStyle().Foreground(lipgloss.Color("245"))).
+		Headers("Alias", "Command").
+		StyleFunc(func(row, col int) lipgloss.Style {
+			baseStyle := lipgloss.NewStyle().Padding(0, 2)
+
+			switch {
+			case row == 0:
+				return baseStyle.Bold(true)
+			case row%2 == 0:
+				return baseStyle.Foreground(lipgloss.Color("240"))
+			default:
+				return baseStyle
+			}
+		})
+
+	aliases := strings.TrimSpace(string(aliasFile[:]))
+
+	splitAliases := strings.Split(aliases, "\n")
+	for _, a := range splitAliases {
+		trimmed := strings.TrimPrefix(a, "alias ")
+		split := strings.Split(trimmed, "=")
+
+		t.Row(split[0], split[1])
+	}
+
+	fmt.Println(t)
 
 	return nil
 }
