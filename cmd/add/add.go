@@ -5,7 +5,7 @@ import (
 
 	"github.com/jaytyrrell13/pal/cmd/make"
 	"github.com/jaytyrrell13/pal/pkg"
-	"github.com/jaytyrrell13/pal/pkg/prompts"
+	"github.com/jaytyrrell13/pal/pkg/ui"
 	"github.com/spf13/afero"
 	"github.com/spf13/cobra"
 )
@@ -37,7 +37,7 @@ func RunAddCmd() error {
 	}
 
 	if pkg.FileMissing(AppFs, aliasFilePath) {
-		runMake, confirmErr := prompts.Confirm("Alias file is missing. Would you like to run make command now?")
+		runMake, confirmErr := ui.Confirm("Alias file is missing. Would you like to run make command now?")
 
 		if confirmErr != nil {
 			return confirmErr
@@ -60,7 +60,7 @@ func RunAddCmd() error {
 	path := pathFlag
 
 	if name == "" {
-		nameString, nameErr := prompts.Input("What is the name of the alias?", "foo")
+		nameString, nameErr := ui.Input("What is the name of the alias?", "foo")
 
 		if nameErr != nil {
 			return nameErr
@@ -70,7 +70,7 @@ func RunAddCmd() error {
 	}
 
 	if path == "" {
-		pathString, pathErr := prompts.Input("What is the path for the alias?", "/Users/john/Documents")
+		pathString, pathErr := ui.Input("What is the path for the alias?", "/Users/john/Documents")
 
 		if pathErr != nil {
 			return pathErr

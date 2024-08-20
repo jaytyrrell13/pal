@@ -8,7 +8,7 @@ import (
 
 	"github.com/jaytyrrell13/pal/cmd/install"
 	"github.com/jaytyrrell13/pal/pkg"
-	"github.com/jaytyrrell13/pal/pkg/prompts"
+	"github.com/jaytyrrell13/pal/pkg/ui"
 	"github.com/spf13/afero"
 	"github.com/spf13/cobra"
 )
@@ -30,7 +30,7 @@ func RunMakeCmd() error {
 	}
 
 	if pkg.FileMissing(AppFs, configFilePath) {
-		runInstall, confirmErr := prompts.Confirm("Config file does not exist. Would you like to run install command now?")
+		runInstall, confirmErr := ui.Confirm("Config file does not exist. Would you like to run install command now?")
 
 		if confirmErr != nil {
 			return confirmErr
@@ -86,7 +86,7 @@ func RunMakeCmd() error {
 
 	var output string
 	for _, path := range projectPaths {
-		alias, aliasErr := prompts.Input(fmt.Sprintf("Alias for (%s) Leave blank to skip.", path), "foo")
+		alias, aliasErr := ui.Input(fmt.Sprintf("Alias for (%s) Leave blank to skip.", path), "foo")
 
 		if aliasErr != nil {
 			return aliasErr

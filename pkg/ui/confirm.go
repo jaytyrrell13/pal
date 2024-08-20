@@ -1,4 +1,4 @@
-package prompts
+package ui
 
 import "github.com/charmbracelet/huh"
 

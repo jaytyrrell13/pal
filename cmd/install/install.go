@@ -3,7 +3,7 @@ package install
 import (
 	"github.com/charmbracelet/huh"
 	"github.com/jaytyrrell13/pal/pkg"
-	"github.com/jaytyrrell13/pal/pkg/prompts"
+	"github.com/jaytyrrell13/pal/pkg/ui"
 	"github.com/spf13/afero"
 	"github.com/spf13/cobra"
 )
@@ -35,7 +35,7 @@ func RunInstallCmd() error {
 	shell := shellFlag
 
 	if path == "" {
-		pathString, pathErr := prompts.Input("What is the path to your projects?", "/Users/john/Code")
+		pathString, pathErr := ui.Input("What is the path to your projects?", "/Users/john/Code")
 
 		if pathErr != nil {
 			return pathErr
@@ -45,7 +45,7 @@ func RunInstallCmd() error {
 	}
 
 	if editorCmd == "" {
-		editorCmdString, editorCmdErr := prompts.Input("What is the editor command?", "nvim, subl, code")
+		editorCmdString, editorCmdErr := ui.Input("What is the editor command?", "nvim, subl, code")
 
 		if editorCmdErr != nil {
 			return editorCmdErr
@@ -60,7 +60,7 @@ func RunInstallCmd() error {
 			huh.NewOption("Zsh", pkg.Shell_Zsh),
 			huh.NewOption("Fish", pkg.Shell_Fish),
 		}
-		shellString, shellErr := prompts.Select("What shell do you use?", options)
+		shellString, shellErr := ui.Select("What shell do you use?", options)
 
 		if shellErr != nil {
 			return shellErr
