@@ -12,7 +12,7 @@ import (
 
 var ConfigListCmd = &cobra.Command{
 	Use:     "list",
-	Short:   "Something",
+	Short:   "List pal configs",
 	Aliases: []string{"ls"},
 	RunE: func(_ *cobra.Command, _ []string) error {
 		return RunConfigListCmd()

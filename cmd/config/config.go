@@ -7,7 +7,7 @@ import (
 
 var ConfigCmd = &cobra.Command{
 	Use:   "config",
-	Short: "A brief description of your command",
+	Short: "Manage pal config",
 }
 
 func init() {
