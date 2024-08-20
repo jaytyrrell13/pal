@@ -33,6 +33,17 @@ func RunListCmd() error {
 		return aliasFileErr
 	}
 
+	aliases := strings.TrimSpace(string(aliasFile[:]))
+
+	rows := [][]string{}
+	splitAliases := strings.Split(aliases, "\n")
+	for _, a := range splitAliases {
+		trimmed := strings.TrimPrefix(a, "alias ")
+		split := strings.Split(trimmed, "=")
+
+		rows = append(rows, []string{split[0], split[1]})
+	}
+
 	t := table.New().
 		Border(lipgloss.NormalBorder()).
 		BorderStyle(lipgloss.NewStyle().Foreground(lipgloss.Color("245"))).
@@ -48,17 +59,8 @@ func RunListCmd() error {
 			default:
 				return baseStyle
 			}
-		})
-
-	aliases := strings.TrimSpace(string(aliasFile[:]))
-
-	splitAliases := strings.Split(aliases, "\n")
-	for _, a := range splitAliases {
-		trimmed := strings.TrimPrefix(a, "alias ")
-		split := strings.Split(trimmed, "=")
-
-		t.Row(split[0], split[1])
-	}
+		}).
+		Rows(rows...)
 
 	fmt.Println(t)
 

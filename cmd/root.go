@@ -3,6 +3,7 @@ package cmd
 import (
 	"github.com/jaytyrrell13/pal/cmd/add"
 	"github.com/jaytyrrell13/pal/cmd/clean"
+	"github.com/jaytyrrell13/pal/cmd/config"
 	"github.com/jaytyrrell13/pal/cmd/install"
 	"github.com/jaytyrrell13/pal/cmd/list"
 	"github.com/jaytyrrell13/pal/cmd/make"
@@ -23,6 +24,7 @@ func Execute(version string) error {
 	rootCmd.AddCommand(make.MakeCmd)
 	rootCmd.AddCommand(clean.CleanCmd)
 	rootCmd.AddCommand(refresh.RefreshCmd)
+	rootCmd.AddCommand(config.ConfigCmd)
 
 	return rootCmd.Execute()
 }
