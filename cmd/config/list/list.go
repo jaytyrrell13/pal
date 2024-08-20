@@ -4,9 +4,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/charmbracelet/lipgloss"
-	"github.com/charmbracelet/lipgloss/table"
 	"github.com/jaytyrrell13/pal/pkg"
+	"github.com/jaytyrrell13/pal/pkg/ui"
 	"github.com/spf13/afero"
 	"github.com/spf13/cobra"
 )
@@ -50,6 +49,7 @@ func RunConfigListCmd() error {
 		return configFileErr
 	}
 
+	headers := []string{"Key", "Value"}
 	rows := [][]string{
 		{"Path", c.Path},
 		{"Editor Command", c.EditorCmd},
@@ -57,23 +57,7 @@ func RunConfigListCmd() error {
 		{"Extras", strings.Join(c.Extras, ", ")},
 	}
 
-	t := table.New().
-		Border(lipgloss.NormalBorder()).
-		BorderStyle(lipgloss.NewStyle().Foreground(lipgloss.Color("245"))).
-		Headers("Key", "Value").
-		StyleFunc(func(row, col int) lipgloss.Style {
-			baseStyle := lipgloss.NewStyle().Padding(0, 2)
-
-			switch {
-			case row == 0:
-				return baseStyle.Bold(true)
-			case row%2 == 0:
-				return baseStyle.Foreground(lipgloss.Color("240"))
-			default:
-				return baseStyle
-			}
-		}).
-		Rows(rows...)
+	t := ui.Table(headers, rows)
 
 	fmt.Println(t)
 
