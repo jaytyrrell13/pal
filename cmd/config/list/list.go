@@ -52,7 +52,7 @@ func RunConfigListCmd() error {
 	headers := []string{"Key", "Value"}
 	rows := [][]string{
 		{"Path", c.Path},
-		{"Editor Command", c.EditorCmd},
+		{"EditorCmd", c.EditorCmd},
 		{"Shell", c.Shell},
 		{"Extras", strings.Join(c.Extras, ", ")},
 	}
