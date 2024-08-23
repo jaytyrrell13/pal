@@ -14,9 +14,6 @@ import (
 var ConfigSetCmd = &cobra.Command{
 	Use:   "set",
 	Short: "Set pal configs",
-	Args: func(cmd *cobra.Command, args []string) error {
-		return nil
-	},
 	RunE: func(_ *cobra.Command, args []string) error {
 		return RunConfigSetCmd(args)
 	},
