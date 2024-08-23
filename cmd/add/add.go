@@ -19,7 +19,9 @@ var AddCmd = &cobra.Command{
 	Use:   "add",
 	Short: "Create an alias for an additional directory",
 	RunE: func(_ *cobra.Command, _ []string) error {
-		return RunAddCmd()
+		appFs := afero.NewOsFs()
+
+		return RunAddCmd(appFs)
 	},
 }
 
@@ -28,15 +30,13 @@ func init() {
 	AddCmd.Flags().StringVarP(&pathFlag, "path", "p", "", "Path to your additional directory")
 }
 
-func RunAddCmd() error {
-	AppFs := afero.NewOsFs()
-
+func RunAddCmd(appFs afero.Fs) error {
 	aliasFilePath, aliasFilePathErr := pkg.AliasFilePath()
 	if aliasFilePathErr != nil {
 		return aliasFilePathErr
 	}
 
-	if pkg.FileMissing(AppFs, aliasFilePath) {
+	if pkg.FileMissing(appFs, aliasFilePath) {
 		runMake, confirmErr := ui.Confirm("Alias file is missing. Would you like to run make command now?")
 
 		if confirmErr != nil {
@@ -50,7 +50,7 @@ func RunAddCmd() error {
 
 		fmt.Println("Running make command.")
 
-		makeCmdErr := make.RunMakeCmd()
+		makeCmdErr := make.RunMakeCmd(appFs)
 		if makeCmdErr != nil {
 			return makeCmdErr
 		}
@@ -79,7 +79,7 @@ func RunAddCmd() error {
 		path = pathString
 	}
 
-	saveExtraDirErr := pkg.SaveExtraDir(AppFs, path)
+	saveExtraDirErr := pkg.SaveExtraDir(appFs, path)
 	if saveExtraDirErr != nil {
 		return saveExtraDirErr
 	}
@@ -89,7 +89,7 @@ func RunAddCmd() error {
 		return configFilePathErr
 	}
 
-	c, readConfigFileErr := pkg.ReadFile(AppFs, configFilePath)
+	c, readConfigFileErr := pkg.ReadFile(appFs, configFilePath)
 	if readConfigFileErr != nil {
 		return readConfigFileErr
 	}
@@ -101,5 +101,5 @@ func RunAddCmd() error {
 
 	output := pkg.MakeAliasCommands(name, path, jsonConfig)
 
-	return pkg.AppendToFile(AppFs, aliasFilePath, []byte(output))
+	return pkg.AppendToFile(appFs, aliasFilePath, []byte(output))
 }

@@ -12,24 +12,24 @@ var CleanCmd = &cobra.Command{
 	Use:   "clean",
 	Short: "Delete the pal aliases file",
 	RunE: func(_ *cobra.Command, _ []string) error {
-		return RunCleanCmd()
+		appFs := afero.NewOsFs()
+
+		return RunCleanCmd(appFs)
 	},
 }
 
-func RunCleanCmd() error {
-	AppFs := afero.NewOsFs()
-
+func RunCleanCmd(appFs afero.Fs) error {
 	aliasFilePath, aliasFilePathErr := pkg.AliasFilePath()
 	if aliasFilePathErr != nil {
 		return aliasFilePathErr
 	}
 
-	if pkg.FileMissing(AppFs, aliasFilePath) {
+	if pkg.FileMissing(appFs, aliasFilePath) {
 		fmt.Println("Aliases file is missing.")
 		return nil
 	}
 
-	removeFileErr := pkg.RemoveFile(AppFs, aliasFilePath)
+	removeFileErr := pkg.RemoveFile(appFs, aliasFilePath)
 	if removeFileErr != nil {
 		return removeFileErr
 	}

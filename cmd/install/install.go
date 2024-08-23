@@ -19,7 +19,9 @@ var InstallCmd = &cobra.Command{
 	Short:   "Create the configuration file used by pal",
 	Aliases: []string{"i"},
 	RunE: func(_ *cobra.Command, _ []string) error {
-		return RunInstallCmd()
+		appFs := afero.NewOsFs()
+
+		return RunInstallCmd(appFs)
 	},
 }
 
@@ -29,7 +31,7 @@ func init() {
 	InstallCmd.Flags().StringVarP(&shellFlag, "shell", "s", "", "Your interactive shell e.g. (bash/zsh, fish)")
 }
 
-func RunInstallCmd() error {
+func RunInstallCmd(appFs afero.Fs) error {
 	path := pathFlag
 	editorCmd := editorCmdFlag
 	shell := shellFlag
@@ -69,15 +71,13 @@ func RunInstallCmd() error {
 		shell = shellString
 	}
 
-	AppFs := afero.NewOsFs()
-
 	configDirPath, configDirPathErr := pkg.ConfigDirPath()
 	if configDirPathErr != nil {
 		return configDirPathErr
 	}
 
-	if pkg.FileMissing(AppFs, configDirPath) {
-		configDirErr := pkg.MakeConfigDir(AppFs)
+	if pkg.FileMissing(appFs, configDirPath) {
+		configDirErr := pkg.MakeConfigDir(appFs)
 		if configDirErr != nil {
 			return configDirErr
 		}
@@ -88,7 +88,7 @@ func RunInstallCmd() error {
 		return configFilePathErr
 	}
 
-	if pkg.FileMissing(AppFs, configFilePath) {
+	if pkg.FileMissing(appFs, configFilePath) {
 		c := pkg.Config{
 			Path:      path,
 			EditorCmd: editorCmd,
@@ -100,7 +100,7 @@ func RunInstallCmd() error {
 			return jsonErr
 		}
 
-		writeFileErr := pkg.WriteFile(AppFs, configFilePath, json, 0o644)
+		writeFileErr := pkg.WriteFile(appFs, configFilePath, json, 0o644)
 		if writeFileErr != nil {
 			return writeFileErr
 		}
@@ -108,7 +108,7 @@ func RunInstallCmd() error {
 		return nil
 	}
 
-	configFile, readConfigFileErr := pkg.ReadFile(AppFs, configFilePath)
+	configFile, readConfigFileErr := pkg.ReadFile(appFs, configFilePath)
 	if readConfigFileErr != nil {
 		return readConfigFileErr
 	}
@@ -135,7 +135,7 @@ func RunInstallCmd() error {
 		return jsonErr
 	}
 
-	writeFileErr := pkg.WriteFile(AppFs, configFilePath, json, 0o644)
+	writeFileErr := pkg.WriteFile(appFs, configFilePath, json, 0o644)
 	if writeFileErr != nil {
 		return writeFileErr
 	}

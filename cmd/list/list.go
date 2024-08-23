@@ -15,19 +15,19 @@ var ListCmd = &cobra.Command{
 	Short:   "Display aliases in `~/pal`",
 	Aliases: []string{"ls"},
 	RunE: func(_ *cobra.Command, _ []string) error {
-		return RunListCmd()
+		appFs := afero.NewOsFs()
+
+		return RunListCmd(appFs)
 	},
 }
 
-func RunListCmd() error {
-	AppFs := afero.NewOsFs()
-
+func RunListCmd(appFs afero.Fs) error {
 	aliasFilePath, aliasFilePathErr := pkg.AliasFilePath()
 	if aliasFilePathErr != nil {
 		return aliasFilePathErr
 	}
 
-	aliasFile, aliasFileErr := pkg.ReadFile(AppFs, aliasFilePath)
+	aliasFile, aliasFileErr := pkg.ReadFile(appFs, aliasFilePath)
 	if aliasFileErr != nil {
 		return aliasFileErr
 	}

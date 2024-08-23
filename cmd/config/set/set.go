@@ -15,13 +15,13 @@ var ConfigSetCmd = &cobra.Command{
 	Use:   "set",
 	Short: "Set pal configs",
 	RunE: func(_ *cobra.Command, args []string) error {
-		return RunConfigSetCmd(args)
+		appFs := afero.NewOsFs()
+
+		return RunConfigSetCmd(appFs, args)
 	},
 }
 
-func RunConfigSetCmd(args []string) error {
-	AppFs := afero.NewOsFs()
-
+func RunConfigSetCmd(appFs afero.Fs, args []string) error {
 	if len(args) != 2 {
 		return errors.New("requires 2 args")
 	}
@@ -31,7 +31,7 @@ func RunConfigSetCmd(args []string) error {
 		return configFilePathErr
 	}
 
-	jsonConfig, readConfigFileErr := pkg.ReadFile(AppFs, configFilePath)
+	jsonConfig, readConfigFileErr := pkg.ReadFile(appFs, configFilePath)
 	if readConfigFileErr != nil {
 		return readConfigFileErr
 	}
@@ -70,7 +70,7 @@ func RunConfigSetCmd(args []string) error {
 		return jsonErr
 	}
 
-	writeFileErr := pkg.WriteFile(AppFs, configFilePath, json, 0o644)
+	writeFileErr := pkg.WriteFile(appFs, configFilePath, json, 0o644)
 	if writeFileErr != nil {
 		return writeFileErr
 	}

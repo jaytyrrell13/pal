@@ -13,29 +13,29 @@ var RefreshCmd = &cobra.Command{
 	Use:   "refresh",
 	Short: "Delete pal aliases file and run `make` command",
 	RunE: func(_ *cobra.Command, _ []string) error {
-		return RunRefreshCmd()
+		appFs := afero.NewOsFs()
+
+		return RunRefreshCmd(appFs)
 	},
 }
 
-func RunRefreshCmd() error {
-	AppFs := afero.NewOsFs()
-
+func RunRefreshCmd(appFs afero.Fs) error {
 	aliasFilePath, aliasFilePathErr := pkg.AliasFilePath()
 	if aliasFilePathErr != nil {
 		return aliasFilePathErr
 	}
 
-	if pkg.FileMissing(AppFs, aliasFilePath) {
+	if pkg.FileMissing(appFs, aliasFilePath) {
 		fmt.Println("Aliases file is missing")
 		return nil
 	}
 
 	fmt.Println("Removing pal aliases file")
-	removeFileErr := pkg.RemoveFile(AppFs, aliasFilePath)
+	removeFileErr := pkg.RemoveFile(appFs, aliasFilePath)
 	if removeFileErr != nil {
 		return removeFileErr
 	}
 
 	fmt.Println("Running `make` command")
-	return make.RunMakeCmd()
+	return make.RunMakeCmd(appFs)
 }

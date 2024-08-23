@@ -17,19 +17,19 @@ var MakeCmd = &cobra.Command{
 	Use:   "make",
 	Short: "Create the aliases file",
 	RunE: func(_ *cobra.Command, _ []string) error {
-		return RunMakeCmd()
+		appFs := afero.NewOsFs()
+
+		return RunMakeCmd(appFs)
 	},
 }
 
-func RunMakeCmd() error {
-	AppFs := afero.NewOsFs()
-
+func RunMakeCmd(appFs afero.Fs) error {
 	configFilePath, configFilePathErr := pkg.ConfigFilePath()
 	if configFilePathErr != nil {
 		return configFilePathErr
 	}
 
-	if pkg.FileMissing(AppFs, configFilePath) {
+	if pkg.FileMissing(appFs, configFilePath) {
 		runInstall, confirmErr := ui.Confirm("Config file does not exist. Would you like to run install command now?")
 
 		if confirmErr != nil {
@@ -39,7 +39,7 @@ func RunMakeCmd() error {
 		if runInstall {
 			fmt.Println("Running install command.")
 
-			installCmdErr := install.RunInstallCmd()
+			installCmdErr := install.RunInstallCmd(appFs)
 			if installCmdErr != nil {
 				return installCmdErr
 			}
@@ -54,7 +54,7 @@ func RunMakeCmd() error {
 		return homeErr
 	}
 
-	c, readConfigFileErr := pkg.ReadFile(AppFs, configFilePath)
+	c, readConfigFileErr := pkg.ReadFile(appFs, configFilePath)
 	if readConfigFileErr != nil {
 		return readConfigFileErr
 	}
@@ -70,7 +70,7 @@ func RunMakeCmd() error {
 		path = filepath.Join(home, path[2:])
 	}
 
-	files, readDirErr := afero.ReadDir(AppFs, path)
+	files, readDirErr := afero.ReadDir(appFs, path)
 	if readDirErr != nil {
 		return readDirErr
 	}
@@ -108,12 +108,12 @@ func RunMakeCmd() error {
 		return aliasFilePathErr
 	}
 
-	writeErr := pkg.WriteFile(AppFs, aliasFilePath, []byte(output), 0o755)
+	writeErr := pkg.WriteFile(appFs, aliasFilePath, []byte(output), 0o755)
 	if writeErr != nil {
 		return writeErr
 	}
 
-	return sourceAliasFile(AppFs, jsonConfig)
+	return sourceAliasFile(appFs, jsonConfig)
 }
 
 func sourceAliasFile(appFs afero.Fs, config pkg.Config) error {

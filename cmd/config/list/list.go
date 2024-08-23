@@ -15,20 +15,20 @@ var ConfigListCmd = &cobra.Command{
 	Short:   "List pal configs",
 	Aliases: []string{"ls"},
 	RunE: func(_ *cobra.Command, _ []string) error {
-		return RunConfigListCmd()
+		appFs := afero.NewOsFs()
+
+		return RunConfigListCmd(appFs)
 	},
 }
 
-func RunConfigListCmd() error {
-	AppFs := afero.NewOsFs()
-
+func RunConfigListCmd(appFs afero.Fs) error {
 	configDirPath, configDirPathErr := pkg.ConfigDirPath()
 	if configDirPathErr != nil {
 		return configDirPathErr
 	}
 
-	if pkg.FileMissing(AppFs, configDirPath) {
-		configDirErr := pkg.MakeConfigDir(AppFs)
+	if pkg.FileMissing(appFs, configDirPath) {
+		configDirErr := pkg.MakeConfigDir(appFs)
 		if configDirErr != nil {
 			return configDirErr
 		}
@@ -39,7 +39,7 @@ func RunConfigListCmd() error {
 		return configFilePathErr
 	}
 
-	configFile, readConfigFileErr := pkg.ReadFile(AppFs, configFilePath)
+	configFile, readConfigFileErr := pkg.ReadFile(appFs, configFilePath)
 	if readConfigFileErr != nil {
 		return readConfigFileErr
 	}
