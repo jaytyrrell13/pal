@@ -21,7 +21,7 @@ var AddCmd = &cobra.Command{
 	RunE: func(_ *cobra.Command, _ []string) error {
 		appFs := afero.NewOsFs()
 
-		return RunAddCmd(appFs)
+		return RunAddCmd(appFs, nameFlag, pathFlag)
 	},
 }
 
@@ -30,7 +30,7 @@ func init() {
 	AddCmd.Flags().StringVarP(&pathFlag, "path", "p", "", "Path to your additional directory")
 }
 
-func RunAddCmd(appFs afero.Fs) error {
+func RunAddCmd(appFs afero.Fs, name string, path string) error {
 	aliasFilePath, aliasFilePathErr := pkg.AliasFilePath()
 	if aliasFilePathErr != nil {
 		return aliasFilePathErr
@@ -55,9 +55,6 @@ func RunAddCmd(appFs afero.Fs) error {
 			return makeCmdErr
 		}
 	}
-
-	name := nameFlag
-	path := pathFlag
 
 	if name == "" {
 		nameString, nameErr := ui.Input("What is the name of the alias?", "foo")
