@@ -2,6 +2,7 @@ package set
 
 import (
 	"errors"
+	"fmt"
 	"reflect"
 
 	"github.com/jaytyrrell13/pal/pkg"
@@ -60,6 +61,10 @@ func RunConfigSetCmd(appFs afero.Fs, args []string) error {
 	case "EditorCmd":
 		c.EditorCmd = value
 	case "Shell":
+		if value != pkg.Shell_Bash && value != pkg.Shell_Zsh && value != pkg.Shell_Fish {
+			return fmt.Errorf("Shell must be either Bash, Zsh, or Fish. Received: %s", value)
+		}
+
 		c.Shell = value
 	case "Extras":
 		c.Extras = append(c.Extras, value)
