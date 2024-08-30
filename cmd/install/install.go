@@ -89,11 +89,7 @@ func RunInstallCmd(appFs afero.Fs) error {
 	}
 
 	if pkg.FileMissing(appFs, configFilePath) {
-		c := pkg.Config{
-			Path:      path,
-			EditorCmd: editorCmd,
-			Shell:     shell,
-		}
+		c := pkg.NewConfig(path, editorCmd, shell)
 
 		json, jsonErr := c.AsJson()
 		if jsonErr != nil {

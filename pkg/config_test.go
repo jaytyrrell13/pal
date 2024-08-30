@@ -69,10 +69,7 @@ func TestFromJson(t *testing.T) {
 	json := "{\"Path\": \"/foo/bar\", \"EditorCmd\": \"foo\", \"Extras\":null}"
 	got, err := FromJson([]byte(json))
 
-	expected := Config{
-		Path:      "/foo/bar",
-		EditorCmd: "foo",
-	}
+	expected := NewConfig("/foo/bar", "foo", "")
 
 	if got.Path != expected.Path || got.EditorCmd != expected.EditorCmd || err != nil {
 		t.Errorf("Expected Path '%q' EditorCmd '%q', but got Path '%q' EditorCmd '%q'", expected.EditorCmd, expected.Path, got.Path, got.EditorCmd)
@@ -80,10 +77,7 @@ func TestFromJson(t *testing.T) {
 }
 
 func TestAsJson(t *testing.T) {
-	config := Config{
-		Path:      "/foo/bar",
-		EditorCmd: "foo",
-	}
+	config := NewConfig("/foo/bar", "foo", "")
 
 	got, err := config.AsJson()
 
