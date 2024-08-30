@@ -1,7 +1,8 @@
 package list
 
 import (
-	"fmt"
+	"io"
+	"os"
 	"strings"
 
 	"github.com/jaytyrrell13/pal/pkg"
@@ -17,11 +18,11 @@ var ListCmd = &cobra.Command{
 	RunE: func(_ *cobra.Command, _ []string) error {
 		appFs := afero.NewOsFs()
 
-		return RunListCmd(appFs)
+		return RunListCmd(appFs, os.Stdout)
 	},
 }
 
-func RunListCmd(appFs afero.Fs) error {
+func RunListCmd(appFs afero.Fs, w io.Writer) error {
 	aliasFilePath, aliasFilePathErr := pkg.AliasFilePath()
 	if aliasFilePathErr != nil {
 		return aliasFilePathErr
@@ -46,7 +47,10 @@ func RunListCmd(appFs afero.Fs) error {
 
 	t := ui.Table(headers, rows)
 
-	fmt.Println(t)
+	_, writeErr := w.Write([]byte(t.String()))
+	if writeErr != nil {
+		return writeErr
+	}
 
 	return nil
 }

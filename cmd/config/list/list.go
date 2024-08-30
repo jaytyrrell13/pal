@@ -1,7 +1,8 @@
 package list
 
 import (
-	"fmt"
+	"io"
+	"os"
 	"strings"
 
 	"github.com/jaytyrrell13/pal/pkg"
@@ -17,11 +18,11 @@ var ConfigListCmd = &cobra.Command{
 	RunE: func(_ *cobra.Command, _ []string) error {
 		appFs := afero.NewOsFs()
 
-		return RunConfigListCmd(appFs)
+		return RunConfigListCmd(appFs, os.Stdout)
 	},
 }
 
-func RunConfigListCmd(appFs afero.Fs) error {
+func RunConfigListCmd(appFs afero.Fs, w io.Writer) error {
 	configDirPath, configDirPathErr := pkg.ConfigDirPath()
 	if configDirPathErr != nil {
 		return configDirPathErr
@@ -59,7 +60,10 @@ func RunConfigListCmd(appFs afero.Fs) error {
 
 	t := ui.Table(headers, rows)
 
-	fmt.Println(t)
+	_, writeErr := w.Write([]byte(t.String()))
+	if writeErr != nil {
+		return writeErr
+	}
 
 	return nil
 }
