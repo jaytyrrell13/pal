@@ -16,20 +16,14 @@ func TestAddCommand(t *testing.T) {
 		t.Error(aliasFilePathErr)
 	}
 
-	writeFileErr := afero.WriteFile(appFs, aliasFilePath, []byte("alias foo=\"cd /bar/baz\"\n"), 0o755)
-	if writeFileErr != nil {
-		t.Fatalf("WriteFile Error: '%q'", writeFileErr)
-	}
+	pkg.WriteFixtureFile(t, appFs, aliasFilePath, []byte("alias foo=\"cd /bar/baz\"\n"))
 
 	configFilePath, configFilePathErr := pkg.ConfigFilePath()
 	if configFilePathErr != nil {
 		t.Error(configFilePathErr)
 	}
 
-	writeConfigFileErr := afero.WriteFile(appFs, configFilePath, []byte("{\"Path\": \"/foo\", \"EditorCmd\": \"nvim\"}"), 0o755)
-	if writeConfigFileErr != nil {
-		t.Fatalf("WriteConfigFile Error: '%q'", writeConfigFileErr)
-	}
+	pkg.WriteFixtureFile(t, appFs, configFilePath, []byte("{\"Path\": \"/foo\", \"EditorCmd\": \"nvim\"}"))
 
 	got := RunAddCmd(appFs, "bark", "/foo/baz")
 

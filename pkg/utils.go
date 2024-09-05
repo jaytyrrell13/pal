@@ -4,6 +4,7 @@ import (
 	"errors"
 	"io/fs"
 	"os"
+	"testing"
 
 	"github.com/spf13/afero"
 )
@@ -46,4 +47,12 @@ func RemoveFile(afs afero.Fs, path string) error {
 func FileMissing(fs afero.Fs, path string) bool {
 	_, e := fs.Stat(path)
 	return errors.Is(e, os.ErrNotExist)
+}
+
+func WriteFixtureFile(t *testing.T, appFs afero.Fs, path string, data []byte) {
+	t.Helper()
+	writeFileErr := afero.WriteFile(appFs, path, data, 0o755)
+	if writeFileErr != nil {
+		t.Fatalf("WriteFixtureFile Error: '%q'", writeFileErr)
+	}
 }

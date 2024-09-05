@@ -18,10 +18,7 @@ func TestConfigListCommand(t *testing.T) {
 		t.Fatalf("ConfigDirPath Error: '%q'", configFilePathErr)
 	}
 
-	writeFileErr := afero.WriteFile(appFs, configFilePath, []byte("{\"Path\": \"/foo\", \"EditorCmd\": \"editorCmd\"}"), 0o755)
-	if writeFileErr != nil {
-		t.Fatalf("WriteFile Error: '%q'", writeFileErr)
-	}
+	pkg.WriteFixtureFile(t, appFs, configFilePath, []byte("{\"Path\": \"/foo\", \"EditorCmd\": \"editorCmd\"}"))
 
 	got := RunConfigListCmd(appFs, &output)
 

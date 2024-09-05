@@ -18,10 +18,7 @@ func TestListCommand(t *testing.T) {
 		t.Error(aliasFilePathErr)
 	}
 
-	writeFileErr := afero.WriteFile(appFs, aliasFilePath, []byte("alias foo=\"cd /bar/baz\""), 0o755)
-	if writeFileErr != nil {
-		t.Fatalf("WriteFile Error: '%q'", writeFileErr)
-	}
+	pkg.WriteFixtureFile(t, appFs, aliasFilePath, []byte("alias foo=\"cd /bar/baz\""))
 
 	got := RunListCmd(appFs, &output)
 
