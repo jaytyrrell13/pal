@@ -53,13 +53,13 @@ func FromJson(j []byte) (Config, error) {
 	return c, unmarshalErr
 }
 
-func SaveExtraDir(fs afero.Fs, path string) error {
+func SaveExtraDir(appFs afero.Fs, path string) error {
 	configFilePath, configFilePathErr := ConfigFilePath()
 	if configFilePathErr != nil {
 		return configFilePathErr
 	}
 
-	configFile, readConfigFileErr := ReadFile(fs, configFilePath)
+	configFile, readConfigFileErr := ReadFile(appFs, configFilePath)
 	if readConfigFileErr != nil {
 		return readConfigFileErr
 	}
@@ -71,19 +71,28 @@ func SaveExtraDir(fs afero.Fs, path string) error {
 
 	c.Extras = append(c.Extras, path)
 
+	return c.Save(appFs)
+}
+
+func (c Config) AsJson() ([]byte, error) {
+	return json.Marshal(c)
+}
+
+func (c *Config) Save(appFs afero.Fs) error {
+	configFilePath, configFilePathErr := ConfigFilePath()
+	if configFilePathErr != nil {
+		return configFilePathErr
+	}
+
 	json, jsonErr := c.AsJson()
 	if jsonErr != nil {
 		return jsonErr
 	}
 
-	writeFileErr := WriteFile(fs, configFilePath, json, 0o644)
+	writeFileErr := WriteFile(appFs, configFilePath, json, 0o644)
 	if writeFileErr != nil {
 		return writeFileErr
 	}
 
 	return nil
-}
-
-func (c Config) AsJson() ([]byte, error) {
-	return json.Marshal(c)
 }

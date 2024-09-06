@@ -88,53 +88,11 @@ func RunInstallCmd(appFs afero.Fs) error {
 		return configFilePathErr
 	}
 
-	if pkg.FileMissing(appFs, configFilePath) {
-		c := pkg.NewConfig(path, editorCmd, shell)
-
-		json, jsonErr := c.AsJson()
-		if jsonErr != nil {
-			return jsonErr
-		}
-
-		writeFileErr := pkg.WriteFile(appFs, configFilePath, json, 0o644)
-		if writeFileErr != nil {
-			return writeFileErr
-		}
-
+	if !pkg.FileMissing(appFs, configFilePath) {
 		return nil
 	}
 
-	configFile, readConfigFileErr := pkg.ReadFile(appFs, configFilePath)
-	if readConfigFileErr != nil {
-		return readConfigFileErr
-	}
+	c := pkg.NewConfig(path, editorCmd, shell)
 
-	c, configFileErr := pkg.FromJson(configFile)
-	if configFileErr != nil {
-		return configFileErr
-	}
-
-	if c.Path != path {
-		c.Path = path
-	}
-
-	if c.EditorCmd != editorCmd {
-		c.EditorCmd = editorCmd
-	}
-
-	if c.Shell != shell {
-		c.Shell = shell
-	}
-
-	json, jsonErr := c.AsJson()
-	if jsonErr != nil {
-		return jsonErr
-	}
-
-	writeFileErr := pkg.WriteFile(appFs, configFilePath, json, 0o644)
-	if writeFileErr != nil {
-		return writeFileErr
-	}
-
-	return nil
+	return c.Save(appFs)
 }

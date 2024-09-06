@@ -70,15 +70,5 @@ func RunConfigSetCmd(appFs afero.Fs, args []string) error {
 		c.Extras = append(c.Extras, value)
 	}
 
-	json, jsonErr := c.AsJson()
-	if jsonErr != nil {
-		return jsonErr
-	}
-
-	writeFileErr := pkg.WriteFile(appFs, configFilePath, json, 0o644)
-	if writeFileErr != nil {
-		return writeFileErr
-	}
-
-	return nil
+	return c.Save(appFs)
 }

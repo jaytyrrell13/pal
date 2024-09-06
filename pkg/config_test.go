@@ -85,3 +85,15 @@ func TestAsJson(t *testing.T) {
 		t.Errorf("Got '%q' Err '%q'", got, err)
 	}
 }
+
+func TestSave(t *testing.T) {
+	appFs := afero.NewMemMapFs()
+
+	config := NewConfig("/foo/bar", "foo", "")
+
+	got := config.Save(appFs)
+
+	if got != nil {
+		t.Errorf("expected 'nil' from Save. got='%q'", got)
+	}
+}
