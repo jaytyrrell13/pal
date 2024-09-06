@@ -39,7 +39,7 @@ func RunCleanCmd(appFs afero.Fs, w io.Writer) error {
 		return removeFileErr
 	}
 
-	_, writeErr := w.Write([]byte("Aliases file been deleted."))
+	_, writeErr := w.Write([]byte("Aliases file has been deleted."))
 	if writeErr != nil {
 		return writeErr
 	}
