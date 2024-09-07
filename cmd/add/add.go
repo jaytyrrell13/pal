@@ -86,17 +86,17 @@ func RunAddCmd(appFs afero.Fs, name string, path string) error {
 		return configFilePathErr
 	}
 
-	c, readConfigFileErr := pkg.ReadFile(appFs, configFilePath)
+	jsonConfig, readConfigFileErr := pkg.ReadFile(appFs, configFilePath)
 	if readConfigFileErr != nil {
 		return readConfigFileErr
 	}
 
-	jsonConfig, fromJsonErr := pkg.FromJson(c)
+	c, fromJsonErr := pkg.FromJson(jsonConfig)
 	if fromJsonErr != nil {
 		return fromJsonErr
 	}
 
-	output := pkg.MakeAliasCommands(name, path, jsonConfig)
+	a := pkg.NewAlias(name, path)
 
-	return pkg.AppendToFile(appFs, aliasFilePath, []byte(output))
+	return pkg.AppendToFile(appFs, aliasFilePath, []byte(a.String(c)))
 }

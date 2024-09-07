@@ -54,17 +54,17 @@ func RunMakeCmd(appFs afero.Fs) error {
 		return homeErr
 	}
 
-	c, readConfigFileErr := pkg.ReadFile(appFs, configFilePath)
+	jsonConfig, readConfigFileErr := pkg.ReadFile(appFs, configFilePath)
 	if readConfigFileErr != nil {
 		return readConfigFileErr
 	}
 
-	jsonConfig, fromJsonErr := pkg.FromJson(c)
+	c, fromJsonErr := pkg.FromJson(jsonConfig)
 	if fromJsonErr != nil {
 		return fromJsonErr
 	}
 
-	path := jsonConfig.Path
+	path := c.Path
 
 	if strings.HasPrefix(path, "~/") {
 		path = filepath.Join(home, path[2:])
@@ -78,13 +78,13 @@ func RunMakeCmd(appFs afero.Fs) error {
 	var projectPaths []string
 	for _, file := range files {
 		if file.Name() != ".DS_Store" {
-			projectPaths = append(projectPaths, jsonConfig.Path+"/"+file.Name())
+			projectPaths = append(projectPaths, c.Path+"/"+file.Name())
 		}
 	}
 
-	projectPaths = append(projectPaths, jsonConfig.Extras...)
+	projectPaths = append(projectPaths, c.Extras...)
 
-	var output string
+	var aliases []pkg.Alias
 	for _, path := range projectPaths {
 		alias, aliasErr := ui.Input(fmt.Sprintf("Alias for (%s) Leave blank to skip.", path), "foo")
 
@@ -96,24 +96,15 @@ func RunMakeCmd(appFs afero.Fs) error {
 			continue
 		}
 
-		output += pkg.MakeAliasCommands(alias, path, jsonConfig)
+		aliases = append(aliases, pkg.NewAlias(alias, path))
 	}
 
-	if output == "" {
-		return nil
+	saveErr := pkg.SaveAliases(appFs, aliases, c)
+	if saveErr != nil {
+		return saveErr
 	}
 
-	aliasFilePath, aliasFilePathErr := pkg.AliasFilePath()
-	if aliasFilePathErr != nil {
-		return aliasFilePathErr
-	}
-
-	writeErr := pkg.WriteFile(appFs, aliasFilePath, []byte(output), 0o755)
-	if writeErr != nil {
-		return writeErr
-	}
-
-	return sourceAliasFile(appFs, jsonConfig)
+	return sourceAliasFile(appFs, c)
 }
 
 func sourceAliasFile(appFs afero.Fs, config pkg.Config) error {

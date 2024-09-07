@@ -14,8 +14,8 @@ type Config struct {
 	Extras    []string
 }
 
-func NewConfig(path string, editorCmd string, shell string) *Config {
-	return &Config{
+func NewConfig(path string, editorCmd string, shell string) Config {
+	return Config{
 		Path:      path,
 		EditorCmd: editorCmd,
 		Shell:     shell,
