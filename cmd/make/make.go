@@ -24,12 +24,7 @@ var MakeCmd = &cobra.Command{
 }
 
 func RunMakeCmd(appFs afero.Fs) error {
-	configFilePath, configFilePathErr := pkg.ConfigFilePath()
-	if configFilePathErr != nil {
-		return configFilePathErr
-	}
-
-	if pkg.FileMissing(appFs, configFilePath) {
+	if ok, _ := pkg.ConfigFileMissing(appFs); ok {
 		runInstall, confirmErr := ui.Confirm("Config file does not exist. Would you like to run install command now?")
 
 		if confirmErr != nil {

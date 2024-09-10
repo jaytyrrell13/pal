@@ -83,12 +83,7 @@ func RunInstallCmd(appFs afero.Fs) error {
 		}
 	}
 
-	configFilePath, configFilePathErr := pkg.ConfigFilePath()
-	if configFilePathErr != nil {
-		return configFilePathErr
-	}
-
-	if !pkg.FileMissing(appFs, configFilePath) {
+	if ok, _ := pkg.ConfigFileMissing(appFs); !ok {
 		return nil
 	}
 

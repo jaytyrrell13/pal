@@ -45,6 +45,41 @@ func TestMakeConfigDir(t *testing.T) {
 	}
 }
 
+func TestConfigFileMissing(t *testing.T) {
+	t.Run("when config file is present", func(t *testing.T) {
+		appFs := afero.NewMemMapFs()
+
+		configFilePath, configFileErr := ConfigFilePath()
+		if configFileErr != nil {
+			t.Error(configFileErr)
+		}
+
+		WriteFixtureFile(t, appFs, configFilePath, []byte("{\"Path\": \"/foo\", \"EditorCmd\": \"bar\"}"))
+
+		got, err := ConfigFileMissing(appFs)
+		if err != nil {
+			t.Errorf("expected 'nil' but got '%q'", err)
+		}
+
+		if got != false {
+			t.Errorf("expected 'false' but got '%v'", got)
+		}
+	})
+
+	t.Run("when config file is missing", func(t *testing.T) {
+		appFs := afero.NewMemMapFs()
+
+		got, err := ConfigFileMissing(appFs)
+		if err != nil {
+			t.Errorf("expected 'nil' but got '%q'", err)
+		}
+
+		if got != true {
+			t.Errorf("expected 'true' but got '%v'", got)
+		}
+	})
+}
+
 func TestReadConfigFile(t *testing.T) {
 	t.Run("when config file is present", func(t *testing.T) {
 		appFs := afero.NewMemMapFs()

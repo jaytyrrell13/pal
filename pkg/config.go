@@ -46,6 +46,15 @@ func MakeConfigDir(fs afero.Fs) error {
 	return fs.MkdirAll(path, 0o750)
 }
 
+func ConfigFileMissing(appFs afero.Fs) (bool, error) {
+	configFilePath, configFilePathErr := ConfigFilePath()
+	if configFilePathErr != nil {
+		return false, configFilePathErr
+	}
+
+	return FileMissing(appFs, configFilePath), nil
+}
+
 func ReadConfigFile(appFs afero.Fs) (Config, error) {
 	configFilePath, configFilePathErr := ConfigFilePath()
 	if configFilePathErr != nil {
