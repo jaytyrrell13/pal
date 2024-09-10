@@ -27,19 +27,9 @@ func RunConfigSetCmd(appFs afero.Fs, args []string) error {
 		return errors.New("requires 2 args")
 	}
 
-	configFilePath, configFilePathErr := pkg.ConfigFilePath()
-	if configFilePathErr != nil {
-		return configFilePathErr
-	}
-
-	jsonConfig, readConfigFileErr := pkg.ReadFile(appFs, configFilePath)
-	if readConfigFileErr != nil {
-		return readConfigFileErr
-	}
-
-	c, fromJsonErr := pkg.FromJson(jsonConfig)
-	if fromJsonErr != nil {
-		return fromJsonErr
+	c, readConfigErr := pkg.ReadConfigFile(appFs)
+	if readConfigErr != nil {
+		return readConfigErr
 	}
 
 	values := reflect.ValueOf(c)

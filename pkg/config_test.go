@@ -45,6 +45,50 @@ func TestMakeConfigDir(t *testing.T) {
 	}
 }
 
+func TestReadConfigFile(t *testing.T) {
+	t.Run("when config file is present", func(t *testing.T) {
+		appFs := afero.NewMemMapFs()
+
+		configFilePath, configFileErr := ConfigFilePath()
+		if configFileErr != nil {
+			t.Error(configFileErr)
+		}
+
+		WriteFixtureFile(t, appFs, configFilePath, []byte("{\"Path\": \"/foo\", \"EditorCmd\": \"bar\"}"))
+
+		got, err := ReadConfigFile(appFs)
+		if err != nil {
+			t.Errorf("expected 'nil' but got '%q'", err)
+		}
+
+		if got.Path != "/foo" {
+			t.Errorf("expected Path to be '/foo' but got '%s'", got.Path)
+		}
+
+		if got.EditorCmd != "bar" {
+			t.Errorf("expected EditorCmd to be 'bar' but got '%s'", got.EditorCmd)
+		}
+	})
+
+	t.Run("when config file is missing", func(t *testing.T) {
+		appFs := afero.NewMemMapFs()
+
+		got, err := ReadConfigFile(appFs)
+
+		if err == nil {
+			t.Errorf("expected an error but got 'nil'")
+		}
+
+		if got.Path != "" {
+			t.Errorf("expected Path to be empty but got '%s'", got.Path)
+		}
+
+		if got.EditorCmd != "" {
+			t.Errorf("expected EditorCmd to be empty but got '%s'", got.Path)
+		}
+	})
+}
+
 func TestSaveExtraDir(t *testing.T) {
 	appFs := afero.NewMemMapFs()
 
@@ -53,10 +97,7 @@ func TestSaveExtraDir(t *testing.T) {
 		t.Error(configFileErr)
 	}
 
-	writeFileErr := afero.WriteFile(appFs, configFilePath, []byte("{\"Path\": \"/foo\", \"EditorCmd\": \"bar\"}"), 0o755)
-	if writeFileErr != nil {
-		t.Fatalf("WriteFile Error: '%q'", writeFileErr)
-	}
+	WriteFixtureFile(t, appFs, configFilePath, []byte("{\"Path\": \"/foo\", \"EditorCmd\": \"bar\"}"))
 
 	got := SaveExtraDir(appFs, "/bar/baz")
 

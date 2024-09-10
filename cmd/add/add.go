@@ -81,19 +81,9 @@ func RunAddCmd(appFs afero.Fs, name string, path string) error {
 		return saveExtraDirErr
 	}
 
-	configFilePath, configFilePathErr := pkg.ConfigFilePath()
-	if configFilePathErr != nil {
-		return configFilePathErr
-	}
-
-	jsonConfig, readConfigFileErr := pkg.ReadFile(appFs, configFilePath)
-	if readConfigFileErr != nil {
-		return readConfigFileErr
-	}
-
-	c, fromJsonErr := pkg.FromJson(jsonConfig)
-	if fromJsonErr != nil {
-		return fromJsonErr
+	c, readConfigErr := pkg.ReadConfigFile(appFs)
+	if readConfigErr != nil {
+		return readConfigErr
 	}
 
 	a := pkg.NewAlias(name, path)

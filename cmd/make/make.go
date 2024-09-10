@@ -54,14 +54,9 @@ func RunMakeCmd(appFs afero.Fs) error {
 		return homeErr
 	}
 
-	jsonConfig, readConfigFileErr := pkg.ReadFile(appFs, configFilePath)
-	if readConfigFileErr != nil {
-		return readConfigFileErr
-	}
-
-	c, fromJsonErr := pkg.FromJson(jsonConfig)
-	if fromJsonErr != nil {
-		return fromJsonErr
+	c, readConfigErr := pkg.ReadConfigFile(appFs)
+	if readConfigErr != nil {
+		return readConfigErr
 	}
 
 	path := c.Path

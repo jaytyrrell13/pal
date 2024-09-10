@@ -46,6 +46,25 @@ func MakeConfigDir(fs afero.Fs) error {
 	return fs.MkdirAll(path, 0o750)
 }
 
+func ReadConfigFile(appFs afero.Fs) (Config, error) {
+	configFilePath, configFilePathErr := ConfigFilePath()
+	if configFilePathErr != nil {
+		return Config{}, configFilePathErr
+	}
+
+	jsonConfig, readConfigFileErr := ReadFile(appFs, configFilePath)
+	if readConfigFileErr != nil {
+		return Config{}, readConfigFileErr
+	}
+
+	c, fromJsonErr := FromJson(jsonConfig)
+	if fromJsonErr != nil {
+		return Config{}, fromJsonErr
+	}
+
+	return c, nil
+}
+
 func FromJson(j []byte) (Config, error) {
 	var c Config
 	unmarshalErr := json.Unmarshal(j, &c)
@@ -54,19 +73,9 @@ func FromJson(j []byte) (Config, error) {
 }
 
 func SaveExtraDir(appFs afero.Fs, path string) error {
-	configFilePath, configFilePathErr := ConfigFilePath()
-	if configFilePathErr != nil {
-		return configFilePathErr
-	}
-
-	configFile, readConfigFileErr := ReadFile(appFs, configFilePath)
-	if readConfigFileErr != nil {
-		return readConfigFileErr
-	}
-
-	c, configFileErr := FromJson(configFile)
-	if configFileErr != nil {
-		return configFileErr
+	c, readConfigErr := ReadConfigFile(appFs)
+	if readConfigErr != nil {
+		return readConfigErr
 	}
 
 	c.Extras = append(c.Extras, path)

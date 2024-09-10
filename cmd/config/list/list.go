@@ -35,19 +35,9 @@ func RunConfigListCmd(appFs afero.Fs, w io.Writer) error {
 		}
 	}
 
-	configFilePath, configFilePathErr := pkg.ConfigFilePath()
-	if configFilePathErr != nil {
-		return configFilePathErr
-	}
-
-	configFile, readConfigFileErr := pkg.ReadFile(appFs, configFilePath)
-	if readConfigFileErr != nil {
-		return readConfigFileErr
-	}
-
-	c, configFileErr := pkg.FromJson(configFile)
-	if configFileErr != nil {
-		return configFileErr
+	c, readConfigErr := pkg.ReadConfigFile(appFs)
+	if readConfigErr != nil {
+		return readConfigErr
 	}
 
 	headers := []string{"Key", "Value"}
