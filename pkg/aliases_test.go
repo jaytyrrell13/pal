@@ -26,7 +26,7 @@ func TestSaveAliases(t *testing.T) {
 		{alias: "bar", path: "/bar"},
 	}
 
-	c := NewConfig("/path", "", "")
+	c, _ := NewConfig("/path", "", "")
 
 	t.Run("when aliases is empty", func(t *testing.T) {
 		appFs := afero.NewMemMapFs()
@@ -67,13 +67,16 @@ func TestSaveAliases(t *testing.T) {
 }
 
 func TestString(t *testing.T) {
+	configWithEditorCmd, _ := NewConfig("/foo", "nvim", "zsh")
+	configWithoutEditorCmd, _ := NewConfig("/foo", "", "zsh")
+
 	cases := []struct {
 		name     string
 		config   Config
 		expected string
 	}{
-		{"when EditorCmd is nvim", NewConfig("/foo", "nvim", "zsh"), "alias foo=\"cd /foo\"\nalias efoo=\"cd /foo && nvim\"\n"},
-		{"when EditorCmd is blank", NewConfig("/foo", "", "zsh"), "alias foo=\"cd /foo\"\n"},
+		{"when EditorCmd is nvim", configWithEditorCmd, "alias foo=\"cd /foo\"\nalias efoo=\"cd /foo && nvim\"\n"},
+		{"when EditorCmd is blank", configWithoutEditorCmd, "alias foo=\"cd /foo\"\n"},
 	}
 
 	for _, tt := range cases {

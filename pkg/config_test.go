@@ -145,7 +145,11 @@ func TestFromJson(t *testing.T) {
 	json := "{\"Path\": \"/foo/bar\", \"EditorCmd\": \"foo\", \"Extras\":null}"
 	got, err := FromJson([]byte(json))
 
-	expected := NewConfig("/foo/bar", "foo", "")
+	expected, configErr := NewConfig("/foo/bar", "foo", "")
+
+	if configErr != nil {
+		t.Errorf("Expected 'nil', but got '%q'", configErr)
+	}
 
 	if got.Path != expected.Path || got.EditorCmd != expected.EditorCmd || err != nil {
 		t.Errorf("Expected Path '%q' EditorCmd '%q', but got Path '%q' EditorCmd '%q'", expected.EditorCmd, expected.Path, got.Path, got.EditorCmd)
@@ -153,7 +157,11 @@ func TestFromJson(t *testing.T) {
 }
 
 func TestAsJson(t *testing.T) {
-	config := NewConfig("/foo/bar", "foo", "")
+	config, configErr := NewConfig("/foo/bar", "foo", "")
+
+	if configErr != nil {
+		t.Errorf("Expected 'nil', but got '%q'", configErr)
+	}
 
 	got, err := config.AsJson()
 
@@ -165,7 +173,11 @@ func TestAsJson(t *testing.T) {
 func TestSave(t *testing.T) {
 	appFs := afero.NewMemMapFs()
 
-	config := NewConfig("/foo/bar", "foo", "")
+	config, configErr := NewConfig("/foo/bar", "foo", "")
+
+	if configErr != nil {
+		t.Errorf("Expected 'nil', but got '%q'", configErr)
+	}
 
 	got := config.Save(appFs)
 

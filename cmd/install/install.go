@@ -87,7 +87,10 @@ func RunInstallCmd(appFs afero.Fs) error {
 		return nil
 	}
 
-	c := pkg.NewConfig(path, editorCmd, shell)
+	c, configErr := pkg.NewConfig(path, editorCmd, shell)
+	if configErr != nil {
+		return configErr
+	}
 
 	return c.Save(appFs)
 }

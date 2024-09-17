@@ -3,6 +3,8 @@ package pkg
 import (
 	"encoding/json"
 	"os"
+	"path/filepath"
+	"strings"
 
 	"github.com/spf13/afero"
 )
@@ -14,12 +16,21 @@ type Config struct {
 	Extras    []string
 }
 
-func NewConfig(path string, editorCmd string, shell string) Config {
+func NewConfig(path string, editorCmd string, shell string) (Config, error) {
+	home, homeErr := os.UserHomeDir()
+	if homeErr != nil {
+		return Config{}, homeErr
+	}
+
+	if strings.HasPrefix(path, "~/") {
+		path = filepath.Join(home, path[2:])
+	}
+
 	return Config{
 		Path:      path,
 		EditorCmd: editorCmd,
 		Shell:     shell,
-	}
+	}, nil
 }
 
 func ConfigDirPath() (string, error) {

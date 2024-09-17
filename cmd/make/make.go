@@ -3,8 +3,6 @@ package make
 import (
 	"fmt"
 	"os"
-	"path/filepath"
-	"strings"
 
 	"github.com/jaytyrrell13/pal/cmd/install"
 	"github.com/jaytyrrell13/pal/pkg"
@@ -44,21 +42,12 @@ func RunMakeCmd(appFs afero.Fs) error {
 		}
 	}
 
-	home, homeErr := os.UserHomeDir()
-	if homeErr != nil {
-		return homeErr
-	}
-
 	c, readConfigErr := pkg.ReadConfigFile(appFs)
 	if readConfigErr != nil {
 		return readConfigErr
 	}
 
 	path := c.Path
-
-	if strings.HasPrefix(path, "~/") {
-		path = filepath.Join(home, path[2:])
-	}
 
 	files, readDirErr := afero.ReadDir(appFs, path)
 	if readDirErr != nil {
