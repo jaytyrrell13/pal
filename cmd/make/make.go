@@ -93,11 +93,11 @@ func sourceAliasFile(appFs afero.Fs, config pkg.Config) error {
 	}
 
 	switch config.Shell {
-	case pkg.Shell_Bash:
+	case pkg.BashShell:
 		return sourceBashFile(appFs, home)
-	case pkg.Shell_Zsh:
+	case pkg.ZshShell:
 		return sourceZshFile(appFs, home)
-	case pkg.Shell_Fish:
+	case pkg.FishShell:
 		return sourceFishFile(appFs, home)
 	}
 

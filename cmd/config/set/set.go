@@ -51,7 +51,7 @@ func RunConfigSetCmd(appFs afero.Fs, args []string) error {
 	case "EditorCmd":
 		c.EditorCmd = value
 	case "Shell":
-		if value != pkg.Shell_Bash && value != pkg.Shell_Zsh && value != pkg.Shell_Fish {
+		if value != pkg.BashShell && value != pkg.ZshShell && value != pkg.FishShell {
 			return fmt.Errorf("Shell must be either Bash, Zsh, or Fish. Received: %s", value)
 		}
 

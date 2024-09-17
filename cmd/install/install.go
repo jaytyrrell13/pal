@@ -58,9 +58,9 @@ func RunInstallCmd(appFs afero.Fs) error {
 
 	if shell == "" {
 		options := []huh.Option[string]{
-			huh.NewOption("Bash", pkg.Shell_Bash),
-			huh.NewOption("Zsh", pkg.Shell_Zsh),
-			huh.NewOption("Fish", pkg.Shell_Fish),
+			huh.NewOption("Bash", pkg.BashShell),
+			huh.NewOption("Zsh", pkg.ZshShell),
+			huh.NewOption("Fish", pkg.FishShell),
 		}
 		shellString, shellErr := ui.Select("What shell do you use?", options)
 
