@@ -40,6 +40,8 @@ func RunConfigSetCmd(appFs afero.Fs, args []string) error {
 
 	titleCasedKey := cases.Title(language.English).String(key)
 
+	fmt.Println(titleCasedKey)
+
 	_, ok := types.FieldByName(titleCasedKey)
 	if !ok {
 		return errors.New("Key must exist in Config struct")
@@ -48,8 +50,8 @@ func RunConfigSetCmd(appFs afero.Fs, args []string) error {
 	switch titleCasedKey {
 	case "Path":
 		c.Path = value
-	case "EditorCmd":
-		c.EditorCmd = value
+	case "Editorcmd":
+		c.Editorcmd = value
 	case "Shell":
 		if value != pkg.BashShell && value != pkg.ZshShell && value != pkg.FishShell {
 			return fmt.Errorf("Shell must be either Bash, Zsh, or Fish. Received: %s", value)
