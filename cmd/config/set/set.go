@@ -40,8 +40,6 @@ func RunConfigSetCmd(appFs afero.Fs, args []string) error {
 
 	titleCasedKey := cases.Title(language.English).String(key)
 
-	fmt.Println(titleCasedKey)
-
 	_, ok := types.FieldByName(titleCasedKey)
 	if !ok {
 		return errors.New("Key must exist in Config struct")
