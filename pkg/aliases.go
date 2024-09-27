@@ -49,8 +49,8 @@ func (a *Alias) String(c Config) string {
 	var output string
 	output += a.asGoToString()
 
-	if c.EditorCmd != "" {
-		output += a.asEditString(c.EditorCmd)
+	if c.Editorcmd != "" {
+		output += a.asEditString(c.Editorcmd)
 	}
 
 	return output

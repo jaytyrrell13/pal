@@ -67,16 +67,16 @@ func TestSaveAliases(t *testing.T) {
 }
 
 func TestString(t *testing.T) {
-	configWithEditorCmd, _ := NewConfig("/foo", "nvim", "zsh")
-	configWithoutEditorCmd, _ := NewConfig("/foo", "", "zsh")
+	configWithEditorcmd, _ := NewConfig("/foo", "nvim", "zsh")
+	configWithoutEditorcmd, _ := NewConfig("/foo", "", "zsh")
 
 	cases := []struct {
 		name     string
 		config   Config
 		expected string
 	}{
-		{"when EditorCmd is nvim", configWithEditorCmd, "alias foo=\"cd /foo\"\nalias efoo=\"cd /foo && nvim\"\n"},
-		{"when EditorCmd is blank", configWithoutEditorCmd, "alias foo=\"cd /foo\"\n"},
+		{"when Editorcmd is nvim", configWithEditorcmd, "alias foo=\"cd /foo\"\nalias efoo=\"cd /foo && nvim\"\n"},
+		{"when Editorcmd is blank", configWithoutEditorcmd, "alias foo=\"cd /foo\"\n"},
 	}
 
 	for _, tt := range cases {

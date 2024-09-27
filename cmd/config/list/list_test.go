@@ -18,7 +18,7 @@ func TestConfigListCommand(t *testing.T) {
 		t.Fatalf("ConfigDirPath Error: '%q'", configFilePathErr)
 	}
 
-	pkg.WriteFixtureFile(t, appFs, configFilePath, []byte("{\"Path\": \"/foo\", \"EditorCmd\": \"editorCmd\"}"))
+	pkg.WriteFixtureFile(t, appFs, configFilePath, []byte("{\"Path\": \"/foo\", \"Editorcmd\": \"editorCmd\"}"))
 
 	got := RunConfigListCmd(appFs, &output)
 

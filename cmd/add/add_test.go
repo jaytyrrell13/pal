@@ -23,7 +23,7 @@ func TestAddCommand(t *testing.T) {
 		t.Error(configFilePathErr)
 	}
 
-	pkg.WriteFixtureFile(t, appFs, configFilePath, []byte("{\"Path\": \"/foo\", \"EditorCmd\": \"nvim\"}"))
+	pkg.WriteFixtureFile(t, appFs, configFilePath, []byte("{\"Path\": \"/foo\", \"Editorcmd\": \"nvim\"}"))
 
 	got := RunAddCmd(appFs, "bark", "/foo/baz")
 

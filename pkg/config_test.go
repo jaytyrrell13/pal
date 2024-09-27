@@ -54,7 +54,7 @@ func TestConfigFileMissing(t *testing.T) {
 			t.Error(configFileErr)
 		}
 
-		WriteFixtureFile(t, appFs, configFilePath, []byte("{\"Path\": \"/foo\", \"EditorCmd\": \"bar\"}"))
+		WriteFixtureFile(t, appFs, configFilePath, []byte("{\"Path\": \"/foo\", \"Editorcmd\": \"bar\"}"))
 
 		got, err := ConfigFileMissing(appFs)
 		if err != nil {
@@ -89,7 +89,7 @@ func TestReadConfigFile(t *testing.T) {
 			t.Error(configFileErr)
 		}
 
-		WriteFixtureFile(t, appFs, configFilePath, []byte("{\"Path\": \"/foo\", \"EditorCmd\": \"bar\"}"))
+		WriteFixtureFile(t, appFs, configFilePath, []byte("{\"Path\": \"/foo\", \"Editorcmd\": \"bar\"}"))
 
 		got, err := ReadConfigFile(appFs)
 		if err != nil {
@@ -100,8 +100,8 @@ func TestReadConfigFile(t *testing.T) {
 			t.Errorf("expected Path to be '/foo' but got '%s'", got.Path)
 		}
 
-		if got.EditorCmd != "bar" {
-			t.Errorf("expected EditorCmd to be 'bar' but got '%s'", got.EditorCmd)
+		if got.Editorcmd != "bar" {
+			t.Errorf("expected Editorcmd to be 'bar' but got '%s'", got.Editorcmd)
 		}
 	})
 
@@ -118,8 +118,8 @@ func TestReadConfigFile(t *testing.T) {
 			t.Errorf("expected Path to be empty but got '%s'", got.Path)
 		}
 
-		if got.EditorCmd != "" {
-			t.Errorf("expected EditorCmd to be empty but got '%s'", got.Path)
+		if got.Editorcmd != "" {
+			t.Errorf("expected Editorcmd to be empty but got '%s'", got.Path)
 		}
 	})
 }
@@ -132,7 +132,7 @@ func TestSaveExtraDir(t *testing.T) {
 		t.Error(configFileErr)
 	}
 
-	WriteFixtureFile(t, appFs, configFilePath, []byte("{\"Path\": \"/foo\", \"EditorCmd\": \"bar\"}"))
+	WriteFixtureFile(t, appFs, configFilePath, []byte("{\"Path\": \"/foo\", \"Editorcmd\": \"bar\"}"))
 
 	got := SaveExtraDir(appFs, "/bar/baz")
 
@@ -142,7 +142,7 @@ func TestSaveExtraDir(t *testing.T) {
 }
 
 func TestFromJson(t *testing.T) {
-	json := "{\"Path\": \"/foo/bar\", \"EditorCmd\": \"foo\", \"Extras\":null}"
+	json := "{\"Path\": \"/foo/bar\", \"Editorcmd\": \"foo\", \"Extras\":null}"
 	got, err := FromJson([]byte(json))
 
 	expected, configErr := NewConfig("/foo/bar", "foo", "")
@@ -151,8 +151,8 @@ func TestFromJson(t *testing.T) {
 		t.Errorf("Expected 'nil', but got '%q'", configErr)
 	}
 
-	if got.Path != expected.Path || got.EditorCmd != expected.EditorCmd || err != nil {
-		t.Errorf("Expected Path '%q' EditorCmd '%q', but got Path '%q' EditorCmd '%q'", expected.EditorCmd, expected.Path, got.Path, got.EditorCmd)
+	if got.Path != expected.Path || got.Editorcmd != expected.Editorcmd || err != nil {
+		t.Errorf("Expected Path '%q' Editorcmd '%q', but got Path '%q' Editorcmd '%q'", expected.Editorcmd, expected.Path, got.Path, got.Editorcmd)
 	}
 }
 
