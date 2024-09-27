@@ -10,6 +10,16 @@ import (
 )
 
 func TestConfigSetCommand(t *testing.T) {
+	t.Run("returns an error when config file is missing", func(t *testing.T) {
+		appFs := afero.NewMemMapFs()
+
+		got := RunConfigSetCmd(appFs, []string{"Path", "/foobar"})
+
+		if got == nil {
+			t.Error("expected an error but got 'nil'")
+		}
+	})
+
 	argsTests := []struct {
 		name string
 		arg  []string
@@ -36,6 +46,7 @@ func TestConfigSetCommand(t *testing.T) {
 	}{
 		{"Path", "/foobar"},
 		{"path", "/foobar"},
+		{"pATh", "/foobar"},
 	}
 
 	for _, pt := range pathTests {
@@ -73,6 +84,7 @@ func TestConfigSetCommand(t *testing.T) {
 		{"Editorcmd", "foobar"},
 		{"editorCmd", "foobar"},
 		{"editorcmd", "foobar"},
+		{"ediTOrcmd", "foobar"},
 	}
 
 	for _, et := range editorTests {
@@ -109,6 +121,7 @@ func TestConfigSetCommand(t *testing.T) {
 	}{
 		{"Shell", "Bash"},
 		{"shell", "Bash"},
+		{"shELl", "Bash"},
 	}
 
 	for _, st := range shellTests {
@@ -163,6 +176,7 @@ func TestConfigSetCommand(t *testing.T) {
 	}{
 		{"Extras", "/another/one", []string{"/another/one"}},
 		{"extras", "/another/one", []string{"/another/one"}},
+		{"eXTras", "/another/one", []string{"/another/one"}},
 	}
 
 	for _, xt := range extrasTests {
