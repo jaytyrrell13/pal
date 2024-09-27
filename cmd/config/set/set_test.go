@@ -10,15 +10,25 @@ import (
 )
 
 func TestConfigSetCommand(t *testing.T) {
-	t.Run("returns an error with incorrect arguments are", func(t *testing.T) {
-		appFs := afero.NewMemMapFs()
+	argsTests := []struct {
+		name string
+		arg  []string
+	}{
+		{"no args", []string{}},
+		{"one arg", []string{"one"}},
+	}
 
-		got := RunConfigSetCmd(appFs, []string{})
+	for _, at := range argsTests {
+		t.Run(fmt.Sprintf("returns an error with %s", at.name), func(t *testing.T) {
+			appFs := afero.NewMemMapFs()
 
-		if got == nil {
-			t.Errorf("expected an error, but got 'nil'")
-		}
-	})
+			got := RunConfigSetCmd(appFs, at.arg)
+
+			if got == nil {
+				t.Errorf("expected an error, but got 'nil'")
+			}
+		})
+	}
 
 	pathTests := []struct {
 		key   string
