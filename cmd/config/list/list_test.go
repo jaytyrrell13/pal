@@ -10,27 +10,40 @@ import (
 )
 
 func TestConfigListCommand(t *testing.T) {
-	appFs := afero.NewMemMapFs()
-	var output bytes.Buffer
+	t.Run("returns an error when config file is missing", func(t *testing.T) {
+		appFs := afero.NewMemMapFs()
+		var output bytes.Buffer
 
-	configFilePath, configFilePathErr := pkg.ConfigFilePath()
-	if configFilePathErr != nil {
-		t.Fatalf("ConfigDirPath Error: '%q'", configFilePathErr)
-	}
+		got := RunConfigListCmd(appFs, &output)
 
-	pkg.WriteFixtureFile(t, appFs, configFilePath, []byte("{\"Path\": \"/foo\", \"Editorcmd\": \"editorCmd\"}"))
+		if got == nil {
+			t.Error("expected an error but got 'nil'")
+		}
+	})
 
-	got := RunConfigListCmd(appFs, &output)
+	t.Run("lists config file", func(t *testing.T) {
+		appFs := afero.NewMemMapFs()
+		var output bytes.Buffer
 
-	if got != nil {
-		t.Fatalf("expected 'nil' from RunConfigListCmd. got=%q", got)
-	}
+		configFilePath, configFilePathErr := pkg.ConfigFilePath()
+		if configFilePathErr != nil {
+			t.Fatalf("ConfigDirPath Error: '%q'", configFilePathErr)
+		}
 
-	if !strings.Contains(output.String(), "/foo") {
-		t.Fatalf("expected output to contain '/foo': \n%s", output.String())
-	}
+		pkg.WriteFixtureFile(t, appFs, configFilePath, []byte("{\"Path\": \"/foo\", \"Editorcmd\": \"editorCmd\"}"))
 
-	if !strings.Contains(output.String(), "editorCmd") {
-		t.Fatalf("expected output to contain 'editorCmd': \n%s", output.String())
-	}
+		got := RunConfigListCmd(appFs, &output)
+
+		if got != nil {
+			t.Fatalf("expected 'nil' from RunConfigListCmd. got=%q", got)
+		}
+
+		if !strings.Contains(output.String(), "/foo") {
+			t.Fatalf("expected output to contain '/foo': \n%s", output.String())
+		}
+
+		if !strings.Contains(output.String(), "editorCmd") {
+			t.Fatalf("expected output to contain 'editorCmd': \n%s", output.String())
+		}
+	})
 }

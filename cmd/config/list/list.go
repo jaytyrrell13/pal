@@ -23,18 +23,6 @@ var ConfigListCmd = &cobra.Command{
 }
 
 func RunConfigListCmd(appFs afero.Fs, w io.Writer) error {
-	configDirPath, configDirPathErr := pkg.ConfigDirPath()
-	if configDirPathErr != nil {
-		return configDirPathErr
-	}
-
-	if pkg.FileMissing(appFs, configDirPath) {
-		configDirErr := pkg.MakeConfigDir(appFs)
-		if configDirErr != nil {
-			return configDirErr
-		}
-	}
-
 	c, readConfigErr := pkg.ReadConfigFile(appFs)
 	if readConfigErr != nil {
 		return readConfigErr
