@@ -29,16 +29,16 @@ func RunMakeCmd(appFs afero.Fs) error {
 			return confirmErr
 		}
 
-		if runInstall {
-			fmt.Println("Running install command.")
-
-			installCmdErr := install.RunInstallCmd(appFs)
-			if installCmdErr != nil {
-				return installCmdErr
-			}
-		} else {
+		if !runInstall {
 			fmt.Println("Please run `pal install` command manually.")
 			return nil
+		}
+
+		fmt.Println("Running install command.")
+
+		installCmdErr := install.RunInstallCmd(appFs)
+		if installCmdErr != nil {
+			return installCmdErr
 		}
 	}
 
