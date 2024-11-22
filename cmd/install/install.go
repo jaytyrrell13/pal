@@ -1,6 +1,8 @@
 package install
 
 import (
+	"fmt"
+
 	"github.com/charmbracelet/huh"
 	"github.com/jaytyrrell13/pal/pkg"
 	"github.com/jaytyrrell13/pal/pkg/ui"
@@ -44,6 +46,10 @@ func RunInstallCmd(appFs afero.Fs) error {
 		}
 
 		path = pathString
+	}
+
+	if pkg.FileMissing(appFs, path) {
+		return fmt.Errorf("Path '%s' does not exist. Please try again.", path)
 	}
 
 	if editorCmd == "" {
