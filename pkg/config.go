@@ -10,13 +10,14 @@ import (
 )
 
 type Config struct {
-	Path      string
-	Editorcmd string
-	Shell     string
-	Extras    []string
+	Path       string
+	EditorMode string
+	Editorcmd  string
+	Shell      string
+	Extras     []string
 }
 
-func NewConfig(path string, editorCmd string, shell string) (Config, error) {
+func NewConfig(path string, editorMode string, editorCmd string, shell string) (Config, error) {
 	home, homeErr := os.UserHomeDir()
 	if homeErr != nil {
 		return Config{}, homeErr
@@ -27,9 +28,10 @@ func NewConfig(path string, editorCmd string, shell string) (Config, error) {
 	}
 
 	return Config{
-		Path:      path,
-		Editorcmd: editorCmd,
-		Shell:     shell,
+		Path:       path,
+		EditorMode: editorMode,
+		Editorcmd:  editorCmd,
+		Shell:      shell,
 	}, nil
 }
 

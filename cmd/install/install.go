@@ -11,9 +11,10 @@ import (
 )
 
 var (
-	pathFlag      string
-	editorCmdFlag string
-	shellFlag     string
+	pathFlag       string
+	editorCmdFlag  string
+	editorModeFlag string
+	shellFlag      string
 )
 
 var InstallCmd = &cobra.Command{
@@ -29,12 +30,14 @@ var InstallCmd = &cobra.Command{
 
 func init() {
 	InstallCmd.Flags().StringVarP(&pathFlag, "path", "p", "", "Path to your projects")
+	InstallCmd.Flags().StringVarP(&editorModeFlag, "editorMode", "", "", "Editor command mode e.g. (skip, same, unique)")
 	InstallCmd.Flags().StringVarP(&editorCmdFlag, "editorCmd", "e", "", "Editor command e.g. (nvim, subl, code)")
-	InstallCmd.Flags().StringVarP(&shellFlag, "shell", "s", "", "Your interactive shell e.g. (bash/zsh, fish)")
+	InstallCmd.Flags().StringVarP(&shellFlag, "shell", "s", "", "Your interactive shell e.g. (bash, zsh, fish)")
 }
 
 func RunInstallCmd(appFs afero.Fs) error {
 	path := pathFlag
+	editorMode := editorModeFlag
 	editorCmd := editorCmdFlag
 	shell := shellFlag
 
@@ -50,6 +53,21 @@ func RunInstallCmd(appFs afero.Fs) error {
 
 	if pkg.FileMissing(appFs, path) {
 		return fmt.Errorf("Path '%s' does not exist. Please try again.", path)
+	}
+
+	if editorMode == "" {
+		options := []huh.Option[string]{
+			huh.NewOption("Skip", "skip"),
+			huh.NewOption("Same", "same"),
+			huh.NewOption("Unique", "unique"),
+		}
+		editorModeString, editorModeErr := ui.Select("How would you like to use the editor command?", options)
+
+		if editorModeErr != nil {
+			return editorModeErr
+		}
+
+		editorMode = editorModeString
 	}
 
 	if editorCmd == "" {
@@ -93,7 +111,7 @@ func RunInstallCmd(appFs afero.Fs) error {
 		return nil
 	}
 
-	c, configErr := pkg.NewConfig(path, editorCmd, shell)
+	c, configErr := pkg.NewConfig(path, editorMode, editorCmd, shell)
 	if configErr != nil {
 		return configErr
 	}
