@@ -31,6 +31,7 @@ func RunConfigListCmd(appFs afero.Fs, w io.Writer) error {
 	headers := []string{"Key", "Value"}
 	rows := [][]string{
 		{"Path", c.Path},
+		{"EditorMode", c.EditorMode},
 		{"Editorcmd", c.Editorcmd},
 		{"Shell", c.Shell},
 		{"Extras", strings.Join(c.Extras, ", ")},
