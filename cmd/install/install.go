@@ -70,7 +70,7 @@ func RunInstallCmd(appFs afero.Fs) error {
 		editorMode = editorModeString
 	}
 
-	if editorCmd == "" {
+	if editorMode == "same" && editorCmd == "" {
 		editorCmdString, editorCmdErr := ui.Input("What is the editor command?", "nvim, subl, code")
 
 		if editorCmdErr != nil {
