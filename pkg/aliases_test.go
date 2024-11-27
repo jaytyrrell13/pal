@@ -22,8 +22,8 @@ func TestAliasFilePath(t *testing.T) {
 
 func TestSaveAliases(t *testing.T) {
 	aliases := []Alias{
-		{alias: "foo", path: "/foo"},
-		{alias: "bar", path: "/bar"},
+		{alias: "foo", path: "/foo", editorCmd: "nvim"},
+		{alias: "bar", path: "/bar", editorCmd: "nvim"},
 	}
 
 	t.Run("when aliases is empty", func(t *testing.T) {
@@ -65,21 +65,18 @@ func TestSaveAliases(t *testing.T) {
 }
 
 func TestString(t *testing.T) {
-	configWithEditorcmd, _ := NewConfig("/foo", "same", "nvim", "zsh")
-	configWithoutEditorcmd, _ := NewConfig("/foo", "same", "", "zsh")
-
 	cases := []struct {
-		name     string
-		config   Config
-		expected string
+		name      string
+		editorCmd string
+		expected  string
 	}{
-		{"when Editorcmd is nvim", configWithEditorcmd, "alias foo=\"cd /foo\"\nalias efoo=\"cd /foo && nvim\"\n"},
-		{"when Editorcmd is blank", configWithoutEditorcmd, "alias foo=\"cd /foo\"\n"},
+		{"when Editorcmd is nvim", "nvim", "alias foo=\"cd /foo\"\nalias efoo=\"cd /foo && nvim\"\n"},
+		{"when Editorcmd is blank", "", "alias foo=\"cd /foo\"\n"},
 	}
 
 	for _, tt := range cases {
 		t.Run(tt.name, func(t *testing.T) {
-			a := NewAlias("foo", "/foo", tt.config.Editorcmd)
+			a := NewAlias("foo", "/foo", tt.editorCmd)
 
 			got := a.String()
 
