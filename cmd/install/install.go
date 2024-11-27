@@ -30,7 +30,7 @@ var InstallCmd = &cobra.Command{
 
 func init() {
 	InstallCmd.Flags().StringVarP(&pathFlag, "path", "p", "", "Path to your projects")
-	InstallCmd.Flags().StringVarP(&editorModeFlag, "editorMode", "", "", "Editor command mode e.g. (skip, same, unique)")
+	InstallCmd.Flags().StringVarP(&editorModeFlag, "editorMode", "m", "", "Editor command mode e.g. (skip, same, unique)")
 	InstallCmd.Flags().StringVarP(&editorCmdFlag, "editorCmd", "e", "", "Editor command e.g. (nvim, subl, code)")
 	InstallCmd.Flags().StringVarP(&shellFlag, "shell", "s", "", "Your interactive shell e.g. (bash, zsh, fish)")
 }

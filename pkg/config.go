@@ -11,7 +11,7 @@ import (
 
 type Config struct {
 	Path       string
-	EditorMode string
+	Editormode string
 	Editorcmd  string
 	Shell      string
 	Extras     []string
@@ -29,7 +29,7 @@ func NewConfig(path string, editorMode string, editorCmd string, shell string) (
 
 	return Config{
 		Path:       path,
-		EditorMode: editorMode,
+		Editormode: editorMode,
 		Editorcmd:  editorCmd,
 		Shell:      shell,
 	}, nil
