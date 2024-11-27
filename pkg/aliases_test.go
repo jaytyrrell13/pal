@@ -26,11 +26,9 @@ func TestSaveAliases(t *testing.T) {
 		{alias: "bar", path: "/bar"},
 	}
 
-	c, _ := NewConfig("/path", "", "")
-
 	t.Run("when aliases is empty", func(t *testing.T) {
 		appFs := afero.NewMemMapFs()
-		got := SaveAliases(appFs, []Alias{}, c)
+		got := SaveAliases(appFs, []Alias{})
 
 		if got != nil {
 			t.Errorf("expected 'nil' but got='%q'", got)
@@ -49,7 +47,7 @@ func TestSaveAliases(t *testing.T) {
 	t.Run("when aliases is not empty", func(t *testing.T) {
 		appFs := afero.NewMemMapFs()
 
-		got := SaveAliases(appFs, aliases, c)
+		got := SaveAliases(appFs, aliases)
 
 		if got != nil {
 			t.Errorf("expected 'nil' but got='%q'", got)
@@ -67,8 +65,8 @@ func TestSaveAliases(t *testing.T) {
 }
 
 func TestString(t *testing.T) {
-	configWithEditorcmd, _ := NewConfig("/foo", "nvim", "zsh")
-	configWithoutEditorcmd, _ := NewConfig("/foo", "", "zsh")
+	configWithEditorcmd, _ := NewConfig("/foo", "same", "nvim", "zsh")
+	configWithoutEditorcmd, _ := NewConfig("/foo", "same", "", "zsh")
 
 	cases := []struct {
 		name     string
@@ -81,9 +79,9 @@ func TestString(t *testing.T) {
 
 	for _, tt := range cases {
 		t.Run(tt.name, func(t *testing.T) {
-			a := NewAlias("foo", "/foo")
+			a := NewAlias("foo", "/foo", tt.config.Editorcmd)
 
-			got := a.String(tt.config)
+			got := a.String()
 
 			if got != tt.expected {
 				t.Errorf("expected '%q' but got '%q'", tt.expected, got)
