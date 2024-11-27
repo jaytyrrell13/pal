@@ -11,8 +11,9 @@ import (
 )
 
 var (
-	nameFlag string
-	pathFlag string
+	nameFlag      string
+	pathFlag      string
+	editorCmdFlag string
 )
 
 var AddCmd = &cobra.Command{
@@ -21,19 +22,25 @@ var AddCmd = &cobra.Command{
 	RunE: func(_ *cobra.Command, _ []string) error {
 		appFs := afero.NewOsFs()
 
-		return RunAddCmd(appFs, nameFlag, pathFlag)
+		return RunAddCmd(appFs, nameFlag, pathFlag, editorCmdFlag)
 	},
 }
 
 func init() {
 	AddCmd.Flags().StringVarP(&nameFlag, "name", "n", "", "Name of the additional alias")
 	AddCmd.Flags().StringVarP(&pathFlag, "path", "p", "", "Path to your additional directory")
+	AddCmd.Flags().StringVarP(&editorCmdFlag, "editorCmd", "e", "", "Editor command e.g. (nvim, subl, code)")
 }
 
-func RunAddCmd(appFs afero.Fs, name string, path string) error {
+func RunAddCmd(appFs afero.Fs, name string, path string, editorCmd string) error {
 	aliasFilePath, aliasFilePathErr := pkg.AliasFilePath()
 	if aliasFilePathErr != nil {
 		return aliasFilePathErr
+	}
+
+	c, readConfigErr := pkg.ReadConfigFile(appFs)
+	if readConfigErr != nil {
+		return readConfigErr
 	}
 
 	if pkg.FileMissing(appFs, aliasFilePath) {
@@ -76,17 +83,28 @@ func RunAddCmd(appFs afero.Fs, name string, path string) error {
 		path = pathString
 	}
 
+	if editorCmd == "" {
+		if c.Editormode == "same" {
+			editorCmd = c.Editorcmd
+		}
+
+		if c.Editormode == "unique" {
+			editorCmdString, editorCmdErr := ui.Input(fmt.Sprintf("What is the editor command for (%s)?", name), "nvim, subl, code")
+
+			if editorCmdErr != nil {
+				return editorCmdErr
+			}
+
+			editorCmd = editorCmdString
+		}
+	}
+
 	saveExtraDirErr := pkg.SaveExtraDir(appFs, path)
 	if saveExtraDirErr != nil {
 		return saveExtraDirErr
 	}
 
-	c, readConfigErr := pkg.ReadConfigFile(appFs)
-	if readConfigErr != nil {
-		return readConfigErr
-	}
+	a := pkg.NewAlias(name, path, editorCmd)
 
-	a := pkg.NewAlias(name, path)
-
-	return pkg.AppendToFile(appFs, aliasFilePath, []byte(a.String(c)))
+	return pkg.AppendToFile(appFs, aliasFilePath, []byte(a.String()))
 }
