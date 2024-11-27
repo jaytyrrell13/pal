@@ -7,14 +7,16 @@ import (
 )
 
 type Alias struct {
-	alias string
-	path  string
+	alias     string
+	path      string
+	editorCmd string
 }
 
-func NewAlias(alias string, path string) Alias {
+func NewAlias(alias string, path string, editorCmd string) Alias {
 	return Alias{
-		alias: alias,
-		path:  path,
+		alias:     alias,
+		path:      path,
+		editorCmd: editorCmd,
 	}
 }
 
@@ -27,7 +29,7 @@ func AliasFilePath() (string, error) {
 	return path + "/aliases", err
 }
 
-func SaveAliases(appFs afero.Fs, aliases []Alias, c Config) error {
+func SaveAliases(appFs afero.Fs, aliases []Alias) error {
 	if len(aliases) == 0 {
 		return nil
 	}
@@ -39,18 +41,18 @@ func SaveAliases(appFs afero.Fs, aliases []Alias, c Config) error {
 
 	var output string
 	for _, a := range aliases {
-		output += a.String(c)
+		output += a.String()
 	}
 
 	return WriteFile(appFs, aliasFilePath, []byte(output), 0o755)
 }
 
-func (a *Alias) String(c Config) string {
+func (a *Alias) String() string {
 	var output string
 	output += a.asGoToString()
 
-	if c.Editorcmd != "" {
-		output += a.asEditString(c.Editorcmd)
+	if a.editorCmd != "" {
+		output += a.asEditString(a.editorCmd)
 	}
 
 	return output

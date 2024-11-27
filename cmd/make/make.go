@@ -47,9 +47,7 @@ func RunMakeCmd(appFs afero.Fs) error {
 		return readConfigErr
 	}
 
-	path := c.Path
-
-	files, readDirErr := afero.ReadDir(appFs, path)
+	files, readDirErr := afero.ReadDir(appFs, c.Path)
 	if readDirErr != nil {
 		return readDirErr
 	}
@@ -63,6 +61,11 @@ func RunMakeCmd(appFs afero.Fs) error {
 
 	projectPaths = append(projectPaths, c.Extras...)
 
+	var editorCmd string
+	if c.Editormode == "same" {
+		editorCmd = c.Editorcmd
+	}
+
 	var aliases []pkg.Alias
 	for _, path := range projectPaths {
 		alias, aliasErr := ui.Input(fmt.Sprintf("Alias for (%s) Leave blank to skip.", path), "foo")
@@ -75,10 +78,20 @@ func RunMakeCmd(appFs afero.Fs) error {
 			continue
 		}
 
-		aliases = append(aliases, pkg.NewAlias(alias, path))
+		if c.Editormode == "unique" {
+			editorCmdString, editorCmdErr := ui.Input(fmt.Sprintf("What is the editor command for (%s)?", alias), "nvim, subl, code")
+
+			if editorCmdErr != nil {
+				return editorCmdErr
+			}
+
+			editorCmd = editorCmdString
+		}
+
+		aliases = append(aliases, pkg.NewAlias(alias, path, editorCmd))
 	}
 
-	saveErr := pkg.SaveAliases(appFs, aliases, c)
+	saveErr := pkg.SaveAliases(appFs, aliases)
 	if saveErr != nil {
 		return saveErr
 	}
