@@ -16,13 +16,13 @@ Download the latest release archive from the [releases](https://github.com/jayty
 
 ## Usage
 
-To get started, you may execute Pal's `install` command. This will ask for the path to your projects, your editor command usage e.g. skip, same, unique, your editor's CLI tool e.g. nvim, code, subl, if you chose "same" for your editor command usage and your shell e.g. bash, zsh, fish. These settings will be saved in `~/.config/pal/config.json`.
+To get started, you may execute Pal's `install` command. This will ask for the path to your projects, your editor command usage e.g. Skip, Same, Unique, your editor's CLI tool e.g. nvim, code, subl, if you chose "Same" for your editor command usage and your shell e.g. bash, zsh, fish. These settings will be saved in `~/.config/pal/config.json`.
 
 ```shell
 pal install [--path | -p] [--editorCmd | -e] [--editorMode | -m]
 ```
 
-The `make` command will go through each directory of your projects and ask for the alias you want to use. If you chose "unique" previously, you will be prompted for the editor's CLI tool after each alias. This will generate a `~/.config/pal/aliases` file and update your shell to automatically source the aliases file if it exists. If you use bash or zsh, it will append `[ -f "$HOME/.config/pal/aliases" ] && source "$HOME/.config/pal/aliases"` to your `~/.bashrc` or `~/.zshrc`. If you use fish, it will create `~/.config/fish/conf.d/pal.fish` to test if the aliases file exists and if so then source it.
+The `make` command will go through each directory of your projects and ask for the alias you want to use. If you chose "Unique" previously, you will be prompted for the editor's CLI tool after each alias. This will generate a `~/.config/pal/aliases` file and update your shell to automatically source the aliases file if it exists. If you use bash or zsh, it will append `[ -f "$HOME/.config/pal/aliases" ] && source "$HOME/.config/pal/aliases"` to your `~/.bashrc` or `~/.zshrc`. If you use fish, it will create `~/.config/fish/conf.d/pal.fish` to test if the aliases file exists and if so then source it.
 
 **Note:** the `make` command will prompt you to run the `install` command first if the config does not exist yet.
 
@@ -30,7 +30,7 @@ The `make` command will go through each directory of your projects and ask for t
 pal make
 ```
 
-The `add` command can be used if you want an alias for a directory outside your projects e.g. a directory of notes. If you chose "unique" previously, you will be prompted for the editor's CLI tool.
+The `add` command can be used if you want an alias for a directory outside your projects e.g. a directory of notes. If you chose "Unique" previously, you will be prompted for the editor's CLI tool.
 
 **Note:** the `add` command will prompt you to run the `make` command if the aliases file does not exist yet.
 
