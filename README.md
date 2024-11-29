@@ -58,7 +58,7 @@ pal refresh
 
 The `config` command allows listing or setting config values.
 
-When using the `config set` command, the first argument should be a key from the config file (Path, Editorcmd, Shell, Extras) and the second argument should be its new value. Setting the "Extras" key will append to the list instead of replacing it.
+When using the `config set` command, the first argument should be a key from the config file (Path, Editormode, Editorcmd, Shell, Extras) and the second argument should be its new value. Setting the "Extras" key will append to the list instead of replacing it.
 
 ```shell
 pal config list
