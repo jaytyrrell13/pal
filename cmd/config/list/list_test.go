@@ -30,7 +30,7 @@ func TestConfigListCommand(t *testing.T) {
 			t.Fatalf("ConfigDirPath Error: '%q'", configFilePathErr)
 		}
 
-		pkg.WriteFixtureFile(t, appFs, configFilePath, []byte("{\"Path\": \"/foo\", \"Editormode\": \"editorMode\", \"Editorcmd\": \"editorCmd\", \"Shell\": \"Zsh\"}"))
+		pkg.WriteFixtureFile(t, appFs, configFilePath, []byte("{\"Path\": \"/foo\", \"Editormode\": \"editorMode\", \"Editorcmd\": \"editorCmd\", \"Shell\": \"Zsh\", \"Extras\": [\"/foo/bar\"]}"))
 
 		got := RunConfigListCmd(appFs, &output)
 
@@ -54,6 +54,10 @@ func TestConfigListCommand(t *testing.T) {
 
 		if !strings.Contains(outputString, "Zsh") {
 			t.Fatalf("expected output to contain 'Zsh': \n%s", outputString)
+		}
+
+		if !strings.Contains(outputString, "/foo/bar") {
+			t.Fatalf("expected output to contain '/foo/bar: \n%s", outputString)
 		}
 	})
 }
