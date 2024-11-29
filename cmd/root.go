@@ -15,6 +15,7 @@ var rootCmd = &cobra.Command{
 	Use:           "pal",
 	Short:         "Helps manage the aliases for your projects",
 	SilenceErrors: true,
+	SilenceUsage:  true,
 }
 
 func Execute(version string) error {

@@ -145,7 +145,7 @@ func TestFromJson(t *testing.T) {
 	json := "{\"Path\": \"/foo/bar\", \"Editorcmd\": \"foo\", \"Extras\":null}"
 	got, err := FromJson([]byte(json))
 
-	expected, configErr := NewConfig("/foo/bar", "foo", "")
+	expected, configErr := NewConfig("/foo/bar", SameEditorMode, "foo", "")
 
 	if configErr != nil {
 		t.Errorf("Expected 'nil', but got '%q'", configErr)
@@ -157,7 +157,7 @@ func TestFromJson(t *testing.T) {
 }
 
 func TestAsJson(t *testing.T) {
-	config, configErr := NewConfig("/foo/bar", "foo", "")
+	config, configErr := NewConfig("/foo/bar", SameEditorMode, "foo", "")
 
 	if configErr != nil {
 		t.Errorf("Expected 'nil', but got '%q'", configErr)
@@ -173,7 +173,7 @@ func TestAsJson(t *testing.T) {
 func TestSave(t *testing.T) {
 	appFs := afero.NewMemMapFs()
 
-	config, configErr := NewConfig("/foo/bar", "foo", "")
+	config, configErr := NewConfig("/foo/bar", SameEditorMode, "foo", "")
 
 	if configErr != nil {
 		t.Errorf("Expected 'nil', but got '%q'", configErr)

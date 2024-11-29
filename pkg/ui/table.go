@@ -11,16 +11,7 @@ func Table(headers []string, rows [][]string) *table.Table {
 		BorderStyle(lipgloss.NewStyle().Foreground(lipgloss.Color("245"))).
 		Headers(headers...).
 		StyleFunc(func(row, col int) lipgloss.Style {
-			baseStyle := lipgloss.NewStyle().Padding(0, 2)
-
-			switch {
-			case row == 0:
-				return baseStyle.Bold(true)
-			case row%2 == 0:
-				return baseStyle.Foreground(lipgloss.Color("240"))
-			default:
-				return baseStyle
-			}
+			return lipgloss.NewStyle().Padding(0, 2)
 		}).
 		Rows(rows...)
 

@@ -22,15 +22,13 @@ func TestAliasFilePath(t *testing.T) {
 
 func TestSaveAliases(t *testing.T) {
 	aliases := []Alias{
-		{alias: "foo", path: "/foo"},
-		{alias: "bar", path: "/bar"},
+		{alias: "foo", path: "/foo", editorCmd: "nvim"},
+		{alias: "bar", path: "/bar", editorCmd: "nvim"},
 	}
-
-	c, _ := NewConfig("/path", "", "")
 
 	t.Run("when aliases is empty", func(t *testing.T) {
 		appFs := afero.NewMemMapFs()
-		got := SaveAliases(appFs, []Alias{}, c)
+		got := SaveAliases(appFs, []Alias{})
 
 		if got != nil {
 			t.Errorf("expected 'nil' but got='%q'", got)
@@ -49,7 +47,7 @@ func TestSaveAliases(t *testing.T) {
 	t.Run("when aliases is not empty", func(t *testing.T) {
 		appFs := afero.NewMemMapFs()
 
-		got := SaveAliases(appFs, aliases, c)
+		got := SaveAliases(appFs, aliases)
 
 		if got != nil {
 			t.Errorf("expected 'nil' but got='%q'", got)
@@ -67,23 +65,20 @@ func TestSaveAliases(t *testing.T) {
 }
 
 func TestString(t *testing.T) {
-	configWithEditorcmd, _ := NewConfig("/foo", "nvim", "zsh")
-	configWithoutEditorcmd, _ := NewConfig("/foo", "", "zsh")
-
 	cases := []struct {
-		name     string
-		config   Config
-		expected string
+		name      string
+		editorCmd string
+		expected  string
 	}{
-		{"when Editorcmd is nvim", configWithEditorcmd, "alias foo=\"cd /foo\"\nalias efoo=\"cd /foo && nvim\"\n"},
-		{"when Editorcmd is blank", configWithoutEditorcmd, "alias foo=\"cd /foo\"\n"},
+		{"when Editorcmd is nvim", "nvim", "alias foo=\"cd /foo\"\nalias efoo=\"cd /foo && nvim\"\n"},
+		{"when Editorcmd is blank", "", "alias foo=\"cd /foo\"\n"},
 	}
 
 	for _, tt := range cases {
 		t.Run(tt.name, func(t *testing.T) {
-			a := NewAlias("foo", "/foo")
+			a := NewAlias("foo", "/foo", tt.editorCmd)
 
-			got := a.String(tt.config)
+			got := a.String()
 
 			if got != tt.expected {
 				t.Errorf("expected '%q' but got '%q'", tt.expected, got)

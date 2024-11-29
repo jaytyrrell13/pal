@@ -2,12 +2,18 @@ package set
 
 import (
 	"fmt"
+	"reflect"
 	"slices"
 	"testing"
 
 	"github.com/jaytyrrell13/pal/pkg"
 	"github.com/spf13/afero"
 )
+
+type testCase struct {
+	key   string
+	value string
+}
 
 func TestConfigSetCommand(t *testing.T) {
 	t.Run("returns an error when config file is missing", func(t *testing.T) {
@@ -40,10 +46,7 @@ func TestConfigSetCommand(t *testing.T) {
 		})
 	}
 
-	pathTests := []struct {
-		key   string
-		value string
-	}{
+	pathTests := []testCase{
 		{"Path", "/foobar"},
 		{"path", "/foobar"},
 		{"pATh", "/foobar"},
@@ -52,13 +55,7 @@ func TestConfigSetCommand(t *testing.T) {
 	for _, pt := range pathTests {
 		t.Run(fmt.Sprintf("sets '%s' config value", pt.key), func(t *testing.T) {
 			appFs := afero.NewMemMapFs()
-
-			configFilePath, configFileErr := pkg.ConfigFilePath()
-			if configFileErr != nil {
-				t.Error(configFileErr)
-			}
-
-			pkg.WriteFixtureFile(t, appFs, configFilePath, configFileData())
+			makeConfigFile(t, appFs)
 
 			got := RunConfigSetCmd(appFs, []string{pt.key, pt.value})
 
@@ -66,21 +63,52 @@ func TestConfigSetCommand(t *testing.T) {
 				t.Errorf("expected 'nil', but got '%v'", got)
 			}
 
-			c, configErr := pkg.ReadConfigFile(appFs)
-			if configErr != nil {
-				t.Error(configErr)
-			}
-
-			if c.Path != pt.value {
-				t.Errorf("expected '%s' to be '%s', but got '%s'", pt.key, pt.value, c.Path)
-			}
+			assertConfigFile(t, appFs, "Path", pt)
 		})
 	}
 
-	editorTests := []struct {
-		key   string
-		value string
-	}{
+	editorModeTests := []testCase{
+		{"Editormode", "Skip"},
+		{"editorMode", "Skip"},
+		{"editormode", "Skip"},
+		{"ediTOrmode", "Skip"},
+		{"Editormode", "Same"},
+		{"editorMode", "Same"},
+		{"editormode", "Same"},
+		{"ediTOrmode", "Same"},
+		{"Editormode", "Unique"},
+		{"editorMode", "Unique"},
+		{"editormode", "Unique"},
+		{"ediTOrmode", "Unique"},
+	}
+
+	for _, em := range editorModeTests {
+		t.Run(fmt.Sprintf("sets '%s' config value", em.key), func(t *testing.T) {
+			appFs := afero.NewMemMapFs()
+			makeConfigFile(t, appFs)
+
+			got := RunConfigSetCmd(appFs, []string{em.key, em.value})
+
+			if got != nil {
+				t.Errorf("expected 'nil', but got '%v'", got)
+			}
+
+			assertConfigFile(t, appFs, "Editormode", em)
+		})
+	}
+
+	t.Run("returns an error when 'Editormode' is not supported value", func(t *testing.T) {
+		appFs := afero.NewMemMapFs()
+		makeConfigFile(t, appFs)
+
+		got := RunConfigSetCmd(appFs, []string{"Editormode", "baz"})
+
+		if got == nil {
+			t.Error("expected an error but got 'nil'")
+		}
+	})
+
+	editorTests := []testCase{
 		{"Editorcmd", "foobar"},
 		{"editorCmd", "foobar"},
 		{"editorcmd", "foobar"},
@@ -90,13 +118,7 @@ func TestConfigSetCommand(t *testing.T) {
 	for _, et := range editorTests {
 		t.Run(fmt.Sprintf("sets '%s' config value", et.key), func(t *testing.T) {
 			appFs := afero.NewMemMapFs()
-
-			configFilePath, configFileErr := pkg.ConfigFilePath()
-			if configFileErr != nil {
-				t.Error(configFileErr)
-			}
-
-			pkg.WriteFixtureFile(t, appFs, configFilePath, configFileData())
+			makeConfigFile(t, appFs)
 
 			got := RunConfigSetCmd(appFs, []string{et.key, et.value})
 
@@ -104,21 +126,11 @@ func TestConfigSetCommand(t *testing.T) {
 				t.Errorf("expected 'nil', but got '%v'", got)
 			}
 
-			c, configErr := pkg.ReadConfigFile(appFs)
-			if configErr != nil {
-				t.Error(configErr)
-			}
-
-			if c.Editorcmd != et.value {
-				t.Errorf("expected '%s' to be '%s', but got '%s'", et.key, et.value, c.Editorcmd)
-			}
+			assertConfigFile(t, appFs, "Editorcmd", et)
 		})
 	}
 
-	shellTests := []struct {
-		key   string
-		value string
-	}{
+	shellTests := []testCase{
 		{"Shell", "Bash"},
 		{"shell", "Bash"},
 		{"shELl", "Bash"},
@@ -127,13 +139,7 @@ func TestConfigSetCommand(t *testing.T) {
 	for _, st := range shellTests {
 		t.Run(fmt.Sprintf("sets '%s' config value", st.key), func(t *testing.T) {
 			appFs := afero.NewMemMapFs()
-
-			configFilePath, configFileErr := pkg.ConfigFilePath()
-			if configFileErr != nil {
-				t.Error(configFileErr)
-			}
-
-			pkg.WriteFixtureFile(t, appFs, configFilePath, configFileData())
+			makeConfigFile(t, appFs)
 
 			got := RunConfigSetCmd(appFs, []string{st.key, st.value})
 
@@ -141,26 +147,13 @@ func TestConfigSetCommand(t *testing.T) {
 				t.Errorf("expected 'nil', but got '%v'", got)
 			}
 
-			c, configErr := pkg.ReadConfigFile(appFs)
-			if configErr != nil {
-				t.Error(configErr)
-			}
-
-			if c.Shell != st.value {
-				t.Errorf("expected '%s' to be '%s', but got '%s'", st.key, st.value, c.Shell)
-			}
+			assertConfigFile(t, appFs, "Shell", st)
 		})
 	}
 
 	t.Run("returns an error when 'Shell' is not supported type", func(t *testing.T) {
 		appFs := afero.NewMemMapFs()
-
-		configFilePath, configFileErr := pkg.ConfigFilePath()
-		if configFileErr != nil {
-			t.Error(configFileErr)
-		}
-
-		pkg.WriteFixtureFile(t, appFs, configFilePath, configFileData())
+		makeConfigFile(t, appFs)
 
 		got := RunConfigSetCmd(appFs, []string{"Shell", "baz"})
 
@@ -169,26 +162,16 @@ func TestConfigSetCommand(t *testing.T) {
 		}
 	})
 
-	extrasTests := []struct {
-		key      string
-		value    string
-		expected []string
-	}{
-		{"Extras", "/another/one", []string{"/another/one"}},
-		{"extras", "/another/one", []string{"/another/one"}},
-		{"eXTras", "/another/one", []string{"/another/one"}},
+	extrasTests := []testCase{
+		{"Extras", "/another/one"},
+		{"extras", "/another/one"},
+		{"eXTras", "/another/one"},
 	}
 
 	for _, xt := range extrasTests {
 		t.Run(fmt.Sprintf("sets '%s' config value", xt.key), func(t *testing.T) {
 			appFs := afero.NewMemMapFs()
-
-			configFilePath, configFileErr := pkg.ConfigFilePath()
-			if configFileErr != nil {
-				t.Error(configFileErr)
-			}
-
-			pkg.WriteFixtureFile(t, appFs, configFilePath, configFileData())
+			makeConfigFile(t, appFs)
 
 			got := RunConfigSetCmd(appFs, []string{xt.key, xt.value})
 
@@ -208,6 +191,31 @@ func TestConfigSetCommand(t *testing.T) {
 	}
 }
 
-func configFileData() []byte {
-	return []byte("{\"Path\": \"/foo\", \"Editorcmd\": \"bar\", \"Shell\": \"Fish\", \"Extras\": [\"/one/extra\"]}")
+func assertConfigFile(t *testing.T, appFs afero.Fs, key string, test testCase) {
+	t.Helper()
+
+	c, configErr := pkg.ReadConfigFile(appFs)
+	if configErr != nil {
+		t.Error(configErr)
+	}
+
+	r := reflect.ValueOf(c)
+	f := reflect.Indirect(r).FieldByName(key)
+
+	if f.String() != test.value {
+		t.Errorf("expected '%s' to be '%s', but got '%s'", test.key, test.value, c.Shell)
+	}
+}
+
+func makeConfigFile(t *testing.T, appFs afero.Fs) {
+	t.Helper()
+
+	configFilePath, configFileErr := pkg.ConfigFilePath()
+	if configFileErr != nil {
+		t.Error(configFileErr)
+	}
+
+	data := []byte("{\"Path\": \"/foo\", \"Editormode\": \"Same\", \"Editorcmd\": \"bar\", \"Shell\": \"Fish\", \"Extras\": [\"/one/extra\"]}")
+
+	pkg.WriteFixtureFile(t, appFs, configFilePath, data)
 }
