@@ -16,7 +16,7 @@ Download the latest release archive from the [releases](https://github.com/jayty
 
 ## Usage
 
-To get started, you may execute Pal's `install` command. This will ask for the path to your projects, your editor command usage e.g. Skip, Same, Unique, your editor's CLI tool e.g. nvim, code, subl, if you chose "Same" for your editor command usage and your shell e.g. bash, zsh, fish. These settings will be saved in `~/.config/pal/config.json`.
+To get started, you may execute Pal's `install` command. This will ask for the path to your projects, your editor command usage e.g. Skip, Same, Unique, your editor's CLI tool e.g. nvim, code, subl, if you chose "Same" for your editor command usage and your shell e.g. Bash, Zsh, Fish. These settings will be saved in `~/.config/pal/config.json`.
 
 ```shell
 pal install [--path | -p] [--editorCmd | -e] [--editorMode | -m]
