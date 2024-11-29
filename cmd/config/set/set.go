@@ -48,6 +48,12 @@ func RunConfigSetCmd(appFs afero.Fs, args []string) error {
 	switch titleCasedKey {
 	case "Path":
 		c.Path = value
+	case "Editormode":
+		if value != pkg.SkipEditorMode && value != pkg.SameEditorMode && value != pkg.UniqueEditorMode {
+			return fmt.Errorf("Editormode must be either Skip, Same, or Unique. Received: %s", value)
+		}
+
+		c.Editormode = value
 	case "Editorcmd":
 		c.Editorcmd = value
 	case "Shell":
