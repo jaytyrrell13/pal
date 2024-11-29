@@ -51,7 +51,12 @@ func RunInstallCmd(appFs afero.Fs) error {
 		path = pathString
 	}
 
-	if pkg.FileMissing(appFs, path) {
+	expandedPath, expandedPathErr := pkg.ExpandPath(path)
+	if expandedPathErr != nil {
+		return expandedPathErr
+	}
+
+	if pkg.FileMissing(appFs, expandedPath) {
 		return fmt.Errorf("Path '%s' does not exist. Please try again.", path)
 	}
 

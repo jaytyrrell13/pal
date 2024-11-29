@@ -2,10 +2,37 @@ package pkg
 
 import (
 	"fmt"
+	"os"
 	"testing"
 
 	"github.com/spf13/afero"
 )
+
+func TestExpandPath(t *testing.T) {
+	home, homeErr := os.UserHomeDir()
+	if homeErr != nil {
+		t.Errorf("UserHomeDir Error: %q", homeErr)
+	}
+
+	tests := []struct {
+		path     string
+		expected string
+	}{
+		{"/foo/bar", "/foo/bar"},
+		{"~/foo", home + "/foo"},
+	}
+
+	for _, tt := range tests {
+		path, err := ExpandPath(tt.path)
+		if err != nil {
+			t.Errorf("ExpandPath Error: %q", err)
+		}
+
+		if path != tt.expected {
+			t.Errorf("Expected '%s', but got '%s'", path, tt.expected)
+		}
+	}
+}
 
 func TestReadFile(t *testing.T) {
 	appFs := afero.NewMemMapFs()

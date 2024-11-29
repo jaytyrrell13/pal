@@ -4,10 +4,25 @@ import (
 	"errors"
 	"io/fs"
 	"os"
+	"path/filepath"
+	"strings"
 	"testing"
 
 	"github.com/spf13/afero"
 )
+
+func ExpandPath(path string) (string, error) {
+	home, homeErr := os.UserHomeDir()
+	if homeErr != nil {
+		return "", homeErr
+	}
+
+	if strings.HasPrefix(path, "~/") {
+		path = filepath.Join(home, path[2:])
+	}
+
+	return path, nil
+}
 
 func ReadFile(afs afero.Fs, path string) ([]byte, error) {
 	return afero.ReadFile(afs, path)
