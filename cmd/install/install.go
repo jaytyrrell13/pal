@@ -57,9 +57,9 @@ func RunInstallCmd(appFs afero.Fs) error {
 
 	if editorMode == "" {
 		options := []huh.Option[string]{
-			huh.NewOption("Skip", "skip"),
-			huh.NewOption("Same", "same"),
-			huh.NewOption("Unique", "unique"),
+			huh.NewOption("Skip", pkg.SkipEditorMode),
+			huh.NewOption("Same", pkg.SameEditorMode),
+			huh.NewOption("Unique", pkg.UniqueEditorMode),
 		}
 		editorModeString, editorModeErr := ui.Select("How would you like to use the editor command?", options)
 
@@ -70,7 +70,7 @@ func RunInstallCmd(appFs afero.Fs) error {
 		editorMode = editorModeString
 	}
 
-	if editorMode == "same" && editorCmd == "" {
+	if editorMode == pkg.SameEditorMode && editorCmd == "" {
 		editorCmdString, editorCmdErr := ui.Input("What is the editor command?", "nvim, subl, code")
 
 		if editorCmdErr != nil {

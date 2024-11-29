@@ -84,11 +84,11 @@ func RunAddCmd(appFs afero.Fs, name string, path string, editorCmd string) error
 	}
 
 	if editorCmd == "" {
-		if c.Editormode == "same" {
+		if c.Editormode == pkg.SameEditorMode {
 			editorCmd = c.Editorcmd
 		}
 
-		if c.Editormode == "unique" {
+		if c.Editormode == pkg.UniqueEditorMode {
 			editorCmdString, editorCmdErr := ui.Input(fmt.Sprintf("What is the editor command for (%s)?", name), "nvim, subl, code")
 
 			if editorCmdErr != nil {

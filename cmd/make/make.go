@@ -62,7 +62,7 @@ func RunMakeCmd(appFs afero.Fs) error {
 	projectPaths = append(projectPaths, c.Extras...)
 
 	var editorCmd string
-	if c.Editormode == "same" {
+	if c.Editormode == pkg.SameEditorMode {
 		editorCmd = c.Editorcmd
 	}
 
@@ -78,7 +78,7 @@ func RunMakeCmd(appFs afero.Fs) error {
 			continue
 		}
 
-		if c.Editormode == "unique" {
+		if c.Editormode == pkg.UniqueEditorMode {
 			editorCmdString, editorCmdErr := ui.Input(fmt.Sprintf("What is the editor command for (%s)?", alias), "nvim, subl, code")
 
 			if editorCmdErr != nil {
