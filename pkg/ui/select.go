@@ -9,6 +9,7 @@ func Select(title string, options []huh.Option[string]) (string, error) {
 		Title(title).
 		Options(options...).
 		Value(&s).
+		WithTheme(huh.ThemeBase()).
 		Run()
 
 	return s, err

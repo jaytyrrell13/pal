@@ -13,6 +13,7 @@ func Input(title string, placeholder string) (string, error) {
 		Title(title).
 		Value(&s).
 		Placeholder(placeholder).
+		WithTheme(huh.ThemeBase()).
 		Run()
 
 	return strings.TrimSpace(s), err

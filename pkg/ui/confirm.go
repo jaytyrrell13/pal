@@ -10,6 +10,7 @@ func Confirm(title string) (bool, error) {
 		Value(&value).
 		Affirmative("Yes").
 		Negative("No").
+		WithTheme(huh.ThemeBase()).
 		Run()
 
 	return value, err
