@@ -62,9 +62,9 @@ func RunInstallCmd(appFs afero.Fs) error {
 
 	if editorMode == "" {
 		options := []huh.Option[string]{
-			huh.NewOption("Skip", pkg.SkipEditorMode),
 			huh.NewOption("Same", pkg.SameEditorMode),
 			huh.NewOption("Unique", pkg.UniqueEditorMode),
+			huh.NewOption("Skip", pkg.SkipEditorMode),
 		}
 		editorModeString, editorModeErr := ui.Select("How would you like to use the editor command?", options)
 
