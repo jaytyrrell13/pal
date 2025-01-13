@@ -29,12 +29,12 @@ require (
 	github.com/muesli/termenv v0.15.3-0.20240618155329-98d742f6907a // indirect
 	github.com/rivo/uniseg v0.4.7 // indirect
 	golang.org/x/sync v0.10.0 // indirect
-	golang.org/x/sys v0.25.0 // indirect
+	golang.org/x/sys v0.29.0 // indirect
 )
 
 require (
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
-	github.com/spf13/afero v1.11.0 // direct
+	github.com/spf13/afero v1.12.0 // direct
 	github.com/spf13/pflag v1.0.5 // indirect
 	golang.org/x/text v0.21.0
 )
