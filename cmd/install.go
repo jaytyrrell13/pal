@@ -6,7 +6,7 @@ import (
 	"os"
 
 	"github.com/charmbracelet/huh"
-	"github.com/jaytyrrell13/pal/internal"
+	"github.com/jaytyrrell13/pal/internal/config"
 	"github.com/spf13/afero"
 	"github.com/spf13/cobra"
 )
@@ -51,7 +51,7 @@ func RunPrompts() (InstallPrompts, error) {
 }
 
 func RunInstallCmd(fs afero.Fs, ip InstallPrompts) error {
-	configDirPath, configDirPathErr := internal.ConfigDirPath()
+	configDirPath, configDirPathErr := config.ConfigDirPath()
 	if configDirPathErr != nil {
 		return configDirPathErr
 	}
@@ -61,7 +61,7 @@ func RunInstallCmd(fs afero.Fs, ip InstallPrompts) error {
 		return mkDirErr
 	}
 
-	configFilePath, configFilePathErr := internal.ConfigFilePath()
+	configFilePath, configFilePathErr := config.ConfigFilePath()
 	if configFilePathErr != nil {
 		return configFilePathErr
 	}
@@ -71,7 +71,7 @@ func RunInstallCmd(fs afero.Fs, ip InstallPrompts) error {
 		return errors.New("Config file already exists.")
 	}
 
-	c := internal.NewConfig(ip.shell)
+	c := config.NewConfig(ip.shell)
 
 	j, jsonErr := json.Marshal(c)
 	if jsonErr != nil {

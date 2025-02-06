@@ -6,12 +6,12 @@ import (
 	"os"
 	"testing"
 
-	"github.com/jaytyrrell13/pal/internal"
+	"github.com/jaytyrrell13/pal/internal/config"
 	"github.com/spf13/afero"
 )
 
 func TestRunInstallCmd(t *testing.T) {
-	configFilePath, configFilePathErr := internal.ConfigFilePath()
+	configFilePath, configFilePathErr := config.ConfigFilePath()
 	if configFilePathErr != nil {
 		t.Error(configFilePathErr)
 	}
@@ -37,7 +37,7 @@ func TestRunInstallCmd(t *testing.T) {
 			t.Errorf("expected 'nil' but got '%s'", readFileErr)
 		}
 
-		var c internal.Config
+		var c config.Config
 		jsonErr := json.Unmarshal(b, &c)
 		if jsonErr != nil {
 			t.Errorf("expected 'nil' but got '%s'", jsonErr)
@@ -49,7 +49,7 @@ func TestRunInstallCmd(t *testing.T) {
 	})
 
 	t.Run("when config file already exists", func(t *testing.T) {
-		configDirPath, configDirPathErr := internal.ConfigDirPath()
+		configDirPath, configDirPathErr := config.ConfigDirPath()
 		if configDirPathErr != nil {
 			t.Error(configDirPathErr)
 		}
@@ -60,9 +60,7 @@ func TestRunInstallCmd(t *testing.T) {
 			t.Error(mkDirErr)
 		}
 
-		config := internal.NewConfig("bash")
-
-		j, jsonErr := json.Marshal(config)
+		j, jsonErr := json.Marshal(config.NewConfig("bash"))
 		if jsonErr != nil {
 			t.Error(jsonErr)
 		}
@@ -86,7 +84,7 @@ func TestRunInstallCmd(t *testing.T) {
 			t.Errorf("expected 'nil' but got '%s'", readFileErr)
 		}
 
-		var c internal.Config
+		var c config.Config
 		jsonUnmarshalErr := json.Unmarshal(b, &c)
 		if jsonUnmarshalErr != nil {
 			t.Errorf("expected 'nil' but got '%s'", jsonErr)
