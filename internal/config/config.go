@@ -1,9 +1,14 @@
 package config
 
-import "os"
+import (
+	"os"
+
+	"github.com/jaytyrrell13/pal/internal/alias"
+)
 
 type Config struct {
-	Shell string
+	Shell   string
+	Aliases []alias.Alias
 }
 
 func NewConfig(shell string) Config {
