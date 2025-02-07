@@ -5,7 +5,7 @@ import "github.com/charmbracelet/huh"
 func Select(title string, options []huh.Option[string]) (string, error) {
 	var value string
 	err := huh.NewSelect[string]().
-		Title("What shell do you use?").
+		Title(title).
 		Options(options...).
 		Value(&value).
 		WithTheme(huh.ThemeBase()).
