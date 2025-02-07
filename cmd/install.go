@@ -7,6 +7,7 @@ import (
 
 	"github.com/charmbracelet/huh"
 	"github.com/jaytyrrell13/pal/internal/config"
+	"github.com/jaytyrrell13/pal/internal/ui"
 	"github.com/spf13/afero"
 	"github.com/spf13/cobra"
 )
@@ -30,17 +31,11 @@ var installCmd = &cobra.Command{
 }
 
 func RunPrompts() (InstallPrompts, error) {
-	var shell string
-	err := huh.NewSelect[string]().
-		Title("What shell do you use?").
-		Options(
-			huh.NewOption("Bash", "bash"),
-			huh.NewOption("Fish", "fish"),
-			huh.NewOption("Zsh", "zsh"),
-		).
-		Value(&shell).
-		WithTheme(huh.ThemeBase()).
-		Run()
+	shell, err := ui.Select("What shell do you use?", []huh.Option[string]{
+		huh.NewOption("Bash", "bash"),
+		huh.NewOption("Fish", "fish"),
+		huh.NewOption("Zsh", "zsh"),
+	})
 	if err != nil {
 		return InstallPrompts{}, err
 	}
