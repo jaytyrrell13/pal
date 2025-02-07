@@ -16,12 +16,12 @@ func TestRunCreateCmd(t *testing.T) {
 			category: "parent",
 			aliases: []alias.Alias{
 				{
-					Name: "po",
-					Path: "/foo/Code/project-one",
+					Name:    "po",
+					Command: "/foo/Code/project-one",
 				},
 				{
-					Name: "pt",
-					Path: "/foo/Code/project-two",
+					Name:    "pt",
+					Command: "/foo/Code/project-two",
 				},
 			},
 		}
@@ -78,16 +78,16 @@ func TestRunCreateCmd(t *testing.T) {
 			t.Errorf("expected 'po' but got '%s'", c.Aliases[0].Name)
 		}
 
-		if c.Aliases[0].Path != "/foo/Code/project-one" {
-			t.Errorf("expected '/foo/Code/project-one' but got '%s'", c.Aliases[0].Path)
+		if c.Aliases[0].Command != "/foo/Code/project-one" {
+			t.Errorf("expected '/foo/Code/project-one' but got '%s'", c.Aliases[0].Command)
 		}
 
 		if c.Aliases[1].Name != "pt" {
 			t.Errorf("expected 'pt' but got '%s'", c.Aliases[0].Name)
 		}
 
-		if c.Aliases[1].Path != "/foo/Code/project-two" {
-			t.Errorf("expected '/foo/Code/project-two' but got '%s'", c.Aliases[0].Path)
+		if c.Aliases[1].Command != "/foo/Code/project-two" {
+			t.Errorf("expected '/foo/Code/project-two' but got '%s'", c.Aliases[0].Command)
 		}
 	})
 
@@ -96,8 +96,8 @@ func TestRunCreateCmd(t *testing.T) {
 			category: "directory",
 			aliases: []alias.Alias{
 				{
-					Name: "wn",
-					Path: "/foo/Documents/work/notes",
+					Name:    "wn",
+					Command: "/foo/Documents/work/notes",
 				},
 			},
 		}
@@ -146,8 +146,8 @@ func TestRunCreateCmd(t *testing.T) {
 			t.Errorf("expected 'wn' but got '%s'", c.Aliases[0].Name)
 		}
 
-		if c.Aliases[0].Path != "/foo/Documents/work/notes" {
-			t.Errorf("expected '/foo/Documents/work/notes' but got '%s'", c.Aliases[0].Path)
+		if c.Aliases[0].Command != "/foo/Documents/work/notes" {
+			t.Errorf("expected '/foo/Documents/work/notes' but got '%s'", c.Aliases[0].Command)
 		}
 	})
 
@@ -156,8 +156,8 @@ func TestRunCreateCmd(t *testing.T) {
 			category: "action",
 			aliases: []alias.Alias{
 				{
-					Name: "ll",
-					Path: "ls -lah",
+					Name:    "ll",
+					Command: "ls -lah",
 				},
 			},
 		}
@@ -201,8 +201,8 @@ func TestRunCreateCmd(t *testing.T) {
 			t.Errorf("expected 'll' but got '%s'", c.Aliases[0].Name)
 		}
 
-		if c.Aliases[0].Path != "ls -lah" {
-			t.Errorf("expected 'ls -lah' but got '%s'", c.Aliases[0].Path)
+		if c.Aliases[0].Command != "ls -lah" {
+			t.Errorf("expected 'ls -lah' but got '%s'", c.Aliases[0].Command)
 		}
 	})
 }

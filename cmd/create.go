@@ -56,7 +56,7 @@ func RunCreatePrompts(fs afero.Fs) (CreatePrompts, error) {
 			return CreatePrompts{}, aliasErr
 		}
 
-		cp.aliases = []alias.Alias{{Name: a, Path: action}}
+		cp.aliases = []alias.Alias{{Name: a, Command: action}}
 
 	case "directory":
 		path, pathErr := ui.Input("What is the path?")
@@ -69,7 +69,7 @@ func RunCreatePrompts(fs afero.Fs) (CreatePrompts, error) {
 			return CreatePrompts{}, aliasErr
 		}
 
-		cp.aliases = []alias.Alias{{Name: a, Path: path}}
+		cp.aliases = []alias.Alias{{Name: a, Command: path}}
 
 	case "parent":
 		path, pathErr := ui.Input("What is the path?")
@@ -99,7 +99,7 @@ func RunCreatePrompts(fs afero.Fs) (CreatePrompts, error) {
 				continue
 			}
 
-			cp.aliases = append(cp.aliases, alias.Alias{Name: a, Path: projectPath})
+			cp.aliases = append(cp.aliases, alias.Alias{Name: a, Command: projectPath})
 		}
 	}
 
