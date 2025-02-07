@@ -32,15 +32,9 @@ func TestRunInstallCmd(t *testing.T) {
 			t.Errorf("expected 'nil' but got '%s'", statErr)
 		}
 
-		b, readFileErr := afero.ReadFile(fs, configFilePath)
-		if readFileErr != nil {
-			t.Errorf("expected 'nil' but got '%s'", readFileErr)
-		}
-
-		var c config.Config
-		jsonErr := json.Unmarshal(b, &c)
-		if jsonErr != nil {
-			t.Errorf("expected 'nil' but got '%s'", jsonErr)
+		c, configErr := config.ReadConfigFile(fs)
+		if configErr != nil {
+			t.Errorf("expected 'nil' but got '%s'", configErr)
 		}
 
 		if c.Shell != "zsh" {
@@ -79,15 +73,9 @@ func TestRunInstallCmd(t *testing.T) {
 			t.Error("expected an error but got 'nil'")
 		}
 
-		b, readFileErr := afero.ReadFile(fs, configFilePath)
-		if readFileErr != nil {
-			t.Errorf("expected 'nil' but got '%s'", readFileErr)
-		}
-
-		var c config.Config
-		jsonUnmarshalErr := json.Unmarshal(b, &c)
-		if jsonUnmarshalErr != nil {
-			t.Errorf("expected 'nil' but got '%s'", jsonErr)
+		c, configErr := config.ReadConfigFile(fs)
+		if configErr != nil {
+			t.Errorf("expected 'nil' but got '%s'", configErr)
 		}
 
 		if c.Shell != "bash" {

@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"encoding/json"
-	"fmt"
 	"testing"
 
 	"github.com/jaytyrrell13/pal/internal/alias"
@@ -63,15 +62,9 @@ func TestRunCreateCmd(t *testing.T) {
 			t.Errorf("expected 'nil' but got '%s'", err)
 		}
 
-		b, readFileErr := afero.ReadFile(fs, configFilePath)
-		if readFileErr != nil {
-			t.Errorf("expected 'nil' but got '%s'", readFileErr)
-		}
-
-		var c config.Config
-		jsonUnmarshalErr := json.Unmarshal(b, &c)
-		if jsonUnmarshalErr != nil {
-			t.Errorf("expected 'nil' but got '%s'", jsonUnmarshalErr)
+		c, configErr := config.ReadConfigFile(fs)
+		if configErr != nil {
+			t.Errorf("expected 'nil' but got '%s'", configErr)
 		}
 
 		if c.Aliases[0].Name != "po" {
@@ -129,18 +122,10 @@ func TestRunCreateCmd(t *testing.T) {
 			t.Errorf("expected 'nil' but got '%s'", err)
 		}
 
-		b, readFileErr := afero.ReadFile(fs, configFilePath)
-		if readFileErr != nil {
-			t.Errorf("expected 'nil' but got '%s'", readFileErr)
+		c, configErr := config.ReadConfigFile(fs)
+		if configErr != nil {
+			t.Errorf("expected 'nil' but got '%s'", configErr)
 		}
-
-		var c config.Config
-		jsonUnmarshalErr := json.Unmarshal(b, &c)
-		if jsonUnmarshalErr != nil {
-			t.Errorf("expected 'nil' but got '%s'", jsonUnmarshalErr)
-		}
-
-		fmt.Println(c)
 
 		if c.Aliases[0].Name != "wn" {
 			t.Errorf("expected 'wn' but got '%s'", c.Aliases[0].Name)
@@ -184,18 +169,10 @@ func TestRunCreateCmd(t *testing.T) {
 			t.Errorf("expected 'nil' but got '%s'", err)
 		}
 
-		b, readFileErr := afero.ReadFile(fs, configFilePath)
-		if readFileErr != nil {
-			t.Errorf("expected 'nil' but got '%s'", readFileErr)
+		c, configErr := config.ReadConfigFile(fs)
+		if configErr != nil {
+			t.Errorf("expected 'nil' but got '%s'", configErr)
 		}
-
-		var c config.Config
-		jsonUnmarshalErr := json.Unmarshal(b, &c)
-		if jsonUnmarshalErr != nil {
-			t.Errorf("expected 'nil' but got '%s'", jsonUnmarshalErr)
-		}
-
-		fmt.Println(c)
 
 		if c.Aliases[0].Name != "ll" {
 			t.Errorf("expected 'll' but got '%s'", c.Aliases[0].Name)

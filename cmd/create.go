@@ -112,15 +112,9 @@ func RunCreateCmd(fs afero.Fs, cp CreatePrompts) error {
 		return configFilePathErr
 	}
 
-	b, readFileErr := afero.ReadFile(fs, configFilePath)
-	if readFileErr != nil {
-		return readFileErr
-	}
-
-	var c config.Config
-	jsonErr := json.Unmarshal(b, &c)
-	if jsonErr != nil {
-		return jsonErr
+	c, configErr := config.ReadConfigFile(fs)
+	if configErr != nil {
+		return configErr
 	}
 
 	c.Aliases = append(c.Aliases, cp.aliases...)
