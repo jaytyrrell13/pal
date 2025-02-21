@@ -64,3 +64,12 @@ func ReadConfigFile(fs afero.Fs) (Config, error) {
 
 	return c, nil
 }
+
+func AliasFilePath() (string, error) {
+	path, err := ConfigDirPath()
+	if err != nil {
+		return "", err
+	}
+
+	return path + "/aliases", err
+}

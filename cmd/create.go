@@ -175,9 +175,24 @@ func RunCreateCmd(fs afero.Fs, cp CreatePrompts) error {
 		return jsonErr
 	}
 
-	writeFileErr := afero.WriteFile(fs, configFilePath, j, 0o644)
-	if writeFileErr != nil {
-		return writeFileErr
+	writeConfigFileErr := afero.WriteFile(fs, configFilePath, j, 0o644)
+	if writeConfigFileErr != nil {
+		return writeConfigFileErr
+	}
+
+	var aliasFile string
+	for _, a := range c.Aliases {
+		aliasFile += a.String()
+	}
+
+	aliasFilePath, aliasFilePathErr := config.AliasFilePath()
+	if aliasFilePathErr != nil {
+		return aliasFilePathErr
+	}
+
+	writeAliasesFileErr := afero.WriteFile(fs, aliasFilePath, []byte(aliasFile), 0o644)
+	if writeAliasesFileErr != nil {
+		return writeAliasesFileErr
 	}
 
 	return nil
