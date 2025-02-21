@@ -9,10 +9,34 @@ import (
 	"github.com/spf13/afero"
 )
 
+func TestCheckCreatePrerequisites(t *testing.T) {
+	t.Run("when config file does not exists", func(t *testing.T) {
+		fs := afero.NewMemMapFs()
+
+		err := CheckCreatePrerequisites(fs)
+
+		if err == nil {
+			t.Error("expected an error but received 'nil'")
+		}
+	})
+
+	t.Run("when config file does exist", func(t *testing.T) {
+		fs := afero.NewMemMapFs()
+
+		writeConfigFile(t, fs)
+
+		err := CheckCreatePrerequisites(fs)
+		if err != nil {
+			t.Errorf("expected 'nil' but got error: %s", err)
+		}
+	})
+}
+
 func TestRunCreateCmd(t *testing.T) {
 	t.Run("when category is 'parent'", func(t *testing.T) {
 		cp := CreatePrompts{
 			category: "parent",
+			editCmd:  "yes",
 			aliases: []alias.Alias{
 				{
 					Name:    "po",
@@ -27,35 +51,10 @@ func TestRunCreateCmd(t *testing.T) {
 
 		fs := afero.NewMemMapFs()
 
-		configFilePath, configFilePathErr := config.ConfigFilePath()
-		if configFilePathErr != nil {
-			t.Error(configFilePathErr)
-		}
+		writeConfigFile(t, fs)
 
-		j, jsonErr := json.Marshal(config.NewConfig("bash"))
-		if jsonErr != nil {
-			t.Error(jsonErr)
-		}
-
-		writeFileErr := afero.WriteFile(fs, configFilePath, j, 0o644)
-		if writeFileErr != nil {
-			t.Error(writeFileErr)
-		}
-
-		mkDirErr := fs.MkdirAll("/foo/Code", 0o755)
-		if mkDirErr != nil {
-			t.Error(mkDirErr)
-		}
-
-		mkDir2Err := fs.Mkdir("/foo/Code/project-one", 0o755)
-		if mkDir2Err != nil {
-			t.Error(mkDir2Err)
-		}
-
-		mkDir3Err := fs.Mkdir("/foo/Code/project-two", 0o755)
-		if mkDir3Err != nil {
-			t.Error(mkDir3Err)
-		}
+		makeDirAll(t, fs, "/foo/Code/project-one")
+		makeDirAll(t, fs, "/foo/Code/project-two")
 
 		err := RunCreateCmd(fs, cp)
 		if err != nil {
@@ -67,21 +66,14 @@ func TestRunCreateCmd(t *testing.T) {
 			t.Errorf("expected 'nil' but got '%s'", configErr)
 		}
 
-		if c.Aliases[0].Name != "po" {
-			t.Errorf("expected 'po' but got '%s'", c.Aliases[0].Name)
-		}
-
-		if c.Aliases[0].Command != "/foo/Code/project-one" {
-			t.Errorf("expected '/foo/Code/project-one' but got '%s'", c.Aliases[0].Command)
-		}
-
-		if c.Aliases[1].Name != "pt" {
-			t.Errorf("expected 'pt' but got '%s'", c.Aliases[0].Name)
-		}
-
-		if c.Aliases[1].Command != "/foo/Code/project-two" {
-			t.Errorf("expected '/foo/Code/project-two' but got '%s'", c.Aliases[0].Command)
-		}
+		assertAliasMatches(t, "po", c.Aliases[0].Name)
+		assertAliasMatches(t, "cd /foo/Code/project-one", c.Aliases[0].Command)
+		assertAliasMatches(t, "epo", c.Aliases[1].Name)
+		assertAliasMatches(t, "cd /foo/Code/project-one && nvim", c.Aliases[1].Command)
+		assertAliasMatches(t, "pt", c.Aliases[2].Name)
+		assertAliasMatches(t, "cd /foo/Code/project-two", c.Aliases[2].Command)
+		assertAliasMatches(t, "ept", c.Aliases[3].Name)
+		assertAliasMatches(t, "cd /foo/Code/project-two && nvim", c.Aliases[3].Command)
 	})
 
 	t.Run("when category is 'directory'", func(t *testing.T) {
@@ -97,25 +89,9 @@ func TestRunCreateCmd(t *testing.T) {
 
 		fs := afero.NewMemMapFs()
 
-		configFilePath, configFilePathErr := config.ConfigFilePath()
-		if configFilePathErr != nil {
-			t.Error(configFilePathErr)
-		}
+		writeConfigFile(t, fs)
 
-		j, jsonErr := json.Marshal(config.NewConfig("bash"))
-		if jsonErr != nil {
-			t.Error(jsonErr)
-		}
-
-		writeFileErr := afero.WriteFile(fs, configFilePath, j, 0o644)
-		if writeFileErr != nil {
-			t.Error(writeFileErr)
-		}
-
-		mkDirErr := fs.MkdirAll("/foo/Documents/work/notes", 0o755)
-		if mkDirErr != nil {
-			t.Error(mkDirErr)
-		}
+		makeDirAll(t, fs, "/foo/Documents/work/notes")
 
 		err := RunCreateCmd(fs, cp)
 		if err != nil {
@@ -127,13 +103,8 @@ func TestRunCreateCmd(t *testing.T) {
 			t.Errorf("expected 'nil' but got '%s'", configErr)
 		}
 
-		if c.Aliases[0].Name != "wn" {
-			t.Errorf("expected 'wn' but got '%s'", c.Aliases[0].Name)
-		}
-
-		if c.Aliases[0].Command != "/foo/Documents/work/notes" {
-			t.Errorf("expected '/foo/Documents/work/notes' but got '%s'", c.Aliases[0].Command)
-		}
+		assertAliasMatches(t, "wn", c.Aliases[0].Name)
+		assertAliasMatches(t, "cd /foo/Documents/work/notes", c.Aliases[0].Command)
 	})
 
 	t.Run("when category is 'action'", func(t *testing.T) {
@@ -149,20 +120,7 @@ func TestRunCreateCmd(t *testing.T) {
 
 		fs := afero.NewMemMapFs()
 
-		configFilePath, configFilePathErr := config.ConfigFilePath()
-		if configFilePathErr != nil {
-			t.Error(configFilePathErr)
-		}
-
-		j, jsonErr := json.Marshal(config.NewConfig("bash"))
-		if jsonErr != nil {
-			t.Error(jsonErr)
-		}
-
-		writeFileErr := afero.WriteFile(fs, configFilePath, j, 0o644)
-		if writeFileErr != nil {
-			t.Error(writeFileErr)
-		}
+		writeConfigFile(t, fs)
 
 		err := RunCreateCmd(fs, cp)
 		if err != nil {
@@ -174,12 +132,60 @@ func TestRunCreateCmd(t *testing.T) {
 			t.Errorf("expected 'nil' but got '%s'", configErr)
 		}
 
-		if c.Aliases[0].Name != "ll" {
-			t.Errorf("expected 'll' but got '%s'", c.Aliases[0].Name)
+		assertAliasMatches(t, "ll", c.Aliases[0].Name)
+		assertAliasMatches(t, "ls -lah", c.Aliases[0].Command)
+	})
+
+	t.Run("when config does not exist", func(t *testing.T) {
+		cp := CreatePrompts{
+			category: "action",
+			aliases: []alias.Alias{
+				{
+					Name:    "ll",
+					Command: "ls -lah",
+				},
+			},
 		}
 
-		if c.Aliases[0].Command != "ls -lah" {
-			t.Errorf("expected 'ls -lah' but got '%s'", c.Aliases[0].Command)
+		fs := afero.NewMemMapFs()
+
+		err := RunCreateCmd(fs, cp)
+		if err == nil {
+			t.Error("expected an error but got 'nil'")
 		}
 	})
+}
+
+func assertAliasMatches(t *testing.T, expected string, actual string) {
+	t.Helper()
+
+	if actual != expected {
+		t.Errorf("expected '%s' but got '%s'", expected, actual)
+	}
+}
+
+func writeConfigFile(t *testing.T, fs afero.Fs) {
+	t.Helper()
+
+	configFilePath, configFilePathErr := config.ConfigFilePath()
+	if configFilePathErr != nil {
+		t.Error(configFilePathErr)
+	}
+
+	j, jsonErr := json.Marshal(config.NewConfig("bash"))
+	if jsonErr != nil {
+		t.Error(jsonErr)
+	}
+
+	writeFileErr := afero.WriteFile(fs, configFilePath, j, 0o644)
+	if writeFileErr != nil {
+		t.Error(writeFileErr)
+	}
+}
+
+func makeDirAll(t *testing.T, fs afero.Fs, path string) {
+	mkDirErr := fs.MkdirAll(path, 0o755)
+	if mkDirErr != nil {
+		t.Error(mkDirErr)
+	}
 }

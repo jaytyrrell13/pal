@@ -2,6 +2,7 @@ package config
 
 import (
 	"encoding/json"
+	"errors"
 	"os"
 
 	"github.com/jaytyrrell13/pal/internal/alias"
@@ -32,6 +33,16 @@ func ConfigFilePath() (string, error) {
 	}
 
 	return path + "/config.json", nil
+}
+
+func ConfigFileExists(fs afero.Fs) (bool, error) {
+	path, err := ConfigFilePath()
+	if err != nil {
+		return false, err
+	}
+
+	_, statErr := fs.Stat(path)
+	return !errors.Is(statErr, os.ErrNotExist), nil
 }
 
 func ReadConfigFile(fs afero.Fs) (Config, error) {

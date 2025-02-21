@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 
 	"github.com/charmbracelet/huh"
@@ -15,6 +16,7 @@ import (
 type CreatePrompts struct {
 	category string
 	aliases  []alias.Alias
+	editCmd  string
 }
 
 var createCmd = &cobra.Command{
@@ -23,13 +25,31 @@ var createCmd = &cobra.Command{
 	RunE: func(cmd *cobra.Command, args []string) error {
 		fs := afero.NewOsFs()
 
-		cp, err := RunCreatePrompts(fs)
-		if err != nil {
-			return err
+		prereqsErr := CheckCreatePrerequisites(fs)
+		if prereqsErr != nil {
+			return prereqsErr
+		}
+
+		cp, promptsErr := RunCreatePrompts(fs)
+		if promptsErr != nil {
+			return promptsErr
 		}
 
 		return RunCreateCmd(fs, cp)
 	},
+}
+
+func CheckCreatePrerequisites(fs afero.Fs) error {
+	ok, err := config.ConfigFileExists(fs)
+	if err != nil {
+		return err
+	}
+
+	if !ok {
+		return errors.New("Config file does not exist")
+	}
+
+	return nil
 }
 
 func RunCreatePrompts(fs afero.Fs) (CreatePrompts, error) {
@@ -42,42 +62,63 @@ func RunCreatePrompts(fs afero.Fs) (CreatePrompts, error) {
 		return CreatePrompts{}, err
 	}
 
-	cp := CreatePrompts{}
+	cp := CreatePrompts{
+		category: category,
+	}
 
 	switch category {
 	case "action":
-		action, actionErr := ui.Input("What is the action?")
+		actionRes, actionErr := ui.Input("What is the action?")
 		if actionErr != nil {
 			return CreatePrompts{}, actionErr
 		}
 
-		a, aliasErr := ui.Input(fmt.Sprintf("Alias for (%s).", action))
+		aliasRes, aliasErr := ui.Input(fmt.Sprintf("Alias for (%s).", actionRes))
 		if aliasErr != nil {
 			return CreatePrompts{}, aliasErr
 		}
 
-		cp.aliases = []alias.Alias{{Name: a, Command: action}}
+		cp.aliases = []alias.Alias{{Name: aliasRes, Command: actionRes}}
 
 	case "directory":
-		path, pathErr := ui.Input("What is the path?")
+		pathRes, pathErr := ui.Input("What is the path?")
 		if pathErr != nil {
 			return CreatePrompts{}, pathErr
 		}
 
-		a, aliasErr := ui.Input(fmt.Sprintf("Alias for (%s).", path))
+		aliasRes, aliasErr := ui.Input(fmt.Sprintf("Alias for (%s).", pathRes))
 		if aliasErr != nil {
 			return CreatePrompts{}, aliasErr
 		}
 
-		cp.aliases = []alias.Alias{{Name: a, Command: path}}
+		editCmd, editCmdErr := ui.Select("Do you want to include an edit command as well?", []huh.Option[string]{
+			huh.NewOption("Yes", "yes"),
+			huh.NewOption("No", "no"),
+		})
+		if editCmdErr != nil {
+			return CreatePrompts{}, editCmdErr
+		}
+
+		cp.editCmd = editCmd
+		cp.aliases = []alias.Alias{{Name: aliasRes, Command: pathRes}}
 
 	case "parent":
-		path, pathErr := ui.Input("What is the path?")
+		pathRes, pathErr := ui.Input("What is the path?")
 		if pathErr != nil {
 			return CreatePrompts{}, pathErr
 		}
 
-		files, readDirErr := afero.ReadDir(fs, path)
+		editCmd, editCmdErr := ui.Select("Do you want to include an edit command as well?", []huh.Option[string]{
+			huh.NewOption("Yes", "yes"),
+			huh.NewOption("No", "no"),
+		})
+		if editCmdErr != nil {
+			return CreatePrompts{}, editCmdErr
+		}
+
+		cp.editCmd = editCmd
+
+		files, readDirErr := afero.ReadDir(fs, pathRes)
 		if readDirErr != nil {
 			return CreatePrompts{}, readDirErr
 		}
@@ -85,21 +126,21 @@ func RunCreatePrompts(fs afero.Fs) (CreatePrompts, error) {
 		var projectPaths []string
 		for _, file := range files {
 			if file.Name() != ".DS_Store" {
-				projectPaths = append(projectPaths, path+"/"+file.Name())
+				projectPaths = append(projectPaths, pathRes+"/"+file.Name())
 			}
 		}
 
 		for _, projectPath := range projectPaths {
-			a, aliasErr := ui.Input(fmt.Sprintf("Alias for (%s) Leave blank to skip.", projectPath))
+			aliasRes, aliasErr := ui.Input(fmt.Sprintf("Alias for (%s) Leave blank to skip.", projectPath))
 			if aliasErr != nil {
 				return CreatePrompts{}, aliasErr
 			}
 
-			if a == "" {
+			if aliasRes == "" {
 				continue
 			}
 
-			cp.aliases = append(cp.aliases, alias.Alias{Name: a, Command: projectPath})
+			cp.aliases = append(cp.aliases, alias.Alias{Name: aliasRes, Command: projectPath})
 		}
 	}
 
@@ -117,7 +158,17 @@ func RunCreateCmd(fs afero.Fs, cp CreatePrompts) error {
 		return configErr
 	}
 
-	c.Aliases = append(c.Aliases, cp.aliases...)
+	for _, a := range cp.aliases {
+		if cp.category != "action" {
+			c.Aliases = append(c.Aliases, a.ForActionCmd())
+		} else {
+			c.Aliases = append(c.Aliases, a)
+		}
+
+		if cp.editCmd == "yes" {
+			c.Aliases = append(c.Aliases, a.ForEditCmd())
+		}
+	}
 
 	j, jsonErr := json.Marshal(c)
 	if jsonErr != nil {
