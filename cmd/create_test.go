@@ -1,10 +1,10 @@
 package cmd
 
 import (
-	"encoding/json"
 	"strings"
 	"testing"
 
+	"github.com/jaytyrrell13/pal/internal"
 	"github.com/jaytyrrell13/pal/internal/alias"
 	"github.com/jaytyrrell13/pal/internal/config"
 	"github.com/spf13/afero"
@@ -24,7 +24,7 @@ func TestCheckCreatePrerequisites(t *testing.T) {
 	t.Run("when config file does exist", func(t *testing.T) {
 		fs := afero.NewMemMapFs()
 
-		writeConfigFile(t, fs)
+		internal.WriteConfigFile(t, fs, config.NewConfig("zsh"))
 
 		err := CheckCreatePrerequisites(fs)
 		if err != nil {
@@ -52,7 +52,7 @@ func TestRunCreateCmd(t *testing.T) {
 
 		fs := afero.NewMemMapFs()
 
-		writeConfigFile(t, fs)
+		internal.WriteConfigFile(t, fs, config.NewConfig("zsh"))
 
 		makeDirAll(t, fs, "/foo/Code/project-one")
 		makeDirAll(t, fs, "/foo/Code/project-two")
@@ -99,7 +99,7 @@ func TestRunCreateCmd(t *testing.T) {
 
 		fs := afero.NewMemMapFs()
 
-		writeConfigFile(t, fs)
+		internal.WriteConfigFile(t, fs, config.NewConfig("zsh"))
 
 		makeDirAll(t, fs, "/foo/Documents/work/notes")
 
@@ -133,7 +133,7 @@ func TestRunCreateCmd(t *testing.T) {
 
 		fs := afero.NewMemMapFs()
 
-		writeConfigFile(t, fs)
+		internal.WriteConfigFile(t, fs, config.NewConfig("zsh"))
 
 		err := RunCreateCmd(fs, cp)
 		if err != nil {
@@ -177,25 +177,6 @@ func assertAliasMatches(t *testing.T, expected string, actual string) {
 
 	if actual != expected {
 		t.Errorf("expected '%s' but got '%s'", expected, actual)
-	}
-}
-
-func writeConfigFile(t *testing.T, fs afero.Fs) {
-	t.Helper()
-
-	configFilePath, configFilePathErr := config.ConfigFilePath()
-	if configFilePathErr != nil {
-		t.Error(configFilePathErr)
-	}
-
-	j, jsonErr := json.Marshal(config.NewConfig("bash"))
-	if jsonErr != nil {
-		t.Error(jsonErr)
-	}
-
-	writeFileErr := afero.WriteFile(fs, configFilePath, j, 0o644)
-	if writeFileErr != nil {
-		t.Error(writeFileErr)
 	}
 }
 
