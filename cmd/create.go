@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"encoding/json"
 	"errors"
 	"fmt"
 
@@ -148,11 +147,6 @@ func RunCreatePrompts(fs afero.Fs) (CreatePrompts, error) {
 }
 
 func RunCreateCmd(fs afero.Fs, cp CreatePrompts) error {
-	configFilePath, configFilePathErr := config.ConfigFilePath()
-	if configFilePathErr != nil {
-		return configFilePathErr
-	}
-
 	c, configErr := config.ReadConfigFile(fs)
 	if configErr != nil {
 		return configErr
@@ -170,12 +164,7 @@ func RunCreateCmd(fs afero.Fs, cp CreatePrompts) error {
 		}
 	}
 
-	j, jsonErr := json.Marshal(c)
-	if jsonErr != nil {
-		return jsonErr
-	}
-
-	writeConfigFileErr := afero.WriteFile(fs, configFilePath, j, 0o644)
+	writeConfigFileErr := config.WriteConfigFile(fs, c)
 	if writeConfigFileErr != nil {
 		return writeConfigFileErr
 	}

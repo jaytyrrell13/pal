@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"encoding/json"
 	"errors"
 	"os"
 
@@ -68,14 +67,9 @@ func RunInstallCmd(fs afero.Fs, ip InstallPrompts) error {
 
 	c := config.NewConfig(ip.shell)
 
-	j, jsonErr := json.Marshal(c)
-	if jsonErr != nil {
-		return jsonErr
-	}
-
-	writeFileErr := afero.WriteFile(fs, configFilePath, j, 0o644)
-	if writeFileErr != nil {
-		return writeFileErr
+	writeConfigFileErr := config.WriteConfigFile(fs, c)
+	if writeConfigFileErr != nil {
+		return writeConfigFileErr
 	}
 
 	return nil

@@ -65,6 +65,25 @@ func ReadConfigFile(fs afero.Fs) (Config, error) {
 	return c, nil
 }
 
+func WriteConfigFile(fs afero.Fs, c Config) error {
+	j, jsonErr := json.Marshal(c)
+	if jsonErr != nil {
+		return jsonErr
+	}
+
+	configFilePath, configFilePathErr := ConfigFilePath()
+	if configFilePathErr != nil {
+		return configFilePathErr
+	}
+
+	writeConfigFileErr := afero.WriteFile(fs, configFilePath, j, 0o644)
+	if writeConfigFileErr != nil {
+		return writeConfigFileErr
+	}
+
+	return nil
+}
+
 func AliasFilePath() (string, error) {
 	path, err := ConfigDirPath()
 	if err != nil {
