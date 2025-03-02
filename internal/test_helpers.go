@@ -60,5 +60,27 @@ func AssertAliasFileContains(t *testing.T, fs afero.Fs, expected string) {
 	}
 
 	str := string(b)
-	strings.Contains(str, expected)
+
+	if !strings.Contains(str, expected) {
+		t.Errorf("expected '%s' to contain '%s'", str, expected)
+	}
+}
+
+func AssertAliasFileDoesntContain(t *testing.T, fs afero.Fs, expected string) {
+	t.Helper()
+
+	aliasFilePath, aliasFilePathErr := config.AliasFilePath()
+	if aliasFilePathErr != nil {
+		t.Error(aliasFilePathErr)
+	}
+	b, readFileErr := afero.ReadFile(fs, aliasFilePath)
+	if readFileErr != nil {
+		t.Error(readFileErr)
+	}
+
+	str := string(b)
+
+	if strings.Contains(str, expected) {
+		t.Errorf("expected '%s' to not contain '%s'", str, expected)
+	}
 }
