@@ -2,6 +2,7 @@ package internal
 
 import (
 	"encoding/json"
+	"strings"
 	"testing"
 
 	"github.com/jaytyrrell13/pal/internal/alias"
@@ -44,4 +45,20 @@ func WriteAliasesFile(t *testing.T, fs afero.Fs) {
 	if writeFileErr != nil {
 		t.Error(writeFileErr)
 	}
+}
+
+func AssertAliasFileContains(t *testing.T, fs afero.Fs, expected string) {
+	t.Helper()
+
+	aliasFilePath, aliasFilePathErr := config.AliasFilePath()
+	if aliasFilePathErr != nil {
+		t.Error(aliasFilePathErr)
+	}
+	b, readFileErr := afero.ReadFile(fs, aliasFilePath)
+	if readFileErr != nil {
+		t.Error(readFileErr)
+	}
+
+	str := string(b)
+	strings.Contains(str, expected)
 }

@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"strings"
 	"testing"
 
 	"github.com/jaytyrrell13/pal/internal"
@@ -76,14 +75,14 @@ func TestRunCreateCmd(t *testing.T) {
 		assertAliasMatches(t, "ept", c.Aliases[3].Name)
 		assertAliasMatches(t, "cd /foo/Code/project-two && nvim", c.Aliases[3].Command)
 
-		assertAliasFileContains(t, fs, "po")
-		assertAliasFileContains(t, fs, "cd /foo/Code/project-one")
-		assertAliasFileContains(t, fs, "epo")
-		assertAliasFileContains(t, fs, "cd /foo/Code/project-one && nvim")
-		assertAliasFileContains(t, fs, "pt")
-		assertAliasFileContains(t, fs, "cd /foo/Code/project-two")
-		assertAliasFileContains(t, fs, "ept")
-		assertAliasFileContains(t, fs, "cd /foo/Code/project-two && nvim")
+		internal.AssertAliasFileContains(t, fs, "po")
+		internal.AssertAliasFileContains(t, fs, "cd /foo/Code/project-one")
+		internal.AssertAliasFileContains(t, fs, "epo")
+		internal.AssertAliasFileContains(t, fs, "cd /foo/Code/project-one && nvim")
+		internal.AssertAliasFileContains(t, fs, "pt")
+		internal.AssertAliasFileContains(t, fs, "cd /foo/Code/project-two")
+		internal.AssertAliasFileContains(t, fs, "ept")
+		internal.AssertAliasFileContains(t, fs, "cd /foo/Code/project-two && nvim")
 	})
 
 	t.Run("when category is 'directory'", func(t *testing.T) {
@@ -116,8 +115,8 @@ func TestRunCreateCmd(t *testing.T) {
 		assertAliasMatches(t, "wn", c.Aliases[0].Name)
 		assertAliasMatches(t, "cd /foo/Documents/work/notes", c.Aliases[0].Command)
 
-		assertAliasFileContains(t, fs, "wn")
-		assertAliasFileContains(t, fs, "cd /foo/Documents/work/notes")
+		internal.AssertAliasFileContains(t, fs, "wn")
+		internal.AssertAliasFileContains(t, fs, "cd /foo/Documents/work/notes")
 	})
 
 	t.Run("when category is 'action'", func(t *testing.T) {
@@ -148,8 +147,8 @@ func TestRunCreateCmd(t *testing.T) {
 		assertAliasMatches(t, "ll", c.Aliases[0].Name)
 		assertAliasMatches(t, "ls -lah", c.Aliases[0].Command)
 
-		assertAliasFileContains(t, fs, "ll")
-		assertAliasFileContains(t, fs, "ls -lah")
+		internal.AssertAliasFileContains(t, fs, "ll")
+		internal.AssertAliasFileContains(t, fs, "ls -lah")
 	})
 
 	t.Run("when config does not exist", func(t *testing.T) {
@@ -187,20 +186,4 @@ func makeDirAll(t *testing.T, fs afero.Fs, path string) {
 	if mkDirErr != nil {
 		t.Error(mkDirErr)
 	}
-}
-
-func assertAliasFileContains(t *testing.T, fs afero.Fs, expected string) {
-	t.Helper()
-
-	aliasFilePath, aliasFilePathErr := config.AliasFilePath()
-	if aliasFilePathErr != nil {
-		t.Error(aliasFilePathErr)
-	}
-	b, readFileErr := afero.ReadFile(fs, aliasFilePath)
-	if readFileErr != nil {
-		t.Error(readFileErr)
-	}
-
-	str := string(b)
-	strings.Contains(str, expected)
 }
