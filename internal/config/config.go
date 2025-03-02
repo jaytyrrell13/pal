@@ -93,6 +93,16 @@ func AliasFilePath() (string, error) {
 	return path + "/aliases", err
 }
 
+func AliasesFileExists(fs afero.Fs) (bool, error) {
+	path, err := AliasFilePath()
+	if err != nil {
+		return false, err
+	}
+
+	_, statErr := fs.Stat(path)
+	return !errors.Is(statErr, os.ErrNotExist), nil
+}
+
 func WriteAliasFile(fs afero.Fs, c Config) error {
 	var aliasFile string
 	for _, a := range c.Aliases {

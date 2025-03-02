@@ -17,6 +17,21 @@ func Select(title string, options []huh.Option[string]) (string, error) {
 	return value, nil
 }
 
+func MultiSelect(title string, options []huh.Option[string]) ([]string, error) {
+	var value []string
+	err := huh.NewMultiSelect[string]().
+		Title(title).
+		Options(options...).
+		Value(&value).
+		WithTheme(huh.ThemeBase()).
+		Run()
+	if err != nil {
+		return []string{""}, err
+	}
+
+	return value, nil
+}
+
 func Input(title string) (string, error) {
 	var value string
 	err := huh.NewInput().
