@@ -67,12 +67,12 @@ func RunCreatePrompts(fs afero.Fs) (CreatePrompts, error) {
 
 	switch category {
 	case "action":
-		actionRes, actionErr := ui.Input("What is the action?")
+		actionRes, actionErr := ui.Input(ui.InputProps{Title: "What is the action?"})
 		if actionErr != nil {
 			return CreatePrompts{}, actionErr
 		}
 
-		aliasRes, aliasErr := ui.Input(fmt.Sprintf("Alias for (%s).", actionRes))
+		aliasRes, aliasErr := ui.Input(ui.InputProps{Title: fmt.Sprintf("Alias for (%s).", actionRes)})
 		if aliasErr != nil {
 			return CreatePrompts{}, aliasErr
 		}
@@ -80,12 +80,12 @@ func RunCreatePrompts(fs afero.Fs) (CreatePrompts, error) {
 		cp.aliases = []alias.Alias{{Name: aliasRes, Command: actionRes}}
 
 	case "directory":
-		pathRes, pathErr := ui.Input("What is the path?")
+		pathRes, pathErr := ui.Input(ui.InputProps{Title: "What is the path?"})
 		if pathErr != nil {
 			return CreatePrompts{}, pathErr
 		}
 
-		aliasRes, aliasErr := ui.Input(fmt.Sprintf("Alias for (%s).", pathRes))
+		aliasRes, aliasErr := ui.Input(ui.InputProps{Title: fmt.Sprintf("Alias for (%s).", pathRes)})
 		if aliasErr != nil {
 			return CreatePrompts{}, aliasErr
 		}
@@ -102,7 +102,7 @@ func RunCreatePrompts(fs afero.Fs) (CreatePrompts, error) {
 		cp.aliases = []alias.Alias{{Name: aliasRes, Command: pathRes}}
 
 	case "parent":
-		pathRes, pathErr := ui.Input("What is the path?")
+		pathRes, pathErr := ui.Input(ui.InputProps{Title: "What is the path?"})
 		if pathErr != nil {
 			return CreatePrompts{}, pathErr
 		}
@@ -130,7 +130,7 @@ func RunCreatePrompts(fs afero.Fs) (CreatePrompts, error) {
 		}
 
 		for _, projectPath := range projectPaths {
-			aliasRes, aliasErr := ui.Input(fmt.Sprintf("Alias for (%s) Leave blank to skip.", projectPath))
+			aliasRes, aliasErr := ui.Input(ui.InputProps{Title: fmt.Sprintf("Alias for (%s) Leave blank to skip.", projectPath)})
 			if aliasErr != nil {
 				return CreatePrompts{}, aliasErr
 			}

@@ -32,10 +32,15 @@ func MultiSelect(title string, options []huh.Option[string]) ([]string, error) {
 	return value, nil
 }
 
-func Input(title string) (string, error) {
-	var value string
+type InputProps struct {
+	Title string
+	Value string
+}
+
+func Input(ip InputProps) (string, error) {
+	value := ip.Value
 	err := huh.NewInput().
-		Title(title).
+		Title(ip.Title).
 		Value(&value).
 		WithTheme(huh.ThemeBase()).
 		Run()
