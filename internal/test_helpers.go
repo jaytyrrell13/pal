@@ -10,6 +10,14 @@ import (
 	"github.com/spf13/afero"
 )
 
+func AssertEquals(t *testing.T, expected string, actual string) {
+	t.Helper()
+
+	if actual != expected {
+		t.Errorf("expected '%s' but got '%s'", expected, actual)
+	}
+}
+
 func WriteConfigFile(t *testing.T, fs afero.Fs, c config.Config) {
 	t.Helper()
 
