@@ -1,6 +1,10 @@
 package ui
 
-import "github.com/charmbracelet/huh"
+import (
+	"github.com/charmbracelet/huh"
+	"github.com/charmbracelet/lipgloss"
+	"github.com/charmbracelet/lipgloss/table"
+)
 
 func Select(title string, options []huh.Option[string]) (string, error) {
 	var value string
@@ -49,4 +53,15 @@ func Input(ip InputProps) (string, error) {
 	}
 
 	return value, nil
+}
+
+func Table(headers []string, rows [][]string) *table.Table {
+	return table.New().
+		Border(lipgloss.NormalBorder()).
+		BorderStyle(lipgloss.NewStyle().Foreground(lipgloss.Color("245"))).
+		Headers(headers...).
+		StyleFunc(func(row, col int) lipgloss.Style {
+			return lipgloss.NewStyle().Padding(0, 2)
+		}).
+		Rows(rows...)
 }
