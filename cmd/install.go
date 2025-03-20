@@ -16,8 +16,9 @@ type InstallPrompts struct {
 }
 
 var installCmd = &cobra.Command{
-	Use:   "install",
-	Short: "A brief description of your command",
+	Use:     "install",
+	Short:   "Create the config file",
+	Aliases: []string{"i"},
 	RunE: func(cmd *cobra.Command, args []string) error {
 		fs := afero.NewOsFs()
 		ip, err := RunPrompts()

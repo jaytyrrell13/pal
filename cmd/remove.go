@@ -17,8 +17,9 @@ type RemovePrompts struct {
 }
 
 var removeCmd = &cobra.Command{
-	Use:   "remove",
-	Short: "A brief description of your command",
+	Use:     "remove",
+	Short:   "Remove an alias",
+	Aliases: []string{"rm"},
 	RunE: func(cmd *cobra.Command, args []string) error {
 		fs := afero.NewOsFs()
 

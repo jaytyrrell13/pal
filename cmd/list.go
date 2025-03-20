@@ -12,8 +12,9 @@ import (
 )
 
 var listCmd = &cobra.Command{
-	Use:   "list",
-	Short: "A brief description of your command",
+	Use:     "list",
+	Short:   "Display list of aliases",
+	Aliases: []string{"ls"},
 	RunE: func(cmd *cobra.Command, args []string) error {
 		fs := afero.NewOsFs()
 

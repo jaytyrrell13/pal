@@ -23,8 +23,9 @@ type UpdatePrompts struct {
 }
 
 var updateCmd = &cobra.Command{
-	Use:   "update",
-	Short: "A brief description of your command",
+	Use:     "update",
+	Short:   "Update an alias",
+	Aliases: []string{"up"},
 	RunE: func(cmd *cobra.Command, args []string) error {
 		fs := afero.NewOsFs()
 

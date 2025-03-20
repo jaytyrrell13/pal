@@ -19,8 +19,9 @@ type CreatePrompts struct {
 }
 
 var createCmd = &cobra.Command{
-	Use:   "create",
-	Short: "A brief description of your command",
+	Use:     "create",
+	Short:   "Create an alias",
+	Aliases: []string{"cr"},
 	RunE: func(cmd *cobra.Command, args []string) error {
 		fs := afero.NewOsFs()
 
