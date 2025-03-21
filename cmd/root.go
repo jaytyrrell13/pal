@@ -8,7 +8,7 @@ import (
 
 var rootCmd = &cobra.Command{
 	Use:           "pal",
-	Short:         "A brief description of your application",
+	Short:         "Command line tool to create, update, and remove shell aliases.",
 	SilenceErrors: true,
 	SilenceUsage:  true,
 }
