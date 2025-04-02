@@ -153,7 +153,3 @@ func RunUpdateCmd(fs afero.Fs, up UpdatePrompts) error {
 
 	return nil
 }
-
-func init() {
-	rootCmd.AddCommand(updateCmd)
-}

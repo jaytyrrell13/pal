@@ -62,7 +62,3 @@ func RunListCmd(fs afero.Fs, w io.Writer) error {
 
 	return nil
 }
-
-func init() {
-	rootCmd.AddCommand(listCmd)
-}

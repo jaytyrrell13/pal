@@ -107,7 +107,3 @@ func RunRemoveCmd(fs afero.Fs, dp RemovePrompts) error {
 
 	return nil
 }
-
-func init() {
-	rootCmd.AddCommand(removeCmd)
-}

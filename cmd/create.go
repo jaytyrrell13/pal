@@ -177,7 +177,3 @@ func RunCreateCmd(fs afero.Fs, cp CreatePrompts) error {
 
 	return nil
 }
-
-func init() {
-	rootCmd.AddCommand(createCmd)
-}

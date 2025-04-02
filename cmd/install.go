@@ -75,7 +75,3 @@ func RunInstallCmd(fs afero.Fs, ip InstallPrompts) error {
 
 	return nil
 }
-
-func init() {
-	rootCmd.AddCommand(installCmd)
-}
