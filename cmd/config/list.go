@@ -64,9 +64,6 @@ func RunListCmd(fs afero.Fs, w io.Writer) error {
 	t := ui.Table(headers, rows)
 
 	_, writeErr := w.Write([]byte(t.String()))
-	if writeErr != nil {
-		return writeErr
-	}
 
-	return nil
+	return writeErr
 }

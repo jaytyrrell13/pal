@@ -146,10 +146,5 @@ func RunUpdateCmd(fs afero.Fs, up UpdatePrompts) error {
 		return writeConfigFileErr
 	}
 
-	writeAliasFileErr := config.WriteAliasFile(fs, c)
-	if writeAliasFileErr != nil {
-		return writeAliasFileErr
-	}
-
-	return nil
+	return config.WriteAliasFile(fs, c)
 }

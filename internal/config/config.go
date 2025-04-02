@@ -76,12 +76,7 @@ func WriteConfigFile(fs afero.Fs, c Config) error {
 		return configFilePathErr
 	}
 
-	writeConfigFileErr := afero.WriteFile(fs, configFilePath, j, 0o644)
-	if writeConfigFileErr != nil {
-		return writeConfigFileErr
-	}
-
-	return nil
+	return afero.WriteFile(fs, configFilePath, j, 0o644)
 }
 
 func AliasFilePath() (string, error) {
@@ -114,10 +109,5 @@ func WriteAliasFile(fs afero.Fs, c Config) error {
 		return aliasFilePathErr
 	}
 
-	writeAliasesFileErr := afero.WriteFile(fs, aliasFilePath, []byte(aliasFile), 0o644)
-	if writeAliasesFileErr != nil {
-		return writeAliasesFileErr
-	}
-
-	return nil
+	return afero.WriteFile(fs, aliasFilePath, []byte(aliasFile), 0o644)
 }

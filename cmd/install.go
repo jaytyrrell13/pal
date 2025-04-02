@@ -68,10 +68,5 @@ func RunInstallCmd(fs afero.Fs, ip InstallPrompts) error {
 
 	c := config.NewConfig(ip.shell)
 
-	writeConfigFileErr := config.WriteConfigFile(fs, c)
-	if writeConfigFileErr != nil {
-		return writeConfigFileErr
-	}
-
-	return nil
+	return config.WriteConfigFile(fs, c)
 }
