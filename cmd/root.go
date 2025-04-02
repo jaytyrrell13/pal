@@ -14,7 +14,8 @@ var rootCmd = &cobra.Command{
 	SilenceUsage:  true,
 }
 
-func Execute() {
+func Execute(version string) {
+	rootCmd.Version = version
 	rootCmd.AddCommand(createCmd)
 	rootCmd.AddCommand(installCmd)
 	rootCmd.AddCommand(listCmd)
