@@ -7,6 +7,7 @@ import (
 	"github.com/charmbracelet/huh"
 	"github.com/jaytyrrell13/pal/internal/alias"
 	"github.com/jaytyrrell13/pal/internal/config"
+	"github.com/jaytyrrell13/pal/internal/messages"
 	"github.com/jaytyrrell13/pal/internal/ui"
 	"github.com/spf13/afero"
 	"github.com/spf13/cobra"
@@ -44,7 +45,7 @@ func CheckRemovePrerequisites(fs afero.Fs) error {
 	}
 
 	if !configFileExists {
-		return errors.New("Config file does not exist")
+		return errors.New(messages.Errors["configMissing"])
 	}
 
 	aliasesFileExists, aliasesFileExistsErr := config.AliasesFileExists(fs)
@@ -53,7 +54,7 @@ func CheckRemovePrerequisites(fs afero.Fs) error {
 	}
 
 	if !aliasesFileExists {
-		return errors.New("Aliases file does not exist")
+		return errors.New(messages.Errors["aliasesMissing"])
 	}
 
 	return nil

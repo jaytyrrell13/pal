@@ -7,6 +7,7 @@ import (
 	"reflect"
 
 	cfg "github.com/jaytyrrell13/pal/internal/config"
+	"github.com/jaytyrrell13/pal/internal/messages"
 	"github.com/jaytyrrell13/pal/internal/ui"
 	"github.com/spf13/afero"
 	"github.com/spf13/cobra"
@@ -35,7 +36,7 @@ func CheckListPrerequisites(fs afero.Fs) error {
 	}
 
 	if !configFileExists {
-		return errors.New("Config file does not exist")
+		return errors.New(messages.Errors["configMissing"])
 	}
 
 	return nil
