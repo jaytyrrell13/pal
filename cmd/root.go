@@ -1,8 +1,6 @@
 package cmd
 
 import (
-	"os"
-
 	"github.com/jaytyrrell13/pal/cmd/config"
 	"github.com/spf13/cobra"
 )
@@ -14,7 +12,7 @@ var rootCmd = &cobra.Command{
 	SilenceUsage:  true,
 }
 
-func Execute(version string) {
+func Execute(version string) error {
 	rootCmd.Version = version
 	rootCmd.AddCommand(createCmd)
 	rootCmd.AddCommand(installCmd)
@@ -23,8 +21,5 @@ func Execute(version string) {
 	rootCmd.AddCommand(updateCmd)
 	rootCmd.AddCommand(config.ConfigCmd)
 
-	err := rootCmd.Execute()
-	if err != nil {
-		os.Exit(1)
-	}
+	return rootCmd.Execute()
 }
