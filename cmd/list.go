@@ -47,6 +47,10 @@ func RunListCmd(fs afero.Fs, w io.Writer) error {
 		return configErr
 	}
 
+	if len(c.Aliases) == 0 {
+		return errors.New(messages.Errors["aliasesEmpty"])
+	}
+
 	headers := []string{"Alias", "Command"}
 	rows := [][]string{}
 

@@ -8,6 +8,7 @@ import (
 	"github.com/jaytyrrell13/pal/internal"
 	"github.com/jaytyrrell13/pal/internal/alias"
 	"github.com/jaytyrrell13/pal/internal/config"
+	"github.com/jaytyrrell13/pal/internal/messages"
 	"github.com/spf13/afero"
 )
 
@@ -35,36 +36,54 @@ func TestCheckListPrerequisites(t *testing.T) {
 }
 
 func TestRunListCmd(t *testing.T) {
-	fs := afero.NewMemMapFs()
+	t.Run("when config does not contain aliases", func(t *testing.T) {
+		fs := afero.NewMemMapFs()
 
-	c := config.Config{
-		Shell: "zsh",
-		Aliases: []alias.Alias{
-			{Name: "foo", Command: "cd /some/thing"},
-			{Name: "bar", Command: "cd /another/thing"},
-		},
-	}
-	internal.WriteConfigFile(t, fs, c)
+		c := config.Config{
+			Shell:   "zsh",
+			Aliases: []alias.Alias{},
+		}
+		internal.WriteConfigFile(t, fs, c)
 
-	var output bytes.Buffer
-	err := RunListCmd(fs, &output)
-	if err != nil {
-		t.Errorf("expected 'nil' but got error: %s", err)
-	}
+		var output bytes.Buffer
+		err := RunListCmd(fs, &output)
+		if err == nil {
+			t.Errorf("expected '%s' but got %s", messages.Errors["aliasesEmpty"], err)
+		}
+	})
 
-	if !strings.Contains(output.String(), "foo") {
-		t.Errorf("expected output to contain 'foo': \n%s", output.String())
-	}
+	t.Run("when config contains aliases", func(t *testing.T) {
+		fs := afero.NewMemMapFs()
 
-	if !strings.Contains(output.String(), "cd /some/thing") {
-		t.Errorf("expected output to contain 'cd /some/thing': \n%s", output.String())
-	}
+		c := config.Config{
+			Shell: "zsh",
+			Aliases: []alias.Alias{
+				{Name: "foo", Command: "cd /some/thing"},
+				{Name: "bar", Command: "cd /another/thing"},
+			},
+		}
+		internal.WriteConfigFile(t, fs, c)
 
-	if !strings.Contains(output.String(), "bar") {
-		t.Errorf("expected output to contain 'bar': \n%s", output.String())
-	}
+		var output bytes.Buffer
+		err := RunListCmd(fs, &output)
+		if err != nil {
+			t.Errorf("expected 'nil' but got error: %s", err)
+		}
 
-	if !strings.Contains(output.String(), "cd /another/thing") {
-		t.Errorf("expected output to contain 'cd /another/thing': \n%s", output.String())
-	}
+		if !strings.Contains(output.String(), "foo") {
+			t.Errorf("expected output to contain 'foo': \n%s", output.String())
+		}
+
+		if !strings.Contains(output.String(), "cd /some/thing") {
+			t.Errorf("expected output to contain 'cd /some/thing': \n%s", output.String())
+		}
+
+		if !strings.Contains(output.String(), "bar") {
+			t.Errorf("expected output to contain 'bar': \n%s", output.String())
+		}
+
+		if !strings.Contains(output.String(), "cd /another/thing") {
+			t.Errorf("expected output to contain 'cd /another/thing': \n%s", output.String())
+		}
+	})
 }
