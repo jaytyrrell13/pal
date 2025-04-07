@@ -48,7 +48,7 @@ func RunListCmd(fs afero.Fs, w io.Writer) error {
 		return configErr
 	}
 
-	headers := []string{"Alias", "Command"}
+	headers := []string{"Key", "Value"}
 	rows := [][]string{}
 
 	v := reflect.ValueOf(c)
