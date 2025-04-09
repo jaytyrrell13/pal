@@ -177,14 +177,13 @@ func createParentAlias(fs afero.Fs, cp CreatePrompts) (CreatePrompts, error) {
 		return CreatePrompts{}, readDirErr
 	}
 
-	var projectPaths []string
 	for _, file := range files {
-		if file.Name() != ".DS_Store" {
-			projectPaths = append(projectPaths, pathRes+"/"+file.Name())
+		if file.Name() == ".DS_Store" {
+			continue
 		}
-	}
 
-	for _, projectPath := range projectPaths {
+		projectPath := pathRes + "/" + file.Name()
+
 		aliasRes, aliasErr := ui.Input(ui.InputProps{Title: fmt.Sprintf("Alias for (%s) Leave blank to skip.", projectPath)})
 		if aliasErr != nil {
 			return CreatePrompts{}, aliasErr
