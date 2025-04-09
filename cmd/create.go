@@ -69,79 +69,20 @@ func RunCreatePrompts(fs afero.Fs) (CreatePrompts, error) {
 
 	switch category {
 	case "action":
-		actionRes, actionErr := ui.Input(ui.InputProps{Title: "What is the action?"})
-		if actionErr != nil {
-			return CreatePrompts{}, actionErr
+		cp, err = createActionAlias(cp)
+		if err != nil {
+			return CreatePrompts{}, err
 		}
-
-		aliasRes, aliasErr := ui.Input(ui.InputProps{Title: fmt.Sprintf("Alias for (%s).", actionRes)})
-		if aliasErr != nil {
-			return CreatePrompts{}, aliasErr
-		}
-
-		cp.aliases = []alias.Alias{{Name: aliasRes, Command: actionRes}}
-
 	case "directory":
-		pathRes, pathErr := ui.Input(ui.InputProps{Title: "What is the path?"})
-		if pathErr != nil {
-			return CreatePrompts{}, pathErr
+		cp, err = createDirectoryAlias(cp)
+		if err != nil {
+			return CreatePrompts{}, err
 		}
-
-		aliasRes, aliasErr := ui.Input(ui.InputProps{Title: fmt.Sprintf("Alias for (%s).", pathRes)})
-		if aliasErr != nil {
-			return CreatePrompts{}, aliasErr
-		}
-
-		editCmd, editCmdErr := ui.Select("Do you want to include an edit command as well?", []huh.Option[string]{
-			huh.NewOption("Yes", "yes"),
-			huh.NewOption("No", "no"),
-		})
-		if editCmdErr != nil {
-			return CreatePrompts{}, editCmdErr
-		}
-
-		cp.editCmd = editCmd
-		cp.aliases = []alias.Alias{{Name: aliasRes, Command: pathRes}}
 
 	case "parent":
-		pathRes, pathErr := ui.Input(ui.InputProps{Title: "What is the path?"})
-		if pathErr != nil {
-			return CreatePrompts{}, pathErr
-		}
-
-		editCmd, editCmdErr := ui.Select("Do you want to include an edit command as well?", []huh.Option[string]{
-			huh.NewOption("Yes", "yes"),
-			huh.NewOption("No", "no"),
-		})
-		if editCmdErr != nil {
-			return CreatePrompts{}, editCmdErr
-		}
-
-		cp.editCmd = editCmd
-
-		files, readDirErr := afero.ReadDir(fs, pathRes)
-		if readDirErr != nil {
-			return CreatePrompts{}, readDirErr
-		}
-
-		var projectPaths []string
-		for _, file := range files {
-			if file.Name() != ".DS_Store" {
-				projectPaths = append(projectPaths, pathRes+"/"+file.Name())
-			}
-		}
-
-		for _, projectPath := range projectPaths {
-			aliasRes, aliasErr := ui.Input(ui.InputProps{Title: fmt.Sprintf("Alias for (%s) Leave blank to skip.", projectPath)})
-			if aliasErr != nil {
-				return CreatePrompts{}, aliasErr
-			}
-
-			if aliasRes == "" {
-				continue
-			}
-
-			cp.aliases = append(cp.aliases, alias.Alias{Name: aliasRes, Command: projectPath})
+		cp, err = createParentAlias(fs, cp)
+		if err != nil {
+			return CreatePrompts{}, err
 		}
 	}
 
@@ -172,4 +113,89 @@ func RunCreateCmd(fs afero.Fs, cp CreatePrompts) error {
 	}
 
 	return config.WriteAliasFile(fs, c)
+}
+
+func createActionAlias(cp CreatePrompts) (CreatePrompts, error) {
+	actionRes, actionErr := ui.Input(ui.InputProps{Title: "What is the action?"})
+	if actionErr != nil {
+		return CreatePrompts{}, actionErr
+	}
+
+	aliasRes, aliasErr := ui.Input(ui.InputProps{Title: fmt.Sprintf("Alias for (%s).", actionRes)})
+	if aliasErr != nil {
+		return CreatePrompts{}, aliasErr
+	}
+
+	cp.aliases = []alias.Alias{{Name: aliasRes, Command: actionRes}}
+
+	return cp, nil
+}
+
+func createDirectoryAlias(cp CreatePrompts) (CreatePrompts, error) {
+	pathRes, pathErr := ui.Input(ui.InputProps{Title: "What is the path?"})
+	if pathErr != nil {
+		return CreatePrompts{}, pathErr
+	}
+
+	aliasRes, aliasErr := ui.Input(ui.InputProps{Title: fmt.Sprintf("Alias for (%s).", pathRes)})
+	if aliasErr != nil {
+		return CreatePrompts{}, aliasErr
+	}
+
+	editCmd, editCmdErr := ui.Select("Do you want to include an edit command as well?", []huh.Option[string]{
+		huh.NewOption("Yes", "yes"),
+		huh.NewOption("No", "no"),
+	})
+	if editCmdErr != nil {
+		return CreatePrompts{}, editCmdErr
+	}
+
+	cp.editCmd = editCmd
+	cp.aliases = []alias.Alias{{Name: aliasRes, Command: pathRes}}
+
+	return cp, nil
+}
+
+func createParentAlias(fs afero.Fs, cp CreatePrompts) (CreatePrompts, error) {
+	pathRes, pathErr := ui.Input(ui.InputProps{Title: "What is the path?"})
+	if pathErr != nil {
+		return CreatePrompts{}, pathErr
+	}
+
+	editCmd, editCmdErr := ui.Select("Do you want to include an edit command as well?", []huh.Option[string]{
+		huh.NewOption("Yes", "yes"),
+		huh.NewOption("No", "no"),
+	})
+	if editCmdErr != nil {
+		return CreatePrompts{}, editCmdErr
+	}
+
+	cp.editCmd = editCmd
+
+	files, readDirErr := afero.ReadDir(fs, pathRes)
+	if readDirErr != nil {
+		return CreatePrompts{}, readDirErr
+	}
+
+	var projectPaths []string
+	for _, file := range files {
+		if file.Name() != ".DS_Store" {
+			projectPaths = append(projectPaths, pathRes+"/"+file.Name())
+		}
+	}
+
+	for _, projectPath := range projectPaths {
+		aliasRes, aliasErr := ui.Input(ui.InputProps{Title: fmt.Sprintf("Alias for (%s) Leave blank to skip.", projectPath)})
+		if aliasErr != nil {
+			return CreatePrompts{}, aliasErr
+		}
+
+		if aliasRes == "" {
+			continue
+		}
+
+		cp.aliases = append(cp.aliases, alias.Alias{Name: aliasRes, Command: projectPath})
+	}
+
+	return cp, nil
 }
