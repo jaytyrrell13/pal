@@ -19,25 +19,27 @@ type CreatePrompts struct {
 	editCmd  string
 }
 
-var createCmd = &cobra.Command{
-	Use:     "create",
-	Short:   "Create an alias",
-	Aliases: []string{"cr"},
-	RunE: func(cmd *cobra.Command, args []string) error {
-		fs := afero.NewOsFs()
+func NewCreateCmd() *cobra.Command {
+	return &cobra.Command{
+		Use:     "create",
+		Short:   "Create an alias",
+		Aliases: []string{"cr"},
+		RunE: func(cmd *cobra.Command, args []string) error {
+			fs := afero.NewOsFs()
 
-		prereqsErr := CheckCreatePrerequisites(fs)
-		if prereqsErr != nil {
-			return prereqsErr
-		}
+			prereqsErr := CheckCreatePrerequisites(fs)
+			if prereqsErr != nil {
+				return prereqsErr
+			}
 
-		cp, promptsErr := RunCreatePrompts(fs)
-		if promptsErr != nil {
-			return promptsErr
-		}
+			cp, promptsErr := RunCreatePrompts(fs)
+			if promptsErr != nil {
+				return promptsErr
+			}
 
-		return RunCreateCmd(fs, cp)
-	},
+			return RunCreateCmd(fs, cp)
+		},
+	}
 }
 
 func CheckCreatePrerequisites(fs afero.Fs) error {

@@ -13,20 +13,22 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var listCmd = &cobra.Command{
-	Use:     "list",
-	Short:   "List pal config",
-	Aliases: []string{"ls"},
-	RunE: func(cmd *cobra.Command, args []string) error {
-		fs := afero.NewOsFs()
+func NewListCmd() *cobra.Command {
+	return &cobra.Command{
+		Use:     "list",
+		Short:   "List pal config",
+		Aliases: []string{"ls"},
+		RunE: func(cmd *cobra.Command, args []string) error {
+			fs := afero.NewOsFs()
 
-		prereqsErr := CheckListPrerequisites(fs)
-		if prereqsErr != nil {
-			return prereqsErr
-		}
+			prereqsErr := CheckListPrerequisites(fs)
+			if prereqsErr != nil {
+				return prereqsErr
+			}
 
-		return RunListCmd(fs, os.Stdout)
-	},
+			return RunListCmd(fs, os.Stdout)
+		},
+	}
 }
 
 func CheckListPrerequisites(fs afero.Fs) error {

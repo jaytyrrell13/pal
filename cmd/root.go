@@ -14,12 +14,12 @@ var rootCmd = &cobra.Command{
 
 func Execute(version string) error {
 	rootCmd.Version = version
-	rootCmd.AddCommand(createCmd)
-	rootCmd.AddCommand(installCmd)
-	rootCmd.AddCommand(listCmd)
-	rootCmd.AddCommand(removeCmd)
-	rootCmd.AddCommand(updateCmd)
-	rootCmd.AddCommand(config.ConfigCmd)
+	rootCmd.AddCommand(NewCreateCmd())
+	rootCmd.AddCommand(NewInstallCmd())
+	rootCmd.AddCommand(NewListCmd())
+	rootCmd.AddCommand(NewRemoveCmd())
+	rootCmd.AddCommand(NewUpdateCmd())
+	rootCmd.AddCommand(config.NewConfigCmd())
 
 	return rootCmd.Execute()
 }

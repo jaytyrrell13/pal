@@ -16,19 +16,21 @@ type InstallPrompts struct {
 	shell string
 }
 
-var installCmd = &cobra.Command{
-	Use:     "install",
-	Short:   "Create the config file",
-	Aliases: []string{"i"},
-	RunE: func(cmd *cobra.Command, args []string) error {
-		fs := afero.NewOsFs()
-		ip, err := RunPrompts()
-		if err != nil {
-			return err
-		}
+func NewInstallCmd() *cobra.Command {
+	return &cobra.Command{
+		Use:     "install",
+		Short:   "Create the config file",
+		Aliases: []string{"i"},
+		RunE: func(cmd *cobra.Command, args []string) error {
+			fs := afero.NewOsFs()
+			ip, err := RunPrompts()
+			if err != nil {
+				return err
+			}
 
-		return RunInstallCmd(fs, ip)
-	},
+			return RunInstallCmd(fs, ip)
+		},
+	}
 }
 
 func RunPrompts() (InstallPrompts, error) {

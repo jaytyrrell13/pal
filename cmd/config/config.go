@@ -4,12 +4,14 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var ConfigCmd = &cobra.Command{
-	Use:   "config",
-	Short: "Manage pal config",
-}
+func NewConfigCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "config",
+		Short: "Manage pal config",
+	}
 
-func init() {
-	ConfigCmd.AddCommand(listCmd)
-	ConfigCmd.AddCommand(updateCmd)
+	cmd.AddCommand(NewListCmd())
+	cmd.AddCommand(NewUpdateCmd())
+
+	return cmd
 }

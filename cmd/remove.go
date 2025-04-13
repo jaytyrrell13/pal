@@ -17,25 +17,27 @@ type RemovePrompts struct {
 	aliasesToRemove []string
 }
 
-var removeCmd = &cobra.Command{
-	Use:     "remove",
-	Short:   "Remove an alias",
-	Aliases: []string{"rm"},
-	RunE: func(cmd *cobra.Command, args []string) error {
-		fs := afero.NewOsFs()
+func NewRemoveCmd() *cobra.Command {
+	return &cobra.Command{
+		Use:     "remove",
+		Short:   "Remove an alias",
+		Aliases: []string{"rm"},
+		RunE: func(cmd *cobra.Command, args []string) error {
+			fs := afero.NewOsFs()
 
-		prereqsErr := CheckRemovePrerequisites(fs)
-		if prereqsErr != nil {
-			return prereqsErr
-		}
+			prereqsErr := CheckRemovePrerequisites(fs)
+			if prereqsErr != nil {
+				return prereqsErr
+			}
 
-		rp, promptsErr := RunRemovePrompts(fs)
-		if promptsErr != nil {
-			return promptsErr
-		}
+			rp, promptsErr := RunRemovePrompts(fs)
+			if promptsErr != nil {
+				return promptsErr
+			}
 
-		return RunRemoveCmd(fs, rp)
-	},
+			return RunRemoveCmd(fs, rp)
+		},
+	}
 }
 
 func CheckRemovePrerequisites(fs afero.Fs) error {

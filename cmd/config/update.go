@@ -22,24 +22,26 @@ type UpdatePrompts struct {
 	updatedConfig []UpdatedConfig
 }
 
-var updateCmd = &cobra.Command{
-	Use:   "update",
-	Short: "Update pal config",
-	RunE: func(cmd *cobra.Command, args []string) error {
-		fs := afero.NewOsFs()
+func NewUpdateCmd() *cobra.Command {
+	return &cobra.Command{
+		Use:   "update",
+		Short: "Update pal config",
+		RunE: func(cmd *cobra.Command, args []string) error {
+			fs := afero.NewOsFs()
 
-		prereqsErr := CheckUpdatePrerequisites(fs)
-		if prereqsErr != nil {
-			return prereqsErr
-		}
+			prereqsErr := CheckUpdatePrerequisites(fs)
+			if prereqsErr != nil {
+				return prereqsErr
+			}
 
-		up, promptsErr := RunUpdatePrompts(fs)
-		if promptsErr != nil {
-			return promptsErr
-		}
+			up, promptsErr := RunUpdatePrompts(fs)
+			if promptsErr != nil {
+				return promptsErr
+			}
 
-		return RunUpdateCmd(fs, up)
-	},
+			return RunUpdateCmd(fs, up)
+		},
+	}
 }
 
 func CheckUpdatePrerequisites(fs afero.Fs) error {
