@@ -23,7 +23,8 @@ func NewInstallCmd() *cobra.Command {
 		Aliases: []string{"i"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			fs := afero.NewOsFs()
-			ip, err := RunPrompts()
+
+			ip, err := RunInstallPrompts()
 			if err != nil {
 				return err
 			}
@@ -33,7 +34,7 @@ func NewInstallCmd() *cobra.Command {
 	}
 }
 
-func RunPrompts() (InstallPrompts, error) {
+func RunInstallPrompts() (InstallPrompts, error) {
 	shell, err := ui.Select("What shell do you use?", []huh.Option[string]{
 		huh.NewOption("Bash", "bash"),
 		huh.NewOption("Fish", "fish"),
