@@ -3,6 +3,9 @@ package cmd
 import (
 	"errors"
 	"fmt"
+	"os"
+	"path/filepath"
+	"strings"
 
 	"github.com/charmbracelet/huh"
 	"github.com/jaytyrrell13/pal/internal/alias"
@@ -153,7 +156,13 @@ func createDirectoryAlias(cp CreatePrompts) (CreatePrompts, error) {
 	}
 
 	cp.editCmd = editCmd
-	cp.aliases = []alias.Alias{{Name: aliasRes, Command: pathRes}}
+
+	expandedPath, expandedPathErr := expandPath(pathRes)
+	if expandedPathErr != nil {
+		return CreatePrompts{}, expandedPathErr
+	}
+
+	cp.aliases = []alias.Alias{{Name: aliasRes, Command: expandedPath}}
 
 	return cp, nil
 }
@@ -172,9 +181,14 @@ func createParentAlias(fs afero.Fs, cp CreatePrompts) (CreatePrompts, error) {
 		return CreatePrompts{}, editCmdErr
 	}
 
+	expandedPath, expandedPathErr := expandPath(pathRes)
+	if expandedPathErr != nil {
+		return CreatePrompts{}, expandedPathErr
+	}
+
 	cp.editCmd = editCmd
 
-	files, readDirErr := afero.ReadDir(fs, pathRes)
+	files, readDirErr := afero.ReadDir(fs, expandedPath)
 	if readDirErr != nil {
 		return CreatePrompts{}, readDirErr
 	}
@@ -184,7 +198,7 @@ func createParentAlias(fs afero.Fs, cp CreatePrompts) (CreatePrompts, error) {
 			continue
 		}
 
-		projectPath := pathRes + "/" + file.Name()
+		projectPath := expandedPath + "/" + file.Name()
 
 		aliasRes, aliasErr := ui.Input(ui.InputProps{Title: fmt.Sprintf("Alias for (%s) Leave blank to skip.", projectPath)})
 		if aliasErr != nil {
@@ -199,4 +213,17 @@ func createParentAlias(fs afero.Fs, cp CreatePrompts) (CreatePrompts, error) {
 	}
 
 	return cp, nil
+}
+
+func expandPath(path string) (string, error) {
+	home, homeErr := os.UserHomeDir()
+	if homeErr != nil {
+		return "", homeErr
+	}
+
+	if strings.HasPrefix(path, "~/") {
+		path = filepath.Join(home, path[2:])
+	}
+
+	return path, nil
 }
