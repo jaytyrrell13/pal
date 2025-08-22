@@ -16,26 +16,28 @@ Download the latest release archive from the [releases](https://github.com/jayty
 
 ## Usage
 
-To get started, you may execute Pal's `install` command. This will ask for the path to your projects, your editor command usage e.g. Skip, Same, Unique, your editor's CLI tool e.g. nvim, code, subl, if you chose "Same" for your editor command usage and your shell e.g. Bash, Zsh, Fish. These settings will be saved in `~/.config/pal/config.json`.
+To get started, you may execute Pal's `install` command to create the config file in `~/.config/pal/config.json`.
 
 ```shell
-pal install [--path | -p] [--editorCmd | -e] [--editorMode | -m]
+pal install
 ```
 
-The `make` command will go through each directory of your projects and ask for the alias you want to use. If you chose "Unique" previously, you will be prompted for the editor's CLI tool after each alias. This will generate a `~/.config/pal/aliases` file and update your shell to automatically source the aliases file if it exists. If you use bash or zsh, it will append `[ -f "$HOME/.config/pal/aliases" ] && source "$HOME/.config/pal/aliases"` to your `~/.bashrc` or `~/.zshrc`. If you use fish, it will create `~/.config/fish/conf.d/pal.fish` to test if the aliases file exists and if so then source it.
-
-**Note:** the `make` command will prompt you to run the `install` command first if the config does not exist yet.
+The `create` command will ask, "What type of alias would you like to create?," with three options, "Parent", "Directory", and "Action". Use "Parent" to create aliases for the child directories under a specific directory. Use "Directory" to create an alias for a single directory. Use "Action" to create an alias for a command or script (ex. alias "ll" for "ls -lah").
 
 ```shell
-pal make
+pal create
 ```
 
-The `add` command can be used if you want an alias for a directory outside your projects e.g. a directory of notes. If you chose "Unique" previously, you will be prompted for the editor's CLI tool.
-
-**Note:** the `add` command will prompt you to run the `make` command if the aliases file does not exist yet.
+The `update` command allows updating the name or command for one or more aliases.
 
 ```shell
-pal add [--path | -p] [--name | -n] [--editorCmd | -e]
+pal update
+```
+
+The `remove` command allows removing one or more aliases.
+
+```shell
+pal remove
 ```
 
 The `list` command will print out all the aliases currently in `~/.config/pal/aliases`.
@@ -44,28 +46,14 @@ The `list` command will print out all the aliases currently in `~/.config/pal/al
 pal list
 ```
 
-The `clean` command will delete your `~/.config/pal/aliases` file in your home directory.
-
-```shell
-pal clean
-```
-
-The `refresh` command will delete your `~/.config/pal/aliases` file and then run the `make` command.
-
-```shell
-pal refresh
-```
-
-The `config` command allows listing or setting config values.
-
-When using the `config set` command, the first argument should be a key from the config file (Path, Editormode, Editorcmd, Shell, Extras) and the second argument should be its new value. Setting the "Extras" key will append to the list instead of replacing it.
+The `config` command allows listing or updating config values.
 
 ```shell
 pal config list
 ```
 
 ```shell
-pal config set Path /new/path
+pal config update
 ```
 
 ## Support

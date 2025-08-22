@@ -1,6 +1,6 @@
 module github.com/jaytyrrell13/pal
 
-go 1.23.0
+go 1.23.5
 
 toolchain go1.24.5
 
@@ -19,10 +19,11 @@ require (
 	github.com/charmbracelet/colorprofile v0.3.2 // indirect
 	github.com/charmbracelet/x/ansi v0.10.1 // indirect
 	github.com/charmbracelet/x/cellbuf v0.0.13 // indirect
-	github.com/charmbracelet/x/exp/strings v0.0.0-20250820142022-371acb6ebad9 // indirect
+	github.com/charmbracelet/x/exp/strings v0.0.0-20250821175832-f235fab04313 // indirect
 	github.com/charmbracelet/x/term v0.2.1 // indirect
 	github.com/dustin/go-humanize v1.0.1 // indirect
 	github.com/erikgeiser/coninput v0.0.0-20211004153227-1c3628e74d0f // indirect
+	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/lucasb-eyer/go-colorful v1.2.0 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/mattn/go-localereader v0.0.1 // indirect
@@ -38,8 +39,7 @@ require (
 )
 
 require (
-	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/spf13/afero v1.14.0 // direct
 	github.com/spf13/pflag v1.0.7 // indirect
-	golang.org/x/text v0.28.0
+	golang.org/x/text v0.28.0 // indirect
 )
