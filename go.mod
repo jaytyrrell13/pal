@@ -7,7 +7,7 @@ toolchain go1.24.5
 require (
 	github.com/charmbracelet/huh v0.7.0
 	github.com/charmbracelet/lipgloss v1.1.0
-	github.com/spf13/cobra v1.9.1
+	github.com/spf13/cobra v1.10.1
 )
 
 require (
@@ -40,6 +40,6 @@ require (
 
 require (
 	github.com/spf13/afero v1.14.0 // direct
-	github.com/spf13/pflag v1.0.7 // indirect
+	github.com/spf13/pflag v1.0.9 // indirect
 	golang.org/x/text v0.28.0 // indirect
 )
