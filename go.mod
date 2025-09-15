@@ -39,7 +39,7 @@ require (
 )
 
 require (
-	github.com/spf13/afero v1.14.0 // direct
+	github.com/spf13/afero v1.15.0 // direct
 	github.com/spf13/pflag v1.0.7 // indirect
 	golang.org/x/text v0.28.0 // indirect
 )
