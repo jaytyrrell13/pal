@@ -102,13 +102,13 @@ func RunCreateCmd(fs afero.Fs, cp CreatePrompts) error {
 
 	for _, a := range cp.aliases {
 		if cp.category != "action" {
-			c.Aliases = append(c.Aliases, a.ForActionCmd())
+			c.Aliases = append(c.Aliases, a.ToActionCmd())
 		} else {
 			c.Aliases = append(c.Aliases, a)
 		}
 
 		if cp.editCmd == "yes" {
-			c.Aliases = append(c.Aliases, a.ForEditCmd())
+			c.Aliases = append(c.Aliases, a.ToEditCmd())
 		}
 	}
 

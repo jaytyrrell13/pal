@@ -9,13 +9,13 @@ type Alias struct {
 	Command string
 }
 
-func (a Alias) ForActionCmd() Alias {
+func (a Alias) ToActionCmd() Alias {
 	a.Command = "cd " + a.Command
 
 	return a
 }
 
-func (a Alias) ForEditCmd() Alias {
+func (a Alias) ToEditCmd() Alias {
 	a.Name = "e" + a.Name
 	a.Command = "cd " + a.Command + " && nvim"
 
