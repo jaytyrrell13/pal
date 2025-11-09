@@ -3,7 +3,6 @@ package cmd
 import (
 	"errors"
 	"fmt"
-	"maps"
 
 	"github.com/charmbracelet/huh"
 	"github.com/jaytyrrell13/pal/internal/alias"
@@ -140,7 +139,7 @@ func RunUpdateCmd(fs afero.Fs, up UpdatePrompts) error {
 	}
 
 	c.Aliases = []alias.Alias{}
-	for v := range maps.Values(aliasMap) {
+	for _, v := range aliasMap {
 		c.Aliases = append(c.Aliases, v)
 	}
 
